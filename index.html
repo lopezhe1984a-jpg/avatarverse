@@ -9,466 +9,313 @@
         :root {
             --negro: #050508; --morado-oscuro: #1a1033; --morado-neon: #A855F7;
             --azul-electrico: #06B6D4; --rosa-cosmico: #EC4899; --blanco-suave: #F8FAFC;
-            --gris-oscuro: #12121f; --gris-medio: #2a2a3c; --dorado: #F59E0B;
-            --verde-exito: #10B981; --rojo-alerta: #EF4444;
+            --gris-oscuro: #12121f; --dorado: #F59E0B; --verde-exito: #10B981;
+            --rojo-peligro: #EF4444; --fuente-principal: 'Segoe UI', system-ui, sans-serif;
         }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
-        body { background: linear-gradient(135deg, var(--negro), var(--morado-oscuro)); color: var(--blanco-suave); min-height: 100vh; }
-        
-        /* Botón de descarga */
-        .btn-descargar { background: linear-gradient(135deg, #A855F7, #EC4899); color: white; border: none; padding: 12px 24px; border-radius: 12px; font-size: 15px; font-weight: 600; margin-top: 15px; cursor: pointer; width: 100%; transition: transform 0.2s; }
-        .btn-descargar:active { transform: scale(0.97); }
-        
-        /* Panel de Administrador */
-        .panel-dueno { background: rgba(168, 85, 247, 0.1); border: 2px solid var(--morado-neon); border-radius: 16px; padding: 20px; margin: 20px; display: none; }
-        .panel-dueno.visible { display: block; animation: aparecer 0.3s ease; }
-        @keyframes aparecer { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .panel-dueno h2 { color: var(--morado-neon); margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
-        .control-group { background: rgba(255,255,255,0.05); border-radius: 12px; padding: 15px; margin-bottom: 15px; }
-        .control-group h3 { font-size: 15px; margin-bottom: 10px; color: var(--azul-electrico); }
-        input, select { width: 100%; padding: 10px 14px; border-radius: 8px; border: 1px solid var(--gris-medio); background: var(--gris-oscuro); color: white; margin-bottom: 10px; font-size: 14px; }
-        .btn-primario { background: linear-gradient(135deg, var(--morado-neon), var(--rosa-cosmico)); color: white; border: none; padding: 10px 18px; border-radius: 8px; font-weight: 600; cursor: pointer; width: 100%; font-size: 14px; }
-        .btn-exito { background: var(--verde-exito); color: white; border: none; padding: 10px 18px; border-radius: 8px; font-weight: 600; cursor: pointer; width: 100%; font-size: 14px; }
-        .btn-dorado { background: linear-gradient(135deg, #F59E0B, #FBBF24); color: #000; border: none; padding: 10px 18px; border-radius: 8px; font-weight: 600; cursor: pointer; width: 100%; font-size: 14px; }
-        
-        /* Tarjetas de Niveles */
-        .niveles-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; margin-top: 15px; }
-        .nivel-card { background: rgba(255,255,255,0.05); border-radius: 10px; padding: 12px; text-align: center; border-left: 3px solid var(--gris-medio); }
-        .nivel-card.donador { border-color: var(--dorado); }
-        .nivel-card.colaborador { border-color: var(--verde-exito); }
-        .nivel-numero { font-size: 22px; font-weight: bold; }
-        .nivel-nombre { font-size: 12px; opacity: 0.8; margin-top: 4px; }
-        .nivel-beneficio { font-size: 10px; color: var(--azul-electrico); margin-top: 6px; }
-        
-        /* Notificaciones */
-        .toast { position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%) translateY(100px); background: rgba(0,0,0,0.9); color: white; padding: 14px 24px; border-radius: 12px; z-index: 9999; opacity: 0; transition: all 0.3s ease; }
-        .toast.mostrar { transform: translateX(-50%) translateY(0); opacity: 1; }
-        
-        /* Menú lateral */
-        .menu-lateral { position: fixed; left: 0; top: 0; width: 280px; height: 100vh; background: rgba(5,5,8,0.98); z-index: 999; transform: translateX(-100%); transition: transform 0.3s ease; padding: 20px; }
-        .menu-lateral.abierto { transform: translateX(0); }
-        .menu-lateral h2 { color: var(--morado-neon); margin-bottom: 30px; font-size: 22px; }
-        .menu-item { display: flex; align-items: center; gap: 12px; padding: 14px 12px; border-radius: 10px; margin-bottom: 8px; cursor: pointer; transition: background 0.2s; }
-        .menu-item:hover { background: rgba(168,85,247,0.2); }
-        .menu-item.dueno { border: 1px solid var(--dorado); display: none; }
-        .menu-item.dueno.visible { display: flex; }
-        .cabezal { padding: 20px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.1); }
-        .cabezal h1 { font-size: 28px; background: linear-gradient(90deg, var(--morado-neon), var(--rosa-cosmico)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .contenido { padding: 20px; }
-        .seccion { display: none; }
-        .seccion.activa { display: block; animation: aparecer 0.3s ease; }
-        .imagen-generada { text-align: center; margin: 20px 0; }
-        .imagen-generada img { max-width: 100%; border-radius: 16px; box-shadow: 0 8px 32px rgba(168,85,247,0.3); }
-        .barra-superior { position: fixed; top: 0; left: 0; right: 0; background: rgba(5,5,8,0.9); padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; z-index: 100; backdrop-filter: blur(10px); }
-        .btn-menu { background: none; border: none; color: white; font-size: 24px; cursor: pointer; }
-        .espacio-superior { padding-top: 70px; }
+        *{margin:0;padding:0;box-sizing:border-box;}
+        body{font-family:var(--fuente-principal);background:linear-gradient(135deg,var(--negro),var(--morado-oscuro));color:var(--blanco-suave);min-height:100vh;}
+        header{background:rgba(0,0,0,0.8);backdrop-filter:blur(10px);padding:1rem 1.5rem;position:sticky;top:0;z-index:100;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(168,85,247,0.3);}
+        .logo{font-size:1.5rem;font-weight:bold;background:linear-gradient(90deg,var(--morado-neon),var(--rosa-cosmico));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+        .monedas-display{display:flex;align-items:center;gap:0.5rem;background:rgba(245,158,11,0.2);padding:0.5rem 1rem;border-radius:2rem;border:1px solid var(--dorado);}
+        .menu-btn{background:none;border:none;color:var(--blanco-suave);font-size:1.8rem;cursor:pointer;}
+        .menu-lateral{position:fixed;top:0;left:0;height:100vh;width:280px;background:rgba(5,5,8,0.98);border-right:1px solid var(--morado-neon);transform:translateX(-100%);transition:transform 0.3s ease;z-index:200;padding-top:2rem;}
+        .menu-lateral.abierto{transform:translateX(0);}
+        .menu-cerrar{position:absolute;top:1rem;right:1rem;background:none;border:none;color:var(--blanco-suave);font-size:1.5rem;cursor:pointer;}
+        .menu-opcion{display:block;width:100%;padding:1rem 1.5rem;color:var(--blanco-suave);text-decoration:none;border-bottom:1px solid rgba(255,255,255,0.05);transition:all 0.2s;}
+        .menu-opcion:hover,.menu-opcion.activa{background:rgba(168,85,247,0.2);border-left:3px solid var(--morado-neon);}
+        .dueno-panel{background:linear-gradient(90deg,rgba(245,158,11,0.2),rgba(236,72,153,0.2));border-left:3px solid var(--dorado);}
+        .dueno-titulo{color:var(--dorado);font-weight:bold;}
+        .contenido{padding:2rem 1.5rem;max-width:800px;margin:0 auto;}
+        .bienvenida{text-align:center;margin-bottom:3rem;}
+        .bienvenida h1{font-size:2.5rem;margin-bottom:0.5rem;}
+        .tarjeta{background:rgba(255,255,255,0.05);border-radius:1rem;padding:1.5rem;margin-bottom:1.5rem;border:1px solid rgba(168,85,247,0.2);}
+        .btn{padding:0.8rem 1.5rem;border-radius:0.5rem;border:none;font-weight:bold;cursor:pointer;transition:all 0.2s;font-size:1rem;}
+        .btn-morado{background:linear-gradient(90deg,var(--morado-neon),var(--rosa-cosmico));color:white;}
+        .btn-morado:hover{transform:translateY(-2px);box-shadow:0 5px 20px rgba(168,85,247,0.4);}
+        .input{width:100%;padding:0.8rem;border-radius:0.5rem;border:1px solid rgba(255,255,255,0.2);background:rgba(0,0,0,0.3);color:white;margin-bottom:1rem;}
+        .oculto{display:none !important;}
+        .nivel-insignia{display:inline-flex;align-items:center;gap:0.3rem;padding:0.2rem 0.6rem;border-radius:1rem;font-size:0.85rem;margin-right:0.5rem;}
+        .nivel-colaborador{background:rgba(6,182,212,0.2);color:var(--azul-electrico);}
+        .nivel-donador{background:rgba(245,158,11,0.2);color:var(--dorado);}
+        .notificacion{position:fixed;top:1rem;right:1rem;padding:1rem 1.5rem;border-radius:0.5rem;background:var(--verde-exito);color:white;z-index:300;transform:translateX(150%);transition:transform 0.3s;}
+        .notificacion.mostrar{transform:translateX(0);}
     </style>
 </head>
 <body>
 
-<!-- Barra Superior -->
-<div class="barra-superior">
-    <button class="btn-menu" onclick="toggleMenu()">☰</button>
-    <span style="font-weight: bold; color: var(--morado-neon);">AvatarVerse</span>
-    <span style="font-size: 14px;">💰 <span id="mis-monedas">0</span></span>
-</div>
+<header>
+    <button class="menu-btn" onclick="alternarMenu()">☰</button>
+    <span class="logo">AvatarVerse</span>
+    <div class="monedas-display">
+        <span>💰</span>
+        <span id="monedas-usuario">0</span>
+    </div>
+</header>
 
-<!-- Menú Lateral -->
-<div class="menu-lateral" id="menuLateral">
-    <h2>🌌 AvatarVerse</h2>
-    <div class="menu-item" onclick="mostrarSeccion('inicio')">🏠 Inicio</div>
-    <div class="menu-item" onclick="mostrarSeccion('creador')">🎨 Creador de Avatares</div>
-    <div class="menu-item" onclick="mostrarSeccion('videos')">🎬 Generar Videos</div>
-    <div class="menu-item" onclick="mostrarSeccion('lives')">📡 Salas en Vivo</div>
-    <div class="menu-item" onclick="mostrarSeccion('red')">📱 Red Social</div>
-    <div class="menu-item" onclick="mostrarSeccion('tienda')">🛒 Tienda & Monedas</div>
-    <div class="menu-item" onclick="mostrarSeccion('perfil')">👤 Mi Perfil</div>
-    <div class="menu-item" onclick="mostrarSeccion('niveles')">🎖️ Niveles y Rangos</div>
-    <div class="menu-item dueno" id="itemDueno" onclick="mostrarSeccion('dueno')">👑 Panel del Dueño</div>
-    <div class="menu-item" onclick="cerrarSesion()" style="margin-top: 30px; color: var(--rojo-alerta);">🚪 Cerrar Sesión</div>
-</div>
+<!-- MENÚ LATERAL -->
+<nav class="menu-lateral" id="menuLateral">
+    <button class="menu-cerrar" onclick="alternarMenu()">✕</button>
+    <a href="#" class="menu-opcion activa" onclick="mostrarSeccion('inicio')">🏠 Inicio</a>
+    <a href="#" class="menu-opcion" onclick="mostrarSeccion('perfil')">👤 Mi Perfil</a>
+    <a href="#" class="menu-opcion" onclick="mostrarSeccion('crear-avatar')">🎨 Crear Avatar</a>
+    <a href="#" class="menu-opcion" onclick="mostrarSeccion('lives')">📡 Salas en Vivo</a>
+    <a href="#" class="menu-opcion" onclick="mostrarSeccion('tienda')">🛒 Tienda</a>
+    <a href="#" class="menu-opcion" onclick="mostrarSeccion('publicaciones')">📷 Publicaciones</a>
+    <a href="#" class="menu-opcion" id="itemDueno" onclick="mostrarSeccion('dueno')" style="display:none;">
+        <span class="dueno-titulo">👑 Panel del Dueño</span>
+    </a>
+    <a href="#" class="menu-opcion" id="itemSesion" onclick="mostrarSeccion('auth')">🔐 Iniciar Sesión</a>
+    <a href="#" class="menu-opcion oculto" id="itemCerrarSesion" onclick="cerrarSesion()">🚪 Cerrar Sesión</a>
+</nav>
 
-<!-- Contenido Principal -->
-<div class="espacio-superior contenido">
-
-    <!-- SECCIÓN: INICIO -->
-    <div class="seccion activa" id="seccion-inicio">
-        <div class="cabezal">
+<div class="contenido">
+    <!-- SECCIÓN INICIO -->
+    <section id="seccion-inicio" class="seccion">
+        <div class="bienvenida">
             <h1>¡Bienvenido a AvatarVerse!</h1>
             <p>Tu mundo, tu avatar, sin límites 💜</p>
-        </div>
-        <div style="text-align: center; margin-top: 30px;">
-            <p style="font-size: 18px; opacity: 0.8;">Explora todas las funciones desde el menú ☰</p>
-            <p style="margin-top: 20px; color: var(--dorado);">💰 Monedas: <span id="inicio-monedas">0</span></p>
-            <p style="color: var(--verde-exito);">🎖️ Nivel: <span id="inicio-nivel">1</span> | Colaborador: <span id="inicio-colaborador">1</span></p>
-        </div>
-    </div>
-
-    <!-- SECCIÓN: CREADOR DE AVATARES -->
-    <div class="seccion" id="seccion-creador">
-        <h2>🎨 Creador de Avatares</h2>
-        <p style="opacity: 0.7; margin-bottom: 20px;">Describe el avatar que quieres generar</p>
-        <textarea id="prompt-imagen" placeholder="Ej: Hombre con cabello rapado, barba de 3 días, estilo realista..." style="width: 100%; min-height: 100px; border-radius: 12px; padding: 15px; background: var(--gris-oscuro); color: white; border: 1px solid var(--morado-neon); font-size: 15px;"></textarea>
-        <button class="btn-descargar" onclick="generarImagen()" style="background: linear-gradient(135deg, #A855F7, #EC4899); margin-top: 15px;">🖼️ Generar Imagen GRATIS</button>
-        <div class="imagen-generada" id="caja-imagen" style="display: none;">
-            <p style="color: var(--verde-exito); font-weight: bold;">✅ ¡Imagen generada según tu descripción!</p>
-            <img id="imagen-resultado" src="" alt="Avatar generado">
-            <button class="btn-descargar" onclick="descargarImagen()">📥 Descargar Imagen</button>
-        </div>
-    </div>
-
-    <!-- SECCIÓN: VIDEOS -->
-    <div class="seccion" id="seccion-videos">
-        <h2>🎬 Generador de Videos con IA</h2>
-        <p style="opacity: 0.7; margin-bottom: 20px;">Convierte tu imagen en video animado</p>
-        <textarea placeholder="Describe el movimiento, la escena, la voz..." style="width: 100%; min-height: 100px; border-radius: 12px; padding: 15px; background: var(--gris-oscuro); color: white; border: 1px solid var(--azul-electrico); font-size: 15px;"></textarea>
-        <button class="btn-descargar" style="background: linear-gradient(135deg, #06B6D4, #10B981); margin-top: 15px;">🎥 Generar Video</button>
-    </div>
-
-    <!-- SECCIÓN: LIVES -->
-    <div class="seccion" id="seccion-lives">
-        <h2>📡 Salas de Transmisión en Vivo</h2>
-        <p style="opacity: 0.7; margin-bottom: 20px;">Lives sin límite de tiempo 💜</p>
-        <div style="background: rgba(255,255,255,0.05); border-radius: 16px; padding: 20px; text-align: center; margin-bottom: 15px;">
-            <h3>🔴 Crear Sala en Vivo</h3>
-            <input type="text" placeholder="Título de tu transmisión" style="margin-top: 10px;">
-            <button class="btn-descargar" style="margin-top: 10px;">▶️ Iniciar Transmisión</button>
-        </div>
-        <p style="text-align: center; opacity: 0.5;">Salas activas aparecerán aquí</p>
-    </div>
-
-    <!-- SECCIÓN: RED SOCIAL -->
-    <div class="seccion" id="seccion-red">
-        <h2>📱 Publicaciones</h2>
-        <textarea placeholder="¿Qué estás pensando? ¡Comparte tu publicación!" style="width: 100%; min-height: 80px; border-radius: 12px; padding: 15px; background: var(--gris-oscuro); color: white; border: 1px solid var(--morado-neon); font-size: 15px; margin-bottom: 10px;"></textarea>
-        <button class="btn-descargar" style="margin-bottom: 30px;">📤 Publicar</button>
-        <p style="text-align: center; opacity: 0.5;">Tus publicaciones aparecerán aquí</p>
-    </div>
-
-    <!-- SECCIÓN: TIENDA Y MONEDAS -->
-    <div class="seccion" id="seccion-tienda">
-        <h2>🛒 Tienda de Monedas</h2>
-        <p style="opacity: 0.7; margin-bottom: 20px;">Tu saldo: 💰 <span id="tienda-monedas">0</span> monedas</p>
-        <div style="display: grid; gap: 12px;">
-            <div style="background: rgba(255,255,255,0.05); border-radius: 12px; padding: 15px; display: flex; justify-content: space-between; align-items: center;">
-                <span>💰 500 Monedas</span>
-                <button class="btn-dorado" style="width: auto; padding: 8px 16px; font-size: 13px;">Comprar</button>
-            </div>
-            <div style="background: rgba(255,255,255,0.05); border-radius: 12px; padding: 15px; display: flex; justify-content: space-between; align-items: center;">
-                <span>💰 2.500 Monedas ⭐+500</span>
-                <button class="btn-dorado" style="width: auto; padding: 8px 16px; font-size: 13px;">Comprar</button>
-            </div>
-            <div style="background: rgba(255,255,255,0.05); border-radius: 12px; padding: 15px; display: flex; justify-content: space-between; align-items: center;">
-                <span>💰 12.000 Monedas 💎+3.000</span>
-                <button class="btn-dorado" style="width: auto; padding: 8px 16px; font-size: 13px;">Comprar</button>
+            <div style="margin-top:2rem;">
+                <p>Explora todas las funciones desde el menú ☰</p>
+                <p id="info-usuario" style="margin-top:1rem;opacity:0.8;"></p>
             </div>
         </div>
-        <div style="margin-top: 25px; padding: 15px; background: rgba(16, 185, 129, 0.1); border-radius: 12px; border: 1px solid var(--verde-exito);">
-            <h3>🎁 Reclamo Diario Gratis</h3>
-            <p style="font-size: 14px; margin-top: 5px;">Reclama monedas gratis cada día al entrar</p>
-            <button class="btn-exito" style="margin-top: 10px;">✅ Reclamar 50 Monedas</button>
-        </div>
-    </div>
+    </section>
 
-    <!-- SECCIÓN: PERFIL -->
-    <div class="seccion" id="seccion-perfil">
-        <h2>👤 Mi Perfil</h2>
-        <div style="text-align: center; margin-bottom: 25px;">
-            <div style="width: 100px; height: 100px; border-radius: 50%; background: linear-gradient(135deg, var(--morado-neon), var(--rosa-cosmico)); margin: 0 auto 15px; display: flex; align-items: center; justify-content: center; font-size: 40px;">👤</div>
-            <h3 id="perfil-nombre">Usuario de AvatarVerse</h3>
-            <p style="opacity: 0.6;">@usuario</p>
+    <!-- SECCIÓN AUTENTICACIÓN -->
+    <section id="seccion-auth" class="seccion oculto">
+        <div class="tarjeta">
+            <h2 id="titulo-auth">Iniciar Sesión</h2>
+            <input type="email" id="correo-auth" class="input" placeholder="Tu correo electrónico">
+            <input type="password" id="clave-auth" class="input" placeholder="Contraseña">
+            <button class="btn btn-morado" onclick="iniciarSesion()">Entrar</button>
+            <p style="margin-top:1rem;text-align:center;">¿No tienes cuenta? <a href="#" onclick="cambiarAModoRegistro()" style="color:var(--morado-neon);">Regístrate</a></p>
         </div>
-        <div class="control-group">
-            <h3>Editar Información</h3>
-            <input type="text" id="input-nombre" placeholder="Tu nombre completo">
-            <input type="text" placeholder="Nombre de usuario (@)">
-            <input type="email" placeholder="Correo electrónico">
-            <button class="btn-primario" onclick="guardarPerfil()">💾 Guardar Cambios</button>
-        </div>
-        <div class="control-group">
-            <h3>📊 Mis Estadísticas</h3>
-            <p>💰 Monedas: <span id="stats-monedas">0</span></p>
-            <p>🎖️ Nivel Donador: <span id="stats-donador">1</span></p>
-            <p>👥 Nivel Colaborador: <span id="stats-colaborador">1</span></p>
-            <p>❤️ Publicaciones: 0</p>
-        </div>
-    </div>
+    </section>
 
-    <!-- SECCIÓN: NIVELES Y RANGOS -->
-    <div class="seccion" id="seccion-niveles">
-        <h2>🎖️ Niveles y Rangos</h2>
-        
-        <h3 style="margin-top: 25px; color: var(--dorado);">💰 Niveles de Donadores (1–100)</h3>
-        <p style="font-size: 13px; opacity: 0.7;">Por regalos y apoyo en las transmisiones</p>
-        <div class="niveles-grid">
-            <div class="nivel-card donador"><div class="nivel-numero">1</div><div class="nivel-nombre">Nuevo Miembro</div><div class="nivel-beneficio">+50 monedas regalo</div></div>
-            <div class="nivel-card donador"><div class="nivel-numero">5</div><div class="nivel-nombre">Apoyo Fiel</div><div class="nivel-beneficio">Nombre dorado</div></div>
-            <div class="nivel-card donador"><div class="nivel-numero">10</div><div class="nivel-nombre">Benefactor</div><div class="nivel-beneficio">Emoji exclusivo</div></div>
-            <div class="nivel-card donador"><div class="nivel-numero">25</div><div class="nivel-nombre">Patrocinador</div><div class="nivel-beneficio">Insignia especial</div></div>
-            <div class="nivel-card donador"><div class="nivel-numero">50</div><div class="nivel-nombre">Pilar de la Comunidad</div><div class="nivel-beneficio">Color personalizado</div></div>
-            <div class="nivel-card donador"><div class="nivel-numero">100</div><div class="nivel-nombre">LEYENDA 💎</div><div class="nivel-beneficio">Panel VIP completo</div></div>
-        </div>
-
-        <h3 style="margin-top: 35px; color: var(--verde-exito);">👥 Niveles de Colaboradores (1–100)</h3>
-        <p style="font-size: 13px; opacity: 0.7;">Por compartir, comentar, dar like y tiempo en el live</p>
-        <div class="niveles-grid">
-            <div class="nivel-card colaborador"><div class="nivel-numero">1</div><div class="nivel-nombre">Espectador</div><div class="nivel-beneficio">+5 pts/día</div></div>
-            <div class="nivel-card colaborador"><div class="nivel-numero">5</div><div class="nivel-nombre">Participante Activo</div><div class="nivel-beneficio">+10 monedas/día</div></div>
-            <div class="nivel-card colaborador"><div class="nivel-numero">15</div><div class="nivel-nombre">Embajador</div><div class="nivel-beneficio">Compartir = +50 pts</div></div>
-            <div class="nivel-card colaborador"><div class="nivel-numero">30</div><div class="nivel-nombre">Influencer</div><div class="nivel-beneficio">Nombre verde</div></div>
-            <div class="nivel-card colaborador"><div class="nivel-numero">50</div><div class="nivel-nombre">Creador Estrella</div><div class="nivel-beneficio">Prioridad en sala</div></div>
-            <div class="nivel-card colaborador"><div class="nivel-numero">100</div><div class="nivel-nombre">ICÓNICO 🌟</div><div class="nivel-beneficio">Verificado + VIP</div></div>
-        </div>
-    </div>
-
-    <!-- SECCIÓN: PANEL DEL DUEÑO 👑 -->
-    <div class="seccion" id="seccion-dueno">
-        <div class="panel-dueno visible" id="panelDueno">
-            <h2>👑 Panel de Administrador — Dueño</h2>
-            <p style="opacity: 0.7; margin-bottom: 20px;">Control total de la plataforma. Solo tú tienes acceso.</p>
-            
-            <div class="control-group">
-                <h3>💰 Asignar Monedas a Usuario</h3>
-                <input type="text" id="usuario-monedas" placeholder="Nombre de usuario">
-                <input type="number" id="cantidad-monedas" placeholder="Cantidad de monedas" min="1">
-                <button class="btn-exito" onclick="asignarMonedas()">✅ Asignar Monedas</button>
+    <!-- SECCIÓN PERFIL -->
+    <section id="seccion-perfil" class="seccion oculto">
+        <div class="tarjeta">
+            <h2>Mi Perfil</h2>
+            <div style="text-align:center;margin-bottom:2rem;">
+                <div style="width:120px;height:120px;border-radius:50%;background:linear-gradient(135deg,var(--morado-neon),var(--rosa-cosmico));display:flex;align-items:center;justify-content:center;font-size:3rem;margin:0 auto 1rem;">👤</div>
+                <h3 id="perfil-nombre">Usuario</h3>
+                <p id="perfil-usuario">@usuario</p>
             </div>
-
-            <div class="control-group">
-                <h3>⬆️ Subir Nivel de Donador</h3>
-                <input type="text" id="usuario-donador" placeholder="Nombre de usuario">
-                <input type="number" id="nivel-donador" placeholder="Nivel (1-100)" min="1" max="100">
-                <button class="btn-dorado" onclick="subirNivelDonador()">⬆️ Actualizar Nivel</button>
-            </div>
-
-            <div class="control-group">
-                <h3>👥 Subir Nivel de Colaborador</h3>
-                <input type="text" id="usuario-colaborador" placeholder="Nombre de usuario">
-                <input type="number" id="nivel-colaborador" placeholder="Nivel (1-100)" min="1" max="100">
-                <button class="btn-primario" onclick="subirNivelColaborador()">⬆️ Actualizar Nivel</button>
-            </div>
-
-            <div class="control-group">
-                <h3>🎁 Bono General para TODOS los usuarios</h3>
-                <input type="number" id="bono-general" placeholder="Monedas para cada usuario" min="1">
-                <button class="btn-exito" onclick="bonoParaTodos()">🎁 Regalar a Todos</button>
-            </div>
-
-            <div class="control-group">
-                <h3>📊 Estadísticas Generales</h3>
-                <p>👥 Usuarios registrados: <span id="stat-usuarios">1</span></p>
-                <p>📡 Lives activas: <span id="stat-lives">0</span></p>
-                <p>💰 Monedas en circulación: <span id="stat-monedas-total">0</span></p>
-                <p>🎨 Imágenes generadas: <span id="stat-imagenes">0</span></p>
+            <h4>Editar Información</h4>
+            <input type="text" id="edit-nombre" class="input" placeholder="Tu nombre completo">
+            <input type="text" id="edit-usuario" class="input" placeholder="@usuario">
+            <input type="email" id="edit-correo" class="input" placeholder="correo@ejemplo.com" disabled>
+            <button class="btn btn-morado" onclick="guardarPerfil()">💾 Guardar Cambios</button>
+            <div style="margin-top:2rem;">
+                <h4>📊 Mis Estadísticas</h4>
+                <p>💰 Monedas: <span id="stats-monedas">0</span></p>
+                <p>⭐ Nivel Donador: <span id="stats-donador">1</span></p>
+                <p>🤝 Nivel Colaborador: <span id="stats-colaborador">1</span></p>
+                <p>❤️ Publicaciones: <span id="stats-publicaciones">0</span></p>
             </div>
         </div>
-    </div>
+    </section>
 
+    <!-- SECCIÓN DUEÑO -->
+    <section id="seccion-dueno" class="seccion oculto">
+        <div class="tarjeta" style="border-color:var(--dorado);">
+            <h2 style="color:var(--dorado);">👑 Panel del Dueño</h2>
+            <p style="opacity:0.8;margin-bottom:1.5rem;">Bienvenido, creador de AvatarVerse. Tienes control total.</p>
+            <button class="btn btn-morado" style="width:100%;margin-bottom:1rem;" onclick="darMonedasInfinitas()">💰 Dar Monedas Infinitas</button>
+            <button class="btn btn-morado" style="width:100%;margin-bottom:1rem;" onclick="verEstadisticasTotales()">📊 Ver Estadísticas Totales</button>
+            <button class="btn btn-morado" style="width:100%;" onclick="configuracionGlobal()">⚙️ Configuración Global</button>
+        </div>
+    </section>
+
+    <!-- SECCIONES RESTANTES (placeholder) -->
+    <section id="seccion-crear-avatar" class="seccion oculto">
+        <div class="tarjeta"><h2>🎨 Creador de Avatares</h2><p>Próximamente: personalización completa de tu avatar 💜</p></div>
+    </section>
+    <section id="seccion-lives" class="seccion oculto">
+        <div class="tarjeta"><h2>📡 Salas en Vivo</h2><p>Salas de transmisión en vivo sin límite de tiempo 🎥</p></div>
+    </section>
+    <section id="seccion-tienda" class="seccion oculto">
+        <div class="tarjeta"><h2>🛒 Tienda Virtual</h2><p>Compra regalos, efectos y más con tus monedas 💰</p></div>
+    </section>
+    <section id="seccion-publicaciones" class="seccion oculto">
+        <div class="tarjeta"><h2>📷 Publicaciones</h2><p>Comparte fotos, videos e historias ✨</p></div>
+    </section>
 </div>
 
-<!-- Notificación Toast -->
-<div class="toast" id="notificacion"></div>
+<div class="notificacion" id="notificacion"></div>
 
 <script>
 // ==============================================
-// VARIABLES GLOBALES
+// 🔐 CORREO DEL DUEÑO — YA CONFIGURADO!
 // ==============================================
-let usuarioActual = {
-    nombre: 'Usuario de AvatarVerse',
-    correo: '',
-    monedas: 0,
-    nivelDonador: 1,
-    nivelColaborador: 1,
-    esDueno: false
-};
+const CORREO_DUENO = "lopezhe1984a@gmail.com";
 
-const CORREO_DUENO = 'tu.correo@aqui.com'; // ← PON TU CORREO DE ADMIN AQUÍ
-let contadorImagenes = 0;
+let usuarioActual = null;
+let modoRegistro = false;
 
-// ==============================================
-// FUNCIONES DEL MENÚ
-// ==============================================
-function toggleMenu() {
+// Datos iniciales del usuario
+function datosInicialesUsuario(correo) {
+    return {
+        correo: correo,
+        nombre: "Héctor Eduardo López A.",
+        usuario: "hectorelz",
+        monedas: 0,
+        nivelDonador: 1,
+        nivelColaborador: 1,
+        publicaciones: 0,
+        esDueno: correo.toLowerCase().trim() === CORREO_DUENO.toLowerCase().trim()
+    };
+}
+
+// Alternar menú
+function alternarMenu() {
     const menu = document.getElementById('menuLateral');
     menu.classList.toggle('abierto');
 }
 
+// Mostrar sección
 function mostrarSeccion(nombre) {
-    document.querySelectorAll('.seccion').forEach(s => s.classList.remove('activa'));
-    document.getElementById('seccion-' + nombre).classList.add('activa');
+    document.querySelectorAll('.seccion').forEach(s => s.classList.add('oculto'));
+    document.getElementById(`seccion-${nombre}`).classList.remove('oculto');
     document.getElementById('menuLateral').classList.remove('abierto');
-    actualizarDatosUsuario();
+    
+    if (nombre === 'perfil' && usuarioActual) cargarPerfil();
+    if (nombre === 'dueno' && !usuarioActual?.esDueno) {
+        mostrarNotificacion('❌ No tienes permiso de acceso', 'error');
+        mostrarSeccion('inicio');
+    }
 }
 
-// ==============================================
-// VERIFICAR SI ES EL DUEÑO (al iniciar sesión)
-// ==============================================
-function verificarDueno(correo) {
-    usuarioActual.esDueno = (correo === CORREO_DUENO);
+// Cambiar a modo registro
+function cambiarAModoRegistro() {
+    modoRegistro = true;
+    document.getElementById('titulo-auth').textContent = 'Crear Cuenta Nueva';
+}
+
+// Iniciar / Registrar sesión
+function iniciarSesion() {
+    const correo = document.getElementById('correo-auth').value.trim().toLowerCase();
+    const clave = document.getElementById('clave-auth').value;
+    
+    if (!correo) { mostrarNotificacion('Escribe tu correo', 'error'); return; }
+    
+    usuarioActual = datosInicialesUsuario(correo);
+    guardarUsuarioLocal();
+    actualizarInterfazUsuario();
+    mostrarNotificacion(usuarioActual.esDueno ? '👑 ¡Bienvenido, Dueño!' : '✅ ¡Bienvenido de nuevo!');
+    mostrarSeccion('inicio');
+}
+
+// Cerrar sesión
+function cerrarSesion() {
+    usuarioActual = null;
+    localStorage.removeItem('usuarioAvatarVerse');
+    actualizarInterfazUsuario();
+    mostrarSeccion('auth');
+    mostrarNotificacion('👋 Sesión cerrada. ¡Hasta pronto!');
+}
+
+// Actualizar interfaz según usuario
+function actualizarInterfazUsuario() {
+    const itemSesion = document.getElementById('itemSesion');
+    const itemCerrar = document.getElementById('itemCerrarSesion');
     const itemDueno = document.getElementById('itemDueno');
-    if (usuarioActual.esDueno) {
-        itemDueno.classList.add('visible');
-    } else {
-        itemDueno.classList.remove('visible');
-        // Si intenta entrar sin permiso
-        if (document.getElementById('seccion-dueno').classList.contains('activa')) {
-            mostrarSeccion('inicio');
-            mostrarNotificacion('❌ No tienes permiso para acceder a esta sección');
+    const infoUsuario = document.getElementById('info-usuario');
+    const monedasDisplay = document.getElementById('monedas-usuario');
+    
+    if (usuarioActual) {
+        itemSesion.classList.add('oculto');
+        itemCerrar.classList.remove('oculto');
+        infoUsuario.innerHTML = `Conectado como: <strong>${usuarioActual.nombre}</strong> ${usuarioActual.esDueno ? '👑 DUEÑO' : ''}`;
+        monedasDisplay.textContent = usuarioActual.monedas;
+        
+        // Mostrar panel de dueño SI coincide el correo
+        if (usuarioActual.esDueno) {
+            itemDueno.style.display = 'block';
+            console.log('✅ ACCESO DE DUEÑO ACTIVADO — Correo:', usuarioActual.correo);
+        } else {
+            itemDueno.style.display = 'none';
         }
-    }
-}
-
-// ==============================================
-// GENERAR IMAGEN SIMULADA
-// ==============================================
-function generarImagen() {
-    const prompt = document.getElementById('prompt-imagen').value;
-    if (!prompt || prompt.length < 5) {
-        mostrarNotificacion('⚠️ Escribe una descripción primero');
-        return;
-    }
-    const caja = document.getElementById('caja-imagen');
-    const img = document.getElementById('imagen-resultado');
-    // Simulamos imagen generada con una imagen de placeholder realista
-    img.src = 'https://picsum.photos/seed/' + Date.now() + '/512/768';
-    caja.style.display = 'block';
-    contadorImagenes++;
-    mostrarNotificacion('✅ ¡Imagen generada con éxito!');
-    // Actualizar estadísticas
-    document.getElementById('stat-imagenes').textContent = contadorImagenes;
-}
-
-// ==============================================
-// DESCARGAR IMAGEN
-// ==============================================
-function descargarImagen() {
-    const img = document.getElementById('imagen-resultado');
-    if (!img.src) {
-        mostrarNotificacion('⚠️ No hay imagen para descargar');
-        return;
-    }
-    const enlace = document.createElement('a');
-    enlace.href = img.src;
-    enlace.download = 'avatarverse-imagen-' + Date.now() + '.png';
-    enlace.target = '_blank';
-    document.body.appendChild(enlace);
-    enlace.click();
-    document.body.removeChild(enlace);
-    mostrarNotificacion('✅ ¡Imagen descargada! 📥');
-}
-
-// ==============================================
-// PANEL DE DUEÑO — FUNCIONES DE CONTROL 👑
-// ==============================================
-function asignarMonedas() {
-    if (!usuarioActual.esDueno) { mostrarNotificacion('❌ Sin permiso'); return; }
-    const usuario = document.getElementById('usuario-monedas').value;
-    const cantidad = parseInt(document.getElementById('cantidad-monedas').value);
-    if (!usuario || !cantidad || cantidad < 1) {
-        mostrarNotificacion('⚠️ Completa todos los campos');
-        return;
-    }
-    // Aquí se conectaría con Firebase para actualizar
-    mostrarNotificacion(`✅ ¡${cantidad} monedas asignadas a ${usuario}! 💰`);
-    document.getElementById('usuario-monedas').value = '';
-    document.getElementById('cantidad-monedas').value = '';
-}
-
-function subirNivelDonador() {
-    if (!usuarioActual.esDueno) { mostrarNotificacion('❌ Sin permiso'); return; }
-    const usuario = document.getElementById('usuario-donador').value;
-    const nivel = parseInt(document.getElementById('nivel-donador').value);
-    if (!usuario || !nivel || nivel < 1 || nivel > 100) {
-        mostrarNotificacion('⚠️ Datos inválidos (1-100)');
-        return;
-    }
-    mostrarNotificacion(`✅ Nivel de ${usuario} → Donador Nivel ${nivel} 🎖️`);
-    document.getElementById('usuario-donador').value = '';
-    document.getElementById('nivel-donador').value = '';
-}
-
-function subirNivelColaborador() {
-    if (!usuarioActual.esDueno) { mostrarNotificacion('❌ Sin permiso'); return; }
-    const usuario = document.getElementById('usuario-colaborador').value;
-    const nivel = parseInt(document.getElementById('nivel-colaborador').value);
-    if (!usuario || !nivel || nivel < 1 || nivel > 100) {
-        mostrarNotificacion('⚠️ Datos inválidos (1-100)');
-        return;
-    }
-    mostrarNotificacion(`✅ Nivel de ${usuario} → Colaborador Nivel ${nivel} 👥`);
-    document.getElementById('usuario-colaborador').value = '';
-    document.getElementById('nivel-colaborador').value = '';
-}
-
-function bonoParaTodos() {
-    if (!usuarioActual.esDueno) { mostrarNotificacion('❌ Sin permiso'); return; }
-    const cantidad = parseInt(document.getElementById('bono-general').value);
-    if (!cantidad || cantidad < 1) {
-        mostrarNotificacion('⚠️ Ingresa la cantidad');
-        return;
-    }
-    mostrarNotificacion(`🎁 ¡Bono de ${cantidad} monedas regalado a TODOS los usuarios! 💰`);
-    document.getElementById('bono-general').value = '';
-}
-
-// ==============================================
-// GUARDAR PERFIL
-// ==============================================
-function guardarPerfil() {
-    const nombre = document.getElementById('input-nombre').value;
-    if (nombre && nombre.length > 0) {
-        usuarioActual.nombre = nombre;
-        document.getElementById('perfil-nombre').textContent = nombre;
-        mostrarNotificacion('✅ ¡Perfil actualizado!');
-        // Verificar si es dueño según el correo
-        const correo = document.querySelector('input[placeholder="Correo electrónico"]').value;
-        if (correo) verificarDueno(correo);
     } else {
-        mostrarNotificacion('⚠️ Escribe tu nombre');
+        itemSesion.classList.remove('oculto');
+        itemCerrar.classList.add('oculto');
+        itemDueno.style.display = 'none';
+        infoUsuario.textContent = '';
+        monedasDisplay.textContent = '0';
     }
 }
 
-// ==============================================
-// ACTUALIZAR DATOS EN PANTALLA
-// ==============================================
-function actualizarDatosUsuario() {
-    document.getElementById('mis-monedas').textContent = usuarioActual.monedas;
-    document.getElementById('inicio-monedas').textContent = usuarioActual.monedas;
-    document.getElementById('tienda-monedas').textContent = usuarioActual.monedas;
+// Cargar perfil
+function cargarPerfil() {
+    if (!usuarioActual) return;
+    document.getElementById('perfil-nombre').textContent = usuarioActual.nombre;
+    document.getElementById('perfil-usuario').textContent = '@' + usuarioActual.usuario;
+    document.getElementById('edit-nombre').value = usuarioActual.nombre;
+    document.getElementById('edit-usuario').value = usuarioActual.usuario;
+    document.getElementById('edit-correo').value = usuarioActual.correo;
     document.getElementById('stats-monedas').textContent = usuarioActual.monedas;
-    document.getElementById('inicio-nivel').textContent = usuarioActual.nivelDonador;
-    document.getElementById('inicio-colaborador').textContent = usuarioActual.nivelColaborador;
     document.getElementById('stats-donador').textContent = usuarioActual.nivelDonador;
     document.getElementById('stats-colaborador').textContent = usuarioActual.nivelColaborador;
+    document.getElementById('stats-publicaciones').textContent = usuarioActual.publicaciones;
 }
 
-// ==============================================
-// NOTIFICACIONES
-// ==============================================
-function mostrarNotificacion(mensaje) {
+// Guardar perfil
+function guardarPerfil() {
+    if (!usuarioActual) return;
+    usuarioActual.nombre = document.getElementById('edit-nombre').value;
+    usuarioActual.usuario = document.getElementById('edit-usuario').value;
+    guardarUsuarioLocal();
+    cargarPerfil();
+    mostrarNotificacion('✅ Cambios guardados correctamente');
+}
+
+// Funciones de Dueño
+function darMonedasInfinitas() {
+    if (!usuarioActual?.esDueno) return;
+    usuarioActual.monedas = 999999;
+    guardarUsuarioLocal();
+    actualizarInterfazUsuario();
+    mostrarNotificacion('💰 ¡Monedas infinitas activadas!');
+}
+
+function verEstadisticasTotales() {
+    mostrarNotificacion('📊 Función en desarrollo');
+}
+
+function configuracionGlobal() {
+    mostrarNotificacion('⚙️ Función en desarrollo');
+}
+
+// Guardar y cargar usuario de localStorage
+function guardarUsuarioLocal() {
+    localStorage.setItem('usuarioAvatarVerse', JSON.stringify(usuarioActual));
+}
+
+function cargarUsuarioLocal() {
+    const guardado = localStorage.getItem('usuarioAvatarVerse');
+    if (guardado) {
+        usuarioActual = JSON.parse(guardado);
+        // Verificar nuevamente el correo de dueño al cargar
+        if (usuarioActual) {
+            usuarioActual.esDueno = usuarioActual.correo.toLowerCase().trim() === CORREO_DUENO.toLowerCase().trim();
+        }
+        actualizarInterfazUsuario();
+    }
+}
+
+// Notificaciones
+function mostrarNotificacion(mensaje, tipo = 'exito') {
     const notif = document.getElementById('notificacion');
     notif.textContent = mensaje;
+    notif.style.background = tipo === 'error' ? 'var(--rojo-peligro)' : 'var(--verde-exito)';
     notif.classList.add('mostrar');
     setTimeout(() => notif.classList.remove('mostrar'), 3000);
 }
 
-// ==============================================
-// CERRAR SESIÓN
-// ==============================================
-function cerrarSesion() {
-    mostrarNotificacion('👋 Sesión cerrada. ¡Hasta pronto!');
-    usuarioActual.esDueno = false;
-    document.getElementById('itemDueno').classList.remove('visible');
-    setTimeout(() => mostrarSeccion('inicio'), 500);
-}
-
-// ==============================================
-// INICIO AUTOMÁTICO
-// ==============================================
+// Inicio automático
 document.addEventListener('DOMContentLoaded', () => {
-    actualizarDatosUsuario();
-    // 💡 Para activar el panel de dueño: el usuario debe poner su correo
-    // en el perfil igual a la constante CORREO_DUENO arriba
+    cargarUsuarioLocal();
+    console.log('🚀 AvatarVerse cargado — Dueño configurado:', CORREO_DUENO);
 });
 </script>
 
