@@ -56,6 +56,14 @@
         .post-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; }
         .post-avatar { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, var(--morado-neon), var(--rosa-cosmico)); display: flex; align-items: center; justify-content: center; font-weight: bold; }
         
+        .post-actions { display: flex; align-items: center; gap: 16px; padding: 10px 14px; border-top: 1px solid rgba(255,255,255,0.05); }
+        .action-btn { display: flex; align-items: center; gap: 6px; background: none; border: none; color: var(--texto-secundario); cursor: pointer; font-size: 0.85rem; font-weight: 600; }
+        .action-btn.liked { color: var(--rosa-cosmico); }
+
+        .comments-section { padding: 10px 14px; background: rgba(0,0,0,0.2); border-top: 1px solid rgba(255,255,255,0.05); }
+        .comment-item { font-size: 0.82rem; margin-bottom: 6px; }
+        .comment-item strong { color: var(--morado-neon); }
+
         .live-video-container { width: 100%; height: 320px; background: #000; border-radius: var(--radius-lg); overflow: hidden; position: relative; }
         #local-video-track { width: 100%; height: 100%; }
 
@@ -155,11 +163,11 @@
         <button class="nav-item" onclick="mostrarPagina('cuenta', this)"><i data-lucide="user"></i> Cuenta</button>
     </nav>
 
-    <!-- MOTOR CON TUS CREDENCIALES EXACTAS -->
+    <!-- MOTOR FIREBASE CON LIKES & COMENTARIOS -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
         import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
-        import { getFirestore, collection, addDoc, onSnapshot, serverTimestamp, query, orderBy } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, updateDoc, doc, arrayUnion, onSnapshot, serverTimestamp, query, orderBy } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyD_xIh3iuQWTuq-r8Sz5p5W_78QwwL_Bj4",
@@ -234,6 +242,8 @@
 
             await addDoc(collection(db, "posts"), {
                 titulo, texto,
+                likes: 0,
+                comentarios: [],
                 autor: usuarioActivo ? usuarioActivo.email : "Anónimo",
                 fecha: serverTimestamp()
             });
@@ -243,12 +253,37 @@
             mostrarPagina('inicio');
         };
 
+        window.darLike = async function(postId, likesActuales) {
+            const ref = doc(db, "posts", postId);
+            await updateDoc(ref, { likes: (likesActuales || 0) + 1 });
+        };
+
+        window.agregarComentario = async function(postId) {
+            const input = document.getElementById(`comment-input-${postId}`);
+            const texto = input.value.trim();
+            if(!texto) return;
+
+            const ref = doc(db, "posts", postId);
+            const comentarioObj = {
+                autor: usuarioActivo ? usuarioActivo.email.split('@')[0] : "Usuario",
+                texto: texto
+            };
+
+            await updateDoc(ref, { comentarios: arrayUnion(comentarioObj) });
+            input.value = '';
+        };
+
         const q = query(collection(db, "posts"), orderBy("fecha", "desc"));
         onSnapshot(q, (snapshot) => {
             const feed = document.getElementById('feedPosts');
             feed.innerHTML = '';
-            snapshot.forEach((doc) => {
-                const data = doc.data();
+            snapshot.forEach((docSnap) => {
+                const data = docSnap.data();
+                const id = docSnap.id;
+                const comentariosHtml = (data.comentarios || []).map(c => `
+                    <div class="comment-item"><strong>${c.autor}:</strong> ${c.texto}</div>
+                `).join('');
+
                 feed.innerHTML += `
                     <div class="post-card">
                         <div class="post-header">
@@ -257,13 +292,26 @@
                                 <div><strong>${data.autor || 'Usuario'}</strong></div>
                             </div>
                         </div>
-                        <div style="padding:14px;">
+                        <div style="padding:0 14px 10px 14px;">
                             <h3>${data.titulo || ''}</h3>
-                            <p style="color:var(--texto-secundario); font-size:0.9rem; margin-top:6px;">${data.texto || ''}</p>
+                            <p style="color:var(--texto-secundario); font-size:0.9rem; margin-top:4px;">${data.texto || ''}</p>
+                        </div>
+                        <div class="post-actions">
+                            <button class="action-btn" onclick="darLike('${id}', ${data.likes || 0})">
+                                <i data-lucide="heart"></i> ${data.likes || 0} Me gusta
+                            </button>
+                        </div>
+                        <div class="comments-section">
+                            ${comentariosHtml}
+                            <div style="display:flex; gap:6px; margin-top:8px;">
+                                <input type="text" id="comment-input-${id}" placeholder="Comentar..." style="margin-bottom:0; padding:8px 10px; font-size:0.8rem;">
+                                <button class="btn btn-primario" style="width:auto; padding:8px 12px;" onclick="agregarComentario('${id}')"><i data-lucide="send"></i></button>
+                            </div>
                         </div>
                     </div>
                 `;
             });
+            lucide.createIcons();
         });
 
         window.iniciarStream = async function() {
