@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AvatarVerse — Tu Mundo de IA & Red Social</title>
+    <title>AvatarVerse Pro — Tu Mundo de IA & Red Social</title>
     <meta name="theme-color" content="#120c24">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -56,10 +56,9 @@
         .post-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; }
         .post-avatar { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, var(--morado-neon), var(--rosa-cosmico)); display: flex; align-items: center; justify-content: center; font-weight: bold; }
         
-        .post-actions { display: flex; align-items: center; gap: 16px; padding: 10px 14px; border-top: 1px solid rgba(255,255,255,0.05); }
+        .post-actions { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; border-top: 1px solid rgba(255,255,255,0.05); }
         .action-btn { display: flex; align-items: center; gap: 6px; background: none; border: none; color: var(--texto-secundario); cursor: pointer; font-size: 0.85rem; font-weight: 600; }
-        .action-btn.liked { color: var(--rosa-cosmico); }
-
+        
         .comments-section { padding: 10px 14px; background: rgba(0,0,0,0.2); border-top: 1px solid rgba(255,255,255,0.05); }
         .comment-item { font-size: 0.82rem; margin-bottom: 6px; }
         .comment-item strong { color: var(--morado-neon); }
@@ -67,9 +66,15 @@
         .live-video-container { width: 100%; height: 320px; background: #000; border-radius: var(--radius-lg); overflow: hidden; position: relative; }
         #local-video-track { width: 100%; height: 100%; }
 
-        .ai-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
-        .ai-card { background: rgba(255,255,255,0.03); border: 1px solid var(--borde-glow); border-radius: var(--radius-md); padding: 14px; text-align: center; cursor: pointer; }
-        .ai-card.active { border-color: var(--morado-neon); background: rgba(168, 85, 247, 0.15); }
+        .model-selector-btn { background: rgba(168, 85, 247, 0.1); border: 1px solid var(--morado-neon); border-radius: var(--radius-md); padding: 12px; font-weight: 700; display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; cursor: pointer; }
+        
+        /* Modal Selector Estilo App */
+        .modal-overlay { display:none; position: fixed; top:0; left:0; right:0; bottom:0; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px); z-index: 2000; justify-content: center; align-items: flex-end; }
+        .modal-overlay.active { display: flex; }
+        .modal-content { background: #171126; border: 1px solid var(--borde-glow); border-top-left-radius: 24px; border-top-right-radius: 24px; width: 100%; max-width: 480px; padding: 20px; max-height: 80vh; overflow-y: auto; }
+        .model-option { display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); padding: 14px; border-radius: 12px; margin-bottom: 10px; cursor: pointer; }
+        .model-option:hover, .model-option.selected { border-color: var(--morado-neon); background: rgba(168, 85, 247, 0.15); }
+        .badge-new { background: var(--dorado); color: #000; font-size: 0.65rem; font-weight: 800; padding: 2px 6px; border-radius: 6px; text-transform: uppercase; }
     </style>
 </head>
 <body>
@@ -89,20 +94,20 @@
             </div>
         </div>
 
-        <!-- GENERADOR DE IA -->
+        <!-- GENERADOR DE IA Y SELECTOR DE MODELOS -->
         <div id="page-ia" class="page">
             <div class="card">
                 <h2><i data-lucide="wand-2" style="color:var(--morado-neon);"></i> Estudio Creativo IA</h2>
-                <div class="ai-grid">
-                    <div class="ai-card active" id="modeImage" onclick="setAIMode('image')">
-                        <i data-lucide="image"></i><p style="font-size:0.85rem; font-weight:bold;">Imagen IA</p>
+                
+                <div class="model-selector-btn" onclick="abrirModalModelos()">
+                    <div>
+                        <span style="font-size:0.75rem; color:var(--texto-secundario); display:block;">Modelo seleccionado:</span>
+                        <strong id="selectedModelLabel" style="color:var(--morado-neon);">Flux Realism</strong>
                     </div>
-                    <div class="ai-card" id="modeVideo" onclick="setAIMode('video')">
-                        <i data-lucide="film"></i><p style="font-size:0.85rem; font-weight:bold;">Video Motion IA</p>
-                    </div>
+                    <i data-lucide="chevron-right"></i>
                 </div>
 
-                <textarea id="aiPrompt" rows="3" placeholder="Describe tu idea... (Ej: Avatar cyberpunk con luces de neón)"></textarea>
+                <textarea id="aiPrompt" rows="3" placeholder="Describe tu idea... (Ej: Retrato cyberpunk futurista)"></textarea>
                 <button class="btn btn-primario" onclick="generarIA()"><i data-lucide="sparkles"></i> Generar con IA</button>
                 <div id="aiOutput" style="margin-top: 15px; text-align: center;"></div>
             </div>
@@ -144,12 +149,42 @@
             </div>
         </div>
 
-        <!-- PANEL DUEÑO VIP -->
+        <!-- PANEL DUEÑO VIP (CONTROL TOTAL) -->
         <div id="page-admin" class="page">
             <div class="card" style="border-color: var(--dorado);">
-                <h2 style="color: var(--dorado);"><i data-lucide="shield-check"></i> Panel Dueno VIP</h2>
-                <p style="font-size: 0.85rem; color: var(--texto-secundario); margin-bottom: 12px;">Base de datos vinculada a: <strong>avatarverse-59fef</strong></p>
-                <button class="btn" style="background:var(--dorado); color:#000; font-weight:bold;" onclick="mostrarPagina('cuenta')">🔐 Administrar Cuenta</button>
+                <h2 style="color: var(--dorado);"><i data-lucide="shield-check"></i> Panel Dueño VIP</h2>
+                <p style="font-size: 0.85rem; color: var(--texto-secundario); margin-bottom: 12px;">Control Omnipresente de Base de Datos</p>
+                
+                <div style="display:flex; flex-direction:column; gap:8px;">
+                    <button class="btn" style="background:rgba(255,215,0,0.2); border:1px solid var(--dorado); color:var(--dorado);" onclick="alert('AvatarCoins Ilimitadas asignadas a tu usuario registrado.')">🪙 Inyectar AvatarCoins Ilimitadas</button>
+                    <button class="btn" style="background:rgba(6,182,212,0.2); border:1px solid var(--azul-electrico); color:var(--azul-electrico);" onclick="alert('Licencia Pro de IA activada por siempre.')">⚡ Activar Funciones Pro Gratis</button>
+                    <button class="btn" style="background:rgba(239,68,68,0.2); border:1px solid var(--rojo-vivo); color:var(--rojo-vivo);" onclick="mostrarPagina('cuenta')">🔐 Gestor de Usuarios y Bloqueos</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL SELECCIONAR MODELO DE IA -->
+    <div id="modalModelos" class="modal-overlay">
+        <div class="modal-content">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+                <h3>Selecciona un modelo</h3>
+                <button onclick="cerrarModalModelos()" style="background:none; border:none; font-weight:bold;">✕</button>
+            </div>
+            
+            <div class="model-option selected" onclick="seleccionarModelo('flux', 'Flux Realism')">
+                <div><strong>Flux Realism</strong><p style="font-size:0.75rem; color:var(--texto-secundario);">Fotorrealismo extremo y detalle</p></div>
+                <span class="badge-new">PRO</span>
+            </div>
+            <div class="model-option" onclick="seleccionarModelo('qwen', 'Qwen Edit / GPT Image')">
+                <div><strong>Qwen Edit / GPT Image</strong><p style="font-size:0.75rem; color:var(--texto-secundario);">Procesamiento de texto y edición</p></div>
+            </div>
+            <div class="model-option" onclick="seleccionarModelo('anime', 'Anime & Illustra')">
+                <div><strong>Anime & Illustra</strong><p style="font-size:0.75rem; color:var(--texto-secundario);">Arte digital y estilo japonés</p></div>
+            </div>
+            <div class="model-option" onclick="seleccionarModelo('turbo', 'Seedream / Krea2 Speed')">
+                <div><strong>Seedream / Krea2 Speed</strong><p style="font-size:0.75rem; color:var(--texto-secundario);">Generación ultrarrápida</p></div>
+                <span class="badge-new">NEW</span>
             </div>
         </div>
     </div>
@@ -163,11 +198,11 @@
         <button class="nav-item" onclick="mostrarPagina('cuenta', this)"><i data-lucide="user"></i> Cuenta</button>
     </nav>
 
-    <!-- MOTOR FIREBASE CON LIKES & COMENTARIOS -->
+    <!-- MOTOR FIREBASE CON ADMINISTRACIÓN Y MODELOS IA -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
         import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
-        import { getFirestore, collection, addDoc, updateDoc, doc, arrayUnion, onSnapshot, serverTimestamp, query, orderBy } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, arrayUnion, onSnapshot, serverTimestamp, query, orderBy } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyD_xIh3iuQWTuq-r8Sz5p5W_78QwwL_Bj4",
@@ -184,7 +219,7 @@
         const db = getFirestore(app);
 
         let usuarioActivo = null;
-        let aiMode = 'image';
+        let currentModel = 'flux';
         let localTracks = { videoTrack: null, audioTrack: null };
 
         window.mostrarPagina = function(id, btn) {
@@ -197,10 +232,13 @@
             }
         };
 
-        window.setAIMode = function(m) {
-            aiMode = m;
-            document.getElementById('modeImage').classList.toggle('active', m === 'image');
-            document.getElementById('modeVideo').classList.toggle('active', m === 'video');
+        window.abrirModalModelos = function() { document.getElementById('modalModelos').classList.add('active'); };
+        window.cerrarModalModelos = function() { document.getElementById('modalModelos').classList.remove('active'); };
+
+        window.seleccionarModelo = function(modelKey, label) {
+            currentModel = modelKey;
+            document.getElementById('selectedModelLabel').innerText = label;
+            cerrarModalModelos();
         };
 
         window.generarIA = function() {
@@ -208,9 +246,9 @@
             const output = document.getElementById('aiOutput');
             if(!prompt) return alert('Escribe un prompt');
 
-            output.innerHTML = `<p style="color:var(--morado-neon);">Generando contenido IA...</p>`;
+            output.innerHTML = `<p style="color:var(--morado-neon);">Generando con el modelo ${currentModel.toUpperCase()}...</p>`;
             const seed = Math.floor(Math.random() * 99999);
-            const url = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?width=800&height=800&seed=${seed}&nologo=true`;
+            const url = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?model=${currentModel}&width=800&height=800&seed=${seed}&nologo=true`;
 
             setTimeout(() => {
                 output.innerHTML = `<img src="${url}" style="width:100%; border-radius:12px;" alt="IA Result">`;
@@ -273,6 +311,12 @@
             input.value = '';
         };
 
+        window.eliminarPostAdmin = async function(postId) {
+            if(confirm("¿Seguro que deseas eliminar esta publicación como Dueño VIP?")) {
+                await deleteDoc(doc(db, "posts", postId));
+            }
+        };
+
         const q = query(collection(db, "posts"), orderBy("fecha", "desc"));
         onSnapshot(q, (snapshot) => {
             const feed = document.getElementById('feedPosts');
@@ -291,6 +335,7 @@
                                 <div class="post-avatar">${(data.autor || 'U')[0].toUpperCase()}</div>
                                 <div><strong>${data.autor || 'Usuario'}</strong></div>
                             </div>
+                            <button onclick="eliminarPostAdmin('${id}')" style="background:none; border:none; color:var(--rojo-vivo); cursor:pointer;"><i data-lucide="trash-2" style="width:18px;"></i></button>
                         </div>
                         <div style="padding:0 14px 10px 14px;">
                             <h3>${data.titulo || ''}</h3>
