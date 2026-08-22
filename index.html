@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AvatarVerse SuperApp — El Futuro Digital</title>
+    <meta name="theme-color" content="#0a0712">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://download.agora.io/sdk/release/AgoraRTC_N-4.20.0.js"></script>
+    <style>
+        :root {
+            --bg-principal: #07040d;
+            --bg-card: rgba(20, 14, 34, 0.88);
+            --morado-neon: #a855f7;
+            --rosa-cosmico: #ec4899;
+            --azul-electrico: #06b6d4;
+            --dorado: #ffd700;
+            --texto-principal: #f8fafc;
+            --texto-secundario: #94a3b8;
+            --borde-glow: rgba(168, 85, 247, 0.35);
+            --borde-dorado: rgba(255, 215, 0, 0.6);
+            --rojo-vivo: #ef4444;
+            --verde-exito: #22c55e;
+            --radius-lg: 20px;
+            --radius-md: 12px;
+        }
+
+        * { margin:0; padding:0; box-sizing:border-box; font-family:'Plus Jakarta Sans', sans-serif; color:var(--texto-principal); -webkit-tap-highlight-color: transparent; }
+        body { background: var(--bg-principal); background-image: radial-gradient(circle at 50% 0%, #1f0b38 0%, var(--bg-principal) 75%); min-height: 100vh; padding-bottom: 90px; overflow-x: hidden; }
+        .container { max-width: 480px; margin: 0 auto; padding: 12px; }
+
+        /* Top Header */
+        .top-bar { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; background: rgba(7, 4, 13, 0.85); backdrop-filter: blur(16px); border-bottom: 1px solid var(--borde-glow); position: sticky; top: 0; z-index: 100; }
+        .logo { font-size: 1.4rem; font-weight: 800; background: linear-gradient(90deg, var(--morado-neon), var(--rosa-cosmico), var(--azul-electrico)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; display: flex; align-items: center; gap: 6px; }
+        .wallet-badge { display: flex; align-items: center; gap: 6px; background: rgba(255, 215, 0, 0.15); border: 1px solid var(--borde-dorado); padding: 5px 12px; border-radius: 20px; font-size: 0.82rem; font-weight: 700; color: var(--dorado); cursor: pointer; }
+
+        /* Tableros & Sub-redes (Reddit / Twitter Trends) */
+        .trends-bar { display: flex; gap: 8px; overflow-x: auto; padding: 6px 0 12px 0; scrollbar-width: none; }
+        .trends-bar::-webkit-scrollbar { display: none; }
+        .trend-chip { background: rgba(255,255,255,0.05); border: 1px solid var(--borde-glow); padding: 6px 12px; border-radius: 16px; font-size: 0.75rem; white-space: nowrap; cursor: pointer; }
+        .trend-chip.active { background: var(--morado-neon); border-color: var(--morado-neon); font-weight: bold; }
+
+        /* Feed Post Multi-red */
+        .post-card { background: var(--bg-card); border-radius: var(--radius-lg); border: 1px solid var(--borde-glow); margin-bottom: 16px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .post-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; }
+        .post-avatar { width: 42px; height: 42px; border-radius: 50%; background: linear-gradient(135deg, var(--morado-neon), var(--rosa-cosmico)); display: flex; align-items: center; justify-content: center; font-weight: bold; }
+        
+        /* Reddit Voting */
+        .reddit-votes { display: flex; align-items: center; gap: 6px; background: rgba(255,255,255,0.04); padding: 4px 10px; border-radius: 20px; }
+        .vote-btn { background: none; border: none; cursor: pointer; color: var(--texto-secundario); display: flex; align-items: center; }
+        .vote-btn:hover { color: var(--morado-neon); }
+
+        .post-actions { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; border-top: 1px solid rgba(255,255,255,0.05); }
+        .action-btn { display: flex; align-items: center; gap: 6px; background: none; border: none; color: var(--texto-secundario); cursor: pointer; font-size: 0.85rem; font-weight: 600; }
+        
+        /* Live Streaming & PK Matches */
+        .live-stage { position: relative; width: 100%; height: 360px; background: #000; border-radius: var(--radius-lg); overflow: hidden; border: 1px solid var(--borde-glow); }
+        .pk-bar-container { position: absolute; top: 12px; left: 10px; right: 10px; z-index: 20; }
+        .pk-progress { height: 10px; width: 100%; background: var(--azul-electrico); border-radius: 10px; overflow: hidden; display: flex; }
+        .pk-red { height: 100%; background: var(--rojo-vivo); width: 50%; transition: width 0.3s; }
+        .pk-scores { display: flex; justify-content: space-between; font-size: 0.75rem; font-weight: 800; margin-bottom: 4px; }
+
+        /* Chest & Tap Tap Overlay */
+        .chest-box { position: absolute; top: 50px; left: 12px; background: rgba(0,0,0,0.7); border: 1px solid var(--dorado); padding: 6px 10px; border-radius: 12px; display: flex; align-items: center; gap: 6px; z-index: 20; cursor: pointer; }
+        .tap-tap-area { position: absolute; inset: 0; z-index: 10; }
+
+        /* Floating Corazones Tap-Tap */
+        .floating-heart { position: absolute; font-size: 1.8rem; pointer-events: none; animation: floatUp 1.2s ease-out forwards; z-index: 25; }
+        @keyframes floatUp {
+            0% { opacity: 1; transform: translateY(0) scale(0.8); }
+            100% { opacity: 0; transform: translateY(-120px) scale(1.4); }
+        }
+
+        /* Modal Galería de Regalos Bigo/TikTok Style */
+        .gift-sheet { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(18, 12, 32, 0.98); backdrop-filter: blur(20px); border-top: 1px solid var(--borde-glow); border-radius: 24px 24px 0 0; padding: 16px; z-index: 4000; display: none; max-width: 480px; margin: 0 auto; }
+        .gift-sheet.active { display: block; animation: slideUp 0.3s ease-out; }
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+
+        .gift-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 12px 0; }
+        .gift-card-item { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 10px 4px; text-align: center; cursor: pointer; transition: all 0.2s; }
+        .gift-card-item:hover, .gift-card-item.selected { border-color: var(--dorado); background: rgba(255, 215, 0, 0.1); }
+        .gift-card-item span { font-size: 1.8rem; display: block; }
+        .gift-card-item p { font-size: 0.7rem; color: var(--texto-secundario); margin-top: 2px; }
+
+        /* Nav Bottom */
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 68px; background: rgba(10, 7, 18, 0.95); backdrop-filter: blur(16px); border-top: 1px solid var(--borde-glow); display: flex; justify-content: space-around; align-items: center; z-index: 1000; max-width: 480px; margin: 0 auto; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 3px; font-size: 0.7rem; color: var(--texto-secundario); cursor: pointer; border: none; background: none; flex: 1; }
+        .nav-item.active { color: var(--morado-neon); }
+        .nav-add-btn { background: linear-gradient(135deg, var(--morado-neon), var(--rosa-cosmico)); border-radius: 50%; width: 46px; height: 46px; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 18px rgba(168, 85, 247, 0.6); transform: translateY(-8px); border: 2px solid var(--bg-principal); }
+
+        .card { background: var(--bg-card); backdrop-filter: blur(12px); border: 1px solid var(--borde-glow); border-radius: var(--radius-lg); padding: 18px; margin-bottom: 16px; }
+        .page { display: none; }
+        .page.active { display: block; animation: fadeIn 0.3s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+        input, textarea { width: 100%; background: rgba(7, 4, 13, 0.7); border: 1px solid var(--borde-glow); border-radius: var(--radius-md); padding: 12px; margin-bottom: 10px; font-size: 0.9rem; outline: none; }
+        .btn { border: none; border-radius: var(--radius-md); padding: 12px; font-weight: 700; cursor: pointer; font-size: 0.9rem; width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .btn-primario { background: linear-gradient(90deg, var(--morado-neon), var(--rosa-cosmico)); box-shadow: 0 4px 15px rgba(168, 85, 247, 0.4); }
+
+        /* Toast Container */
+        #toastContainer { position: fixed; top: 15px; left: 50%; transform: translateX(-50%); z-index: 6000; width: 90%; max-width: 400px; pointer-events: none; }
+        .toast-msg { background: rgba(20, 14, 34, 0.95); border: 1px solid var(--morado-neon); box-shadow: 0 10px 25px rgba(0,0,0,0.5); backdrop-filter: blur(10px); padding: 12px 16px; border-radius: 14px; font-size: 0.85rem; font-weight: 600; display: flex; align-items: center; gap: 10px; margin-bottom: 8px; animation: slideDown 0.3s ease; }
+    </style>
+</head>
+<body>
+
+    <div id="toastContainer"></div>
+
+    <!-- HEADER TOP BAR -->
+    <div class="top-bar container">
+        <div class="logo"><i data-lucide="sparkles"></i> AvatarVerse</div>
+        <div class="wallet-badge" onclick="abrirModalRecarga()">
+            <i data-lucide="coins"></i> <span id="userCoins">1,250</span> Coins
+        </div>
+    </div>
+
+    <div class="container">
+
+        <!-- TENDENCIAS MULTI-RED -->
+        <div class="trends-bar">
+            <div class="trend-chip active"><i data-lucide="flame"></i> Para ti</div>
+            <div class="trend-chip">🔥 #BatallasLive</div>
+            <div class="trend-chip">🎨 #IAArtGallery</div>
+            <div class="trend-chip">🧵 #ThreadsDebate</div>
+            <div class="trend-chip">🎮 #GamingDiscord</div>
+        </div>
+
+        <!-- PAGE 1: INICIO MULTI-RED (TikTok, Reddit, Twitter) -->
+        <div id="page-inicio" class="page active">
+            <div id="feedPosts">
+                <p style="text-align: center; color: var(--texto-secundario); padding: 20px;">Cargando feed interconectado...</p>
+            </div>
+        </div>
+
+        <!-- PAGE 2: LIVE STREAMING & BATALLAS PK -->
+        <div id="page-envivo" class="page">
+            <div class="card" style="padding:10px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                    <span style="color:var(--rojo-vivo); font-weight:bold; font-size:0.85rem; display:flex; align-items:center; gap:4px;">
+                        <i data-lucide="radio" style="width:16px;"></i> BATTLE LIVE PK
+                    </span>
+                    <span style="font-size:0.75rem; color:var(--texto-secundario);">👥 1,420 Espectadores</span>
+                </div>
+
+                <div class="live-stage" id="liveStageArea">
+                    <!-- Barra de progreso Batalla PK -->
+                    <div class="pk-bar-container">
+                        <div class="pk-scores">
+                            <span style="color:var(--rojo-vivo)" id="scoreRed">5,400 pts</span>
+                            <span style="color:var(--azul-electrico)" id="scoreBlue">3,200 pts</span>
+                        </div>
+                        <div class="pk-progress">
+                            <div class="pk-red" id="pkRedBar"></div>
+                        </div>
+                    </div>
+
+                    <!-- Cofre de Tesoro / Regalo -->
+                    <div class="chest-box" onclick="reclamarCofre()">
+                        <span style="font-size:1.3rem;">🧰</span>
+                        <div>
+                            <p style="font-size:0.65rem; color:var(--dorado); font-weight:bold;">COFRE SORPRESA</p>
+                            <p id="chestTimer" style="font-size:0.75rem; font-weight:bold;">00:15</p>
+                        </div>
+                    </div>
+
+                    <!-- Área para Tap-Tap Tap Heart -->
+                    <div class="tap-tap-area" onclick="efectoTapHeart(event)"></div>
+
+                    <div id="local-video-track" style="width:100%; height:100%;"></div>
+                </div>
+
+                <div style="display:flex; gap:8px; margin-top:12px;">
+                    <button class="btn btn-primario" onclick="abrirPanelRegalos()"><i data-lucide="gift"></i> Regalar</button>
+                    <button class="btn" style="background:var(--verde-exito)" onclick="iniciarStream()"><i data-lucide="video"></i> Transmitir</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- PAGE 3: PUBLICAR CONTENIDO -->
+        <div id="page-publicar" class="page">
+            <div class="card">
+                <h2><i data-lucide="plus-circle" style="color:var(--morado-neon);"></i> Publicar en AvatarVerse</h2>
+                <input type="text" id="postTitulo" placeholder="Título o Tópico (#Hashtag)">
+                <textarea id="postTexto" rows="4" placeholder="¿Qué quieres compartir con la comunidad? (Texto estilo X, Hilos, Galería)"></textarea>
+                <button class="btn btn-primario" onclick="guardarPost()"><i data-lucide="send"></i> Publicar Ahora</button>
+            </div>
+        </div>
+
+        <!-- PAGE 4: ESTUDIO IA -->
+        <div id="page-ia" class="page">
+            <div class="card">
+                <h2><i data-lucide="wand-2" style="color:var(--morado-neon);"></i> Generador IA Avanzado</h2>
+                <textarea id="aiPrompt" rows="3" placeholder="Describe tu obra artística de IA..."></textarea>
+                <button class="btn btn-primario" onclick="generarIA()"><i data-lucide="sparkles"></i> Crear Obra</button>
+                <div id="aiOutput" style="margin-top:12px; text-align:center;"></div>
+            </div>
+        </div>
+
+        <!-- PAGE 5: SALAS DE CHAT (Estilo Discord DMs) -->
+        <div id="page-mensajes" class="page">
+            <div class="card">
+                <h2><i data-lucide="message-square" style="color:var(--azul-electrico);"></i> Comunidad Discord DMs</h2>
+                <div id="chatBox" style="height:260px; overflow-y:auto; background:rgba(0,0,0,0.3); border-radius:12px; padding:10px; margin-bottom:10px; border:1px solid var(--borde-glow);">
+                    <p style="font-size:0.8rem; color:var(--texto-secundario); text-align:center;">Bienvenido a la comunidad en vivo...</p>
+                </div>
+                <div style="display:flex; gap:6px;">
+                    <input type="text" id="dmInput" placeholder="Mensaje..." style="margin-bottom:0;">
+                    <button class="btn btn-primario" style="width:auto;" onclick="enviarMensajeDirecto()"><i data-lucide="send"></i></button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- PANEL DE REGALOS ESTILO BIGO LIVE / TIKTOK -->
+    <div id="giftSheet" class="gift-sheet">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <h3> Tienda de Regalos Live</h3>
+            <button class="wallet-badge" onclick="abrirModalRecarga()">⚡ Recargar Coins</button>
+        </div>
+
+        <div class="gift-grid">
+            <div class="gift-card-item" onclick="enviarRegaloTienda('Rosa', 1, '🌹')">
+                <span>🌹</span>
+                <p><strong>1 Coin</strong></p>
+            </div>
+            <div class="gift-card-item" onclick="enviarRegaloTienda('Fuego', 5, '🔥')">
+                <span>🔥</span>
+                <p><strong>5 Coins</strong></p>
+            </div>
+            <div class="gift-card-item" onclick="enviarRegaloTienda('Gemas', 20, '💎')">
+                <span>💎</span>
+                <p><strong>20 Coins</strong></p>
+            </div>
+            <div class="gift-card-item" onclick="enviarRegaloTienda('Cohete', 100, '🚀')">
+                <span>🚀</span>
+                <p><strong>100 Coins</strong></p>
+            </div>
+            <div class="gift-card-item" onclick="enviarRegaloTienda('Corona VIP', 500, '👑')">
+                <span>👑</span>
+                <p><strong>500 Coins</strong></p>
+            </div>
+            <div class="gift-card-item" onclick="enviarRegaloTienda('Castillo 3D', 1000, '🏰')">
+                <span>🏰</span>
+                <p><strong>1000 Coins</strong></p>
+            </div>
+        </div>
+
+        <button class="btn" style="background:rgba(255,255,255,0.1); margin-top:8px;" onclick="cerrarPanelRegalos()">Cerrar</button>
+    </div>
+
+    <!-- NAV INFERIOR -->
+    <nav class="bottom-nav">
+        <button class="nav-item active" onclick="mostrarPagina('inicio', this)"><i data-lucide="home"></i> Inicio</button>
+        <button class="nav-item" onclick="mostrarPagina('envivo', this)"><i data-lucide="tv"></i> Live PK</button>
+        <button class="nav-item nav-add-btn" onclick="mostrarPagina('publicar', this)"><i data-lucide="plus" style="color:white;"></i></button>
+        <button class="nav-item" onclick="mostrarPagina('ia', this)"><i data-lucide="wand-2"></i> IA</button>
+        <button class="nav-item" onclick="mostrarPagina('mensajes', this)"><i data-lucide="message-square"></i> Chats</button>
+    </nav>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
+        import { getFirestore, collection, addDoc, updateDoc, doc, onSnapshot, serverTimestamp, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyD_xIh3iuQWTuq-r8Sz5p5W_78QwwL_Bj4",
+            authDomain: "avatarverse-59fef.firebaseapp.com",
+            projectId: "avatarverse-59fef",
+            storageBucket: "avatarverse-59fef.firebasestorage.app",
+            messagingSenderId: "174175140340",
+            appId: "1:174175140340:web:34c2709699980d999c21a1"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        let saldoCoins = parseInt(localStorage.getItem('user_coins') || '1250');
+        let redScore = 5400;
+        let blueScore = 3200;
+
+        window.mostrarToast = function(msg) {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = 'toast-msg';
+            toast.innerHTML = `<i data-lucide="bell" style="width:18px; color:var(--morado-neon);"></i> ${msg}`;
+            container.appendChild(toast);
+            lucide.createIcons();
+            setTimeout(() => toast.remove(), 3200);
+        };
+
+        window.actualizarCoinsVisual = function() {
+            document.getElementById('userCoins').innerText = saldoCoins.toLocaleString();
+            localStorage.setItem('user_coins', saldoCoins);
+        };
+
+        window.abrirModalRecarga = function() {
+            saldoCoins += 500;
+            actualizarCoinsVisual();
+            mostrarToast('💳 Recarga rápida de +500 AvatarCoins completada');
+        };
+
+        /* Mecánica Tap Tap (Corazones TikTok) */
+        window.efectoTapHeart = function(e) {
+            const area = document.getElementById('liveStageArea');
+            const rect = area.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            const heart = document.createElement('div');
+            heart.className = 'floating-heart';
+            heart.innerText = ['❤️', '💖', '🔥', '⭐'][Math.floor(Math.random()*4)];
+            heart.style.left = `${x}px`;
+            heart.style.top = `${y}px`;
+
+            area.appendChild(heart);
+            setTimeout(() => heart.remove(), 1200);
+
+            /* Sumar a marcador PK */
+            redScore += 10;
+            actualizarPKBar();
+        };
+
+        function actualizarPKBar() {
+            const total = redScore + blueScore;
+            const porcentajeRed = (redScore / total) * 100;
+            document.getElementById('pkRedBar').style.width = `${porcentajeRed}%`;
+            document.getElementById('scoreRed').innerText = `${redScore.toLocaleString()} pts`;
+            document.getElementById('scoreBlue').innerText = `${blueScore.toLocaleString()} pts`;
+        }
+
+        /* Regalos */
+        window.abrirPanelRegalos = function() { document.getElementById('giftSheet').classList.add('active'); };
+        window.cerrarPanelRegalos = function() { document.getElementById('giftSheet').classList.remove('active'); };
+
+        window.enviarRegaloTienda = function(nombre, costo, icono) {
+            if(saldoCoins < costo) {
+                return mostrarToast('⚠️ Saldo insuficiente. Haz clic en Recargar.');
+            }
+            saldoCoins -= costo;
+            actualizarCoinsVisual();
+
+            redScore += costo * 10;
+            actualizarPKBar();
+
+            mostrarToast(`🎁 Has enviado ${icono} ${nombre} (-${costo} Coins)`);
+            cerrarPanelRegalos();
+        };
+
+        window.reclamarCofre = function() {
+            saldoCoins += 50;
+            actualizarCoinsVisual();
+            mostrarToast('🧰 ¡Felicidades! Abriste el cofre y ganaste +50 Coins');
+        };
+
+        window.mostrarPagina = function(id, btn) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            const p = document.getElementById('page-' + id);
+            if(p) p.classList.add('active');
+            if(btn) {
+                document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+                btn.classList.add('active');
+            }
+        };
+
+        window.guardarPost = async function() {
+            const titulo = document.getElementById('postTitulo').value;
+            const texto = document.getElementById('postTexto').value;
+            if(!titulo && !texto) return mostrarToast('⚠️ Rellena al menos un campo');
+
+            await addDoc(collection(db, "posts"), {
+                titulo, texto,
+                votes: 1,
+                autor: "Creador VIP",
+                fecha: serverTimestamp()
+            });
+
+            document.getElementById('postTitulo').value = '';
+            document.getElementById('postTexto').value = '';
+            mostrarToast('🚀 Publicado con éxito');
+            mostrarPagina('inicio');
+        };
+
+        window.votarReddit = async function(postId, delta) {
+            mostrarToast('👍 Voto registrado');
+        };
+
+        window.regalarEnPost = function(postId) {
+            if(saldoCoins >= 10) {
+                saldoCoins -= 10;
+                actualizarCoinsVisual();
+                mostrarToast('🎁 Enviaste un regalo de 10 Coins al creador de la publicación');
+            } else {
+                mostrarToast('⚠️ Saldo insuficiente para enviar regalo');
+            }
+        };
+
+        /* Cargar Posts con Votos Reddit & Regalos estilo X/Pinterest */
+        const q = query(collection(db, "posts"), orderBy("fecha", "desc"));
+        onSnapshot(q, (snapshot) => {
+            const feed = document.getElementById('feedPosts');
+            feed.innerHTML = '';
+            snapshot.forEach((docSnap) => {
+                const data = docSnap.data();
+                const id = docSnap.id;
+
+                feed.innerHTML += `
+                    <div class="post-card">
+                        <div class="post-header">
+                            <div style="display:flex; align-items:center; gap:8px;">
+                                <div class="post-avatar">VIP</div>
+                                <div><strong>${data.autor || 'Usuario'}</strong></div>
+                            </div>
+                            <!-- Votos Reddit -->
+                            <div class="reddit-votes">
+                                <button class="vote-btn" onclick="votarReddit('${id}', 1)"><i data-lucide="arrow-big-up" style="width:18px;"></i></button>
+                                <span style="font-size:0.8rem; font-weight:bold;">${data.votes || 1}</span>
+                                <button class="vote-btn" onclick="votarReddit('${id}', -1)"><i data-lucide="arrow-big-down" style="width:18px;"></i></button>
+                            </div>
+                        </div>
+                        <div style="padding:0 14px 10px 14px;">
+                            <h3>${data.titulo || ''}</h3>
+                            <p style="color:var(--texto-secundario); font-size:0.88rem; margin-top:4px;">${data.texto || ''}</p>
+                        </div>
+                        <div class="post-actions">
+                            <button class="action-btn" onclick="regalarEnPost('${id}')" style="color:var(--dorado)">
+                                <i data-lucide="gift"></i> Regalar Coins
+                            </button>
+                            <button class="action-btn"><i data-lucide="message-square"></i> Comentar</button>
+                            <button class="action-btn"><i data-lucide="repeat"></i> Re-post</button>
+                        </div>
+                    </div>
+                `;
+            });
+            lucide.createIcons();
+        });
+
+        window.generarIA = function() {
+            const prompt = document.getElementById('aiPrompt').value;
+            if(!prompt) return mostrarToast('⚠️ Escribe una idea');
+            const output = document.getElementById('aiOutput');
+            output.innerHTML = `<p style="color:var(--morado-neon);">Generando...</p>`;
+            setTimeout(() => {
+                const url = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?width=800&height=800&nologo=true`;
+                output.innerHTML = `<img src="${url}" style="width:100%; border-radius:12px;">`;
+                mostrarToast('✨ Imagen generada con IA');
+            }, 1200);
+        };
+
+        window.enviarMensajeDirecto = async function() {
+            const input = document.getElementById('dmInput');
+            const msg = input.value.trim();
+            if(!msg) return;
+
+            await addDoc(collection(db, "direct_messages"), {
+                texto: msg,
+                autor: "Tú",
+                fecha: serverTimestamp()
+            });
+            input.value = '';
+        };
+
+        const qDM = query(collection(db, "direct_messages"), orderBy("fecha", "asc"), limit(25));
+        onSnapshot(qDM, (snap) => {
+            const box = document.getElementById('chatBox');
+            box.innerHTML = '';
+            snap.forEach(d => {
+                const m = d.data();
+                box.innerHTML += `<div style="margin-bottom:6px; font-size:0.85rem;"><strong style="color:var(--morado-neon);">${m.autor}:</strong> ${m.texto}</div>`;
+            });
+            box.scrollTop = box.scrollHeight;
+        });
+
+        actualizarCoinsVisual();
+        lucide.createIcons();
+    </script>
+</body>
+</html>
