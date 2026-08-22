@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AvatarVerse — Tu Mundo de IA & Red Social</title>
+    <meta name="theme-color" content="#120c24">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://download.agora.io/sdk/release/AgoraRTC_N-4.20.0.js"></script>
+    <style>
+        :root {
+            --bg-principal: #0a0712;
+            --bg-card: rgba(23, 17, 38, 0.85);
+            --morado-neon: #a855f7;
+            --rosa-cosmico: #ec4899;
+            --azul-electrico: #06b6d4;
+            --dorado: #ffd700;
+            --texto-principal: #f8fafc;
+            --texto-secundario: #94a3b8;
+            --borde-glow: rgba(168, 85, 247, 0.3);
+            --borde-dorado: rgba(255, 215, 0, 0.5);
+            --rojo-vivo: #ef4444;
+            --verde-exito: #22c55e;
+            --radius-lg: 20px;
+            --radius-md: 12px;
+        }
+
+        * { margin:0; padding:0; box-sizing:border-box; font-family:'Plus Jakarta Sans', sans-serif; color:var(--texto-principal); -webkit-tap-highlight-color: transparent; }
+        body { background: var(--bg-principal); background-image: radial-gradient(circle at 50% 0%, #20113d 0%, var(--bg-principal) 70%); min-height: 100vh; padding-bottom: 90px; }
+        .container { max-width: 480px; margin: 0 auto; padding: 12px; }
+
+        .top-bar { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; background: rgba(10, 7, 18, 0.8); backdrop-filter: blur(12px); border-bottom: 1px solid var(--borde-glow); position: sticky; top: 0; z-index: 100; }
+        .logo { font-size: 1.5rem; font-weight: 800; background: linear-gradient(90deg, var(--morado-neon), var(--rosa-cosmico)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; display: flex; align-items: center; gap: 8px; }
+        .user-badge { display: flex; align-items: center; gap: 6px; background: rgba(255, 215, 0, 0.15); border: 1px solid var(--borde-dorado); padding: 4px 10px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; color: var(--dorado); cursor: pointer; }
+
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 68px; background: rgba(15, 10, 26, 0.95); backdrop-filter: blur(16px); border-top: 1px solid var(--borde-glow); display: flex; justify-content: space-around; align-items: center; z-index: 1000; max-width: 480px; margin: 0 auto; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 3px; font-size: 0.7rem; color: var(--texto-secundario); cursor: pointer; border: none; background: none; flex: 1; }
+        .nav-item i { width: 22px; height: 22px; stroke-width: 2.2; }
+        .nav-item.active { color: var(--morado-neon); }
+        .nav-add-btn { background: linear-gradient(135deg, var(--morado-neon), var(--rosa-cosmico)); border-radius: 50%; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 15px rgba(168, 85, 247, 0.5); transform: translateY(-8px); border: 2px solid var(--bg-principal); }
+
+        .card { background: var(--bg-card); backdrop-filter: blur(10px); border: 1px solid var(--borde-glow); border-radius: var(--radius-lg); padding: 18px; margin-bottom: 16px; box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37); }
+        .card h2 { font-size: 1.25rem; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+        .page { display: none; }
+        .page.active { display: block; animation: fadeIn 0.3s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+        input, textarea, select { width: 100%; background: rgba(10, 7, 18, 0.6); border: 1px solid var(--borde-glow); border-radius: var(--radius-md); padding: 12px 14px; margin-bottom: 10px; font-size: 0.95rem; outline: none; }
+        input:focus, textarea:focus, select:focus { border-color: var(--morado-neon); }
+        
+        .btn { border: none; border-radius: var(--radius-md); padding: 12px; font-weight: 700; cursor: pointer; font-size: 0.95rem; width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .btn-primario { background: linear-gradient(90deg, var(--morado-neon), var(--rosa-cosmico)); box-shadow: 0 4px 15px rgba(168, 85, 247, 0.4); }
+
+        .post-card { background: var(--bg-card); border-radius: var(--radius-lg); border: 1px solid var(--borde-glow); margin-bottom: 20px; overflow: hidden; }
+        .post-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; }
+        .post-avatar { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, var(--morado-neon), var(--rosa-cosmico)); display: flex; align-items: center; justify-content: center; font-weight: bold; }
+        
+        .live-video-container { width: 100%; height: 320px; background: #000; border-radius: var(--radius-lg); overflow: hidden; position: relative; }
+        #local-video-track { width: 100%; height: 100%; }
+
+        .ai-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+        .ai-card { background: rgba(255,255,255,0.03); border: 1px solid var(--borde-glow); border-radius: var(--radius-md); padding: 14px; text-align: center; cursor: pointer; }
+        .ai-card.active { border-color: var(--morado-neon); background: rgba(168, 85, 247, 0.15); }
+    </style>
+</head>
+<body>
+
+    <div class="top-bar container">
+        <div class="logo"><i data-lucide="sparkles"></i> AvatarVerse</div>
+        <div id="userBadge" class="user-badge" onclick="mostrarPagina('admin')">
+            <i data-lucide="crown"></i> <span id="badgeRole">DUEÑO VIP</span>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- FEED EN VIVO -->
+        <div id="page-inicio" class="page active">
+            <div id="feedPosts">
+                <p style="text-align: center; color: var(--texto-secundario); padding: 20px;">Cargando publicaciones en tiempo real...</p>
+            </div>
+        </div>
+
+        <!-- GENERADOR DE IA -->
+        <div id="page-ia" class="page">
+            <div class="card">
+                <h2><i data-lucide="wand-2" style="color:var(--morado-neon);"></i> Estudio Creativo IA</h2>
+                <div class="ai-grid">
+                    <div class="ai-card active" id="modeImage" onclick="setAIMode('image')">
+                        <i data-lucide="image"></i><p style="font-size:0.85rem; font-weight:bold;">Imagen IA</p>
+                    </div>
+                    <div class="ai-card" id="modeVideo" onclick="setAIMode('video')">
+                        <i data-lucide="film"></i><p style="font-size:0.85rem; font-weight:bold;">Video Motion IA</p>
+                    </div>
+                </div>
+
+                <textarea id="aiPrompt" rows="3" placeholder="Describe tu idea... (Ej: Avatar cyberpunk con luces de neón)"></textarea>
+                <button class="btn btn-primario" onclick="generarIA()"><i data-lucide="sparkles"></i> Generar con IA</button>
+                <div id="aiOutput" style="margin-top: 15px; text-align: center;"></div>
+            </div>
+        </div>
+
+        <!-- TRANSMISIÓN EN VIVO -->
+        <div id="page-envivo" class="page">
+            <div class="card">
+                <h2><i data-lucide="tv" style="color:var(--rojo-vivo);"></i> Sala de Stream Live</h2>
+                <div class="live-video-container">
+                    <div id="local-video-track"></div>
+                </div>
+                <div style="display: flex; gap: 10px; margin-top: 12px;">
+                    <button class="btn btn-primario" style="background:var(--verde-exito)" onclick="iniciarStream()"><i data-lucide="video"></i> Iniciar Live</button>
+                    <button class="btn" style="background:var(--rojo-vivo)" onclick="detenerStream()"><i data-lucide="off"></i> Cortar</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- AUTENTICACIÓN -->
+        <div id="page-cuenta" class="page">
+            <div class="card">
+                <h2><i data-lucide="lock"></i> Acceso / Registro</h2>
+                <input type="email" id="authEmail" placeholder="Correo electrónico">
+                <input type="password" id="authPass" placeholder="Contraseña">
+                <button class="btn btn-primario" onclick="iniciarSesion()"><i data-lucide="key"></i> Iniciar Sesión</button>
+                <button class="btn" style="background:var(--azul-electrico); margin-top:8px" onclick="registrarse()"><i data-lucide="user-plus"></i> Crear Cuenta</button>
+                <p id="authMsg" style="margin-top:10px; font-size:0.85rem; text-align:center;"></p>
+            </div>
+        </div>
+
+        <!-- CREAR POST -->
+        <div id="page-publicar" class="page">
+            <div class="card">
+                <h2><i data-lucide="plus-square"></i> Nueva Publicación</h2>
+                <input type="text" id="postTitulo" placeholder="Título">
+                <textarea id="postTexto" rows="3" placeholder="¿Qué quieres compartir?"></textarea>
+                <button class="btn btn-primario" onclick="guardarPost()"><i data-lucide="upload-cloud"></i> Publicar en Vivo</button>
+            </div>
+        </div>
+
+        <!-- PANEL DUEÑO VIP -->
+        <div id="page-admin" class="page">
+            <div class="card" style="border-color: var(--dorado);">
+                <h2 style="color: var(--dorado);"><i data-lucide="shield-check"></i> Panel Dueno VIP</h2>
+                <p style="font-size: 0.85rem; color: var(--texto-secundario); margin-bottom: 12px;">Base de datos vinculada a: <strong>avatarverse-59fef</strong></p>
+                <button class="btn" style="background:var(--dorado); color:#000; font-weight:bold;" onclick="mostrarPagina('cuenta')">🔐 Administrar Cuenta</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- NAVEGACIÓN INFERIOR -->
+    <nav class="bottom-nav">
+        <button class="nav-item active" onclick="mostrarPagina('inicio', this)"><i data-lucide="home"></i> Inicio</button>
+        <button class="nav-item" onclick="mostrarPagina('envivo', this)"><i data-lucide="tv"></i> Live</button>
+        <button class="nav-item nav-add-btn" onclick="mostrarPagina('publicar', this)"><i data-lucide="plus" style="color:white;"></i></button>
+        <button class="nav-item" onclick="mostrarPagina('ia', this)"><i data-lucide="wand-2"></i> IA Studio</button>
+        <button class="nav-item" onclick="mostrarPagina('cuenta', this)"><i data-lucide="user"></i> Cuenta</button>
+    </nav>
+
+    <!-- MOTOR CON TUS CREDENCIALES EXACTAS -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
+        import { getFirestore, collection, addDoc, onSnapshot, serverTimestamp, query, orderBy } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyD_xIh3iuQWTuq-r8Sz5p5W_78QwwL_Bj4",
+            authDomain: "avatarverse-59fef.firebaseapp.com",
+            projectId: "avatarverse-59fef",
+            storageBucket: "avatarverse-59fef.firebasestorage.app",
+            messagingSenderId: "174175140340",
+            appId: "1:174175140340:web:34c2709699980d999c21a1",
+            measurementId: "G-JBNN8YSCRR"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        let usuarioActivo = null;
+        let aiMode = 'image';
+        let localTracks = { videoTrack: null, audioTrack: null };
+
+        window.mostrarPagina = function(id, btn) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            const p = document.getElementById('page-' + id);
+            if(p) p.classList.add('active');
+            if(btn) {
+                document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+                btn.classList.add('active');
+            }
+        };
+
+        window.setAIMode = function(m) {
+            aiMode = m;
+            document.getElementById('modeImage').classList.toggle('active', m === 'image');
+            document.getElementById('modeVideo').classList.toggle('active', m === 'video');
+        };
+
+        window.generarIA = function() {
+            const prompt = document.getElementById('aiPrompt').value.trim();
+            const output = document.getElementById('aiOutput');
+            if(!prompt) return alert('Escribe un prompt');
+
+            output.innerHTML = `<p style="color:var(--morado-neon);">Generando contenido IA...</p>`;
+            const seed = Math.floor(Math.random() * 99999);
+            const url = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?width=800&height=800&seed=${seed}&nologo=true`;
+
+            setTimeout(() => {
+                output.innerHTML = `<img src="${url}" style="width:100%; border-radius:12px;" alt="IA Result">`;
+            }, 1200);
+        };
+
+        window.iniciarSesion = async function() {
+            const email = document.getElementById('authEmail').value;
+            const pass = document.getElementById('authPass').value;
+            try {
+                await signInWithEmailAndPassword(auth, email, pass);
+                document.getElementById('authMsg').textContent = '✅ Sesión iniciada';
+            } catch(e) { document.getElementById('authMsg').textContent = '❌ ' + e.message; }
+        };
+
+        window.registrarse = async function() {
+            const email = document.getElementById('authEmail').value;
+            const pass = document.getElementById('authPass').value;
+            try {
+                await createUserWithEmailAndPassword(auth, email, pass);
+                document.getElementById('authMsg').textContent = '✅ Cuenta registrada';
+            } catch(e) { document.getElementById('authMsg').textContent = '❌ ' + e.message; }
+        };
+
+        window.guardarPost = async function() {
+            const titulo = document.getElementById('postTitulo').value;
+            const texto = document.getElementById('postTexto').value;
+            if(!titulo && !texto) return alert('Completa los campos');
+
+            await addDoc(collection(db, "posts"), {
+                titulo, texto,
+                autor: usuarioActivo ? usuarioActivo.email : "Anónimo",
+                fecha: serverTimestamp()
+            });
+
+            document.getElementById('postTitulo').value = '';
+            document.getElementById('postTexto').value = '';
+            mostrarPagina('inicio');
+        };
+
+        const q = query(collection(db, "posts"), orderBy("fecha", "desc"));
+        onSnapshot(q, (snapshot) => {
+            const feed = document.getElementById('feedPosts');
+            feed.innerHTML = '';
+            snapshot.forEach((doc) => {
+                const data = doc.data();
+                feed.innerHTML += `
+                    <div class="post-card">
+                        <div class="post-header">
+                            <div style="display:flex; align-items:center; gap:8px;">
+                                <div class="post-avatar">${(data.autor || 'U')[0].toUpperCase()}</div>
+                                <div><strong>${data.autor || 'Usuario'}</strong></div>
+                            </div>
+                        </div>
+                        <div style="padding:14px;">
+                            <h3>${data.titulo || ''}</h3>
+                            <p style="color:var(--texto-secundario); font-size:0.9rem; margin-top:6px;">${data.texto || ''}</p>
+                        </div>
+                    </div>
+                `;
+            });
+        });
+
+        window.iniciarStream = async function() {
+            try {
+                localTracks.audioTrack = await AgoraRTC.createMicrophoneAudioTrack();
+                localTracks.videoTrack = await AgoraRTC.createCameraVideoTrack();
+                localTracks.videoTrack.play("local-video-track");
+            } catch(e) { alert("Error al acceder a la cámara: " + e.message); }
+        };
+
+        window.detenerStream = function() {
+            if(localTracks.videoTrack) localTracks.videoTrack.close();
+            if(localTracks.audioTrack) localTracks.audioTrack.close();
+        };
+
+        onAuthStateChanged(auth, (user) => { usuarioActivo = user; });
+        lucide.createIcons();
+    </script>
+</body>
+</html>
