@@ -13,6 +13,7 @@
       --text-main: #f3f4f6;
       --text-muted: #9ca3af;
       --input-bg: #1f2937;
+      --border-color: #374151;
     }
     body {
       background-color: var(--bg-color);
@@ -35,12 +36,13 @@
     .header h1 { font-size: 1.5rem; margin: 0; }
     .card {
       background: var(--card-bg);
-      border: 1px solid #1f2937;
+      border: 1px solid var(--border-color);
       border-radius: 16px;
       padding: 20px;
       width: 100%;
       max-width: 500px;
       box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+      margin-bottom: 20px;
     }
     .label-row {
       display: flex;
@@ -61,13 +63,14 @@
     input, textarea {
       width: 100%;
       background: var(--input-bg);
-      border: 1px solid #374151;
+      border: 1px solid var(--border-color);
       border-radius: 8px;
       padding: 10px;
       color: white;
       box-sizing: border-box;
       font-family: inherit;
     }
+    textarea.error { border-color: #ef4444; }
     .file-upload-wrapper {
       position: relative;
       overflow: hidden;
@@ -84,8 +87,8 @@
     }
     .btn-file {
       display: block;
-      background: #1f2937;
-      border: 1px solid #374151;
+      background: var(--input-bg);
+      border: 1px solid var(--border-color);
       color: #e5e7eb;
       padding: 10px 16px;
       border-radius: 8px;
@@ -101,15 +104,15 @@
       margin-top: 6px;
       word-break: break-all;
     }
-    .btn-group { display: flex; gap: 8px; margin-top: 6px; }
+    .btn-group { display: flex; gap: 6px; margin-top: 6px; flex-wrap: wrap; }
     .btn-style {
-      background: #1f2937;
-      border: 1px solid #374151;
+      background: var(--input-bg);
+      border: 1px solid var(--border-color);
       color: #e5e7eb;
-      padding: 8px 12px;
+      padding: 6px 10px;
       border-radius: 20px;
       cursor: pointer;
-      font-size: 0.8rem;
+      font-size: 0.75rem;
       transition: all 0.2s ease;
     }
     .btn-style:hover { background: var(--accent-color); border-color: var(--accent-color); }
@@ -133,7 +136,6 @@
     .btn-submit:active { transform: scale(0.98); }
     .btn-submit:disabled { opacity: 0.7; cursor: not-allowed; }
     
-    /* Animación del Spinner de Carga */
     .spinner {
       width: 18px;
       height: 18px;
@@ -144,6 +146,24 @@
       display: none;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Estilos para la Galería de Historial */
+    .history-card {
+      background: #1f2937;
+      border-left: 4px solid var(--accent-color);
+      padding: 10px 14px;
+      border-radius: 6px;
+      margin-top: 10px;
+      font-size: 0.85rem;
+    }
+    .history-header {
+      display: flex;
+      justify-content: space-between;
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      margin-bottom: 4px;
+    }
+    .history-prompt { color: #f3f4f6; font-weight: 500; }
 
     #toast {
       visibility: hidden;
@@ -168,7 +188,7 @@
 
   <div class="header">
     <h1>AvatarVerse</h1>
-    <span style="color:#10b981; font-size:0.8rem;">● Studio v2.2</span>
+    <span style="color:#10b981; font-size:0.8rem;">● Studio v3.0 Pro</span>
   </div>
 
   <div class="card">
@@ -187,18 +207,25 @@
     <label>ESCRIBE TU PROMPT AQUÍ...</label>
     <textarea id="prompt" rows="3" placeholder="Escribe la descripción de la imagen..."></textarea>
 
-    <label>ESTILOS RÁPIDOS</label>
+    <label>ESTILOS ARTÍSTICOS RÁPIDOS</label>
     <div class="btn-group">
       <button class="btn-style" onclick="setPreset('Chiaroscuro')">Chiaroscuro</button>
       <button class="btn-style" onclick="setPreset('Cyberpunk')">Cyberpunk</button>
       <button class="btn-style" onclick="setPreset('Editorial')">Editorial</button>
     </div>
 
+    <label style="margin-top:12px;">FORMATO DE SALIDA (ASPECT RATIO)</label>
+    <div class="btn-group">
+      <button class="btn-style" onclick="setRatio('1:1')">1:1 Cuadrado</button>
+      <button class="btn-style" onclick="setRatio('16:9')">16:9 Paisaje</button>
+      <button class="btn-style" onclick="setRatio('9:16')">9:16 Historia</button>
+    </div>
+
     <div class="label-row">
-      <label>CONFIGURACIÓN JSON (OPCIONAL)</label>
+      <label>CONFIGURACIÓN JSON (VALIDADO)</label>
       <button class="btn-action-text" onclick="copyJson()">Copiar JSON 📋</button>
     </div>
-    <textarea id="jsonConfig" rows="2">{"lighting": "chiaroscuro", "aspectRatio": "16:9"}</textarea>
+    <textarea id="jsonConfig" rows="2" oninput="validateJson()">{"lighting": "chiaroscuro", "aspectRatio": "16:9"}</textarea>
 
     <button id="submitBtn" class="btn-submit" onclick="generateImage()">
       <div id="spinner" class="spinner"></div>
@@ -206,7 +233,13 @@
     </button>
   </div>
 
-  <div id="toast">¡Notificación! 🌟</div>
+  <!-- Tarjeta de Historial / Galería Local -->
+  <div class="card" id="historySection" style="display:none;">
+    <h3 style="margin-top:0; font-size:1.1rem; color:var(--accent-color);">Historial del Estudio 🖼️</h3>
+    <div id="historyList"></div>
+  </div>
+
+  <div id="toast">¡Notificación Pro! 🌟</div>
 
   <script>
     window.onload = function() {
@@ -214,6 +247,7 @@
       if(savedUser) {
         document.getElementById('username').value = savedUser;
       }
+      loadHistory();
     }
 
     function saveUsername() {
@@ -238,15 +272,39 @@
       
       if(style === 'Chiaroscuro') {
         promptInput.value = "Chiaroscuro portrait, deep contrast shadows, cinematic dramatic lighting";
-        jsonInput.value = '{"lighting": "chiaroscuro", "style": "dramatic"}';
+        jsonInput.value = '{"lighting": "chiaroscuro", "style": "dramatic", "aspectRatio": "16:9"}';
       } else if(style === 'Cyberpunk') {
         promptInput.value = "Cyberpunk aesthetic, neon reflections, futuristic night city backdrop";
-        jsonInput.value = '{"lighting": "neon", "style": "cyberpunk"}';
+        jsonInput.value = '{"lighting": "neon", "style": "cyberpunk", "aspectRatio": "16:9"}';
       } else if(style === 'Editorial') {
         promptInput.value = "High fashion editorial portrait, studio softbox lighting, 8k photo detail";
-        jsonInput.value = '{"lighting": "softbox", "style": "editorial"}';
+        jsonInput.value = '{"lighting": "softbox", "style": "editorial", "aspectRatio": "16:9"}';
       }
+      validateJson();
       showToast("Estilo " + style + " aplicado ✨");
+    }
+
+    function setRatio(ratio) {
+      const jsonInput = document.getElementById('jsonConfig');
+      try {
+        let obj = JSON.parse(jsonInput.value);
+        obj.aspectRatio = ratio;
+        jsonInput.value = JSON.stringify(obj, null, 2);
+        validateJson();
+        showToast("Formato " + ratio + " configurado 📐");
+      } catch (e) {
+        showToast("Ajusta el JSON antes de cambiar el ratio ⚠️");
+      }
+    }
+
+    function validateJson() {
+      const jsonInput = document.getElementById('jsonConfig');
+      try {
+        JSON.parse(jsonInput.value);
+        jsonInput.classList.remove('error');
+      } catch (e) {
+        jsonInput.classList.add('error');
+      }
     }
 
     function copyJson() {
@@ -257,23 +315,72 @@
     }
 
     function generateImage() {
+      const promptText = document.getElementById('prompt').value;
+      const jsonText = document.getElementById('jsonConfig').value;
+
+      try {
+        JSON.parse(jsonText);
+      } catch (e) {
+        showToast("Error: El formato JSON es inválido ❌");
+        return;
+      }
+
+      if(!promptText.trim()) {
+        showToast("Por favor escribe un prompt primero ⚠️");
+        return;
+      }
+
       const btn = document.getElementById('submitBtn');
       const spinner = document.getElementById('spinner');
       const btnText = document.getElementById('btnText');
 
-      // Desactivar botón y mostrar animación de carga
       btn.disabled = true;
       spinner.style.display = 'block';
       btnText.innerText = 'Procesando IA...';
       showToast("¡Generando e inmortalizando tu avatar! 🚀");
 
-      // Simular proceso de IA por 3 segundos
       setTimeout(() => {
         spinner.style.display = 'none';
         btnText.innerText = 'Generar e Inmortalizar';
         btn.disabled = false;
+        
+        // Guardar en el historial local
+        saveToHistory(promptText);
         showToast("¡Avatar generado con éxito! 🎉");
       }, 3000);
+    }
+
+    function saveToHistory(prompt) {
+      let history = JSON.parse(localStorage.getItem('avatarverse_history') || '[]');
+      const dateStr = new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+      
+      history.unshift({ prompt: prompt, date: dateStr });
+      if(history.length > 5) history.pop(); // Mantener solo los últimos 5
+      
+      localStorage.setItem('avatarverse_history', JSON.stringify(history));
+      loadHistory();
+    }
+
+    function loadHistory() {
+      let history = JSON.parse(localStorage.getItem('avatarverse_history') || '[]');
+      const section = document.getElementById('historySection');
+      const list = document.getElementById('historyList');
+      
+      if(history.length > 0) {
+        section.style.display = 'block';
+        list.innerHTML = '';
+        history.forEach(item => {
+          list.innerHTML += `
+            <div class="history-card">
+              <div class="history-header">
+                <span>⭐ Creación Pro</span>
+                <span>${item.date}</span>
+              </div>
+              <div class="history-prompt">"${item.prompt}"</div>
+            </div>
+          `;
+        });
+      }
     }
 
     function showToast(message) {
