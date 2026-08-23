@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AvatarVerse Studio Nexus Galactic v7.0</title>
+  <title>AvatarVerse Studio Nexus v8.0 Multimodelo</title>
   <style>
     :root {
       --bg-color: #05070b;
@@ -201,7 +201,7 @@
 
   <div class="header">
     <h1>AvatarVerse Nexus</h1>
-    <span style="color:#38bdf8; font-size:0.8rem;">● Galactic v7.0</span>
+    <span style="color:#38bdf8; font-size:0.8rem;">● Multimodelo v8.0</span>
   </div>
 
   <div class="card">
@@ -221,6 +221,16 @@
     <label>TU USUARIO / CREATOR NAME <span id="ownerBadge"></span></label>
     <input type="text" id="username" placeholder="Tu usuario..." oninput="checkOwner()">
 
+    <label>SELECCIONA EL MODELO DE EDICIÓN ⚡</label>
+    <select id="advancedModelSelect" style="border: 2px solid var(--accent-color);">
+      <option value="qwen-edit">🟢 Qwen Edit 2511 (Edición por Prompt)</option>
+      <option value="flux-klein">🔵 Flux.2 Klein (Ultra Fotorrealismo)</option>
+      <option value="krea2">🔴 Krea2 [NEW] (Estudio Creativo Avanzado)</option>
+      <option value="nano-banana">🟡 Nano Banana (Render Rápido y Dinámico)</option>
+      <option value="seedream">🟣 Seedream [NEW] (Iluminación y Texturas Mágicas)</option>
+      <option value="gpt-image">🟢 GPT Image (Precisión Absoluta de Rasgos)</option>
+    </select>
+
     <label>IMAGEN DE REFERENCIA (REFERENCIA FACIAL)</label>
     <div class="file-upload-wrapper">
       <span class="btn-file">Seleccionar archivo</span>
@@ -230,14 +240,14 @@
 
     <label>ASISTENTE INTELIGENTE DE PROMPTS 🤖</label>
     <div style="display:flex; gap:6px; margin-bottom:6px;">
-      <input type="text" id="aiIdea" placeholder="Idea básica (ej. astronauta en marte)..." style="font-size:0.85rem;">
+      <input type="text" id="aiIdea" placeholder="Idea básica (ej. retrato en estudio)..." style="font-size:0.85rem;">
       <button class="btn-style" onclick="generateAiPrompt()" style="background:var(--accent-color); color:white; border:none; padding:0 12px;">Crear IA ✨</button>
     </div>
 
     <label>ESCRIBE TU PROMPT AQUÍ...</label>
     <textarea id="prompt" rows="3" placeholder="Descripción de la imagen..."></textarea>
 
-    <label>ESTILOS Y MOTOR JASON/LUMEN</label>
+    <label>ESTILOS RÁPIDOS</label>
     <div class="btn-group">
       <button class="btn-style" onclick="setPreset('Chiaroscuro')">Chiaroscuro Pro</button>
       <button class="btn-style" onclick="setPreset('Cyberpunk')">Cyberpunk Neon</button>
@@ -246,42 +256,34 @@
 
     <button id="submitBtn" class="btn-submit" onclick="generateImage('free')">
       <div id="spinnerFree" class="spinner"></div>
-      <span id="btnTextFree">Generar Versión Gratuita</span>
+      <span id="btnTextFree">Generar con Modelo Seleccionado</span>
     </button>
   </div>
 
   <div class="card card-premium">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-      <h2 style="margin:0; color:var(--premium-gold); font-size:1.1rem;">👑 Nexus Galactic Supreme</h2>
+      <h2 style="margin:0; color:var(--premium-gold); font-size:1.1rem;">👑 Nexus Quantum Engine</h2>
       <span style="font-size:0.7rem; background:#f59e0b; color:black; padding:2px 6px; border-radius:4px; font-weight:bold;">ULTIMATE VIP</span>
     </div>
-    <p style="font-size:0.8rem; color:var(--text-muted); margin-top:0;">Modelos cuánticos de preservación absoluta de rasgos faciales y renderizado fotorrealista en ultra alta definición.</p>
-
-    <label>MOTOR DE RENDERIZADO SUPREMO</label>
-    <select id="supremeModel">
-      <option value="quantum-face-v2">Quantum Face Preservation v2 (Cero alteración)</option>
-      <option value="hollywood-studio">Hollywood Editorial Studio Portrait</option>
-      <option value="hyper-real-16k">Hyper-Realism 16K Quantum Raytracing</option>
-    </select>
+    <p style="font-size:0.8rem; color:var(--text-muted); margin-top:0;">Motor cuántico con preservación absoluta de facciones y renderizado multimodelo sin restricciones.</p>
 
     <button id="submitPremiumBtn" class="btn-submit btn-submit-premium" onclick="generateImage('premium')">
       <div id="spinnerPrem" class="spinner"></div>
-      <span id="btnTextPrem">Ejecutar Motor Galáctico (VIP)</span>
+      <span id="btnTextPrem">Ejecutar Motor Cuántico VIP</span>
     </button>
   </div>
 
-  <!-- PREVISUALIZACIÓN DE RESULTADOS -->
   <div class="card" id="outputSection" style="display:none;">
-    <h3 style="margin:0 0 10px 0; font-size:1rem; color:var(--accent-color);">Resultado Generado 🌟</h3>
+    <h3 style="margin:0 0 10px 0; font-size:1rem; color:var(--accent-color);">Resultado Multimodelo 🌟</h3>
     <div class="output-preview">
       <div class="output-img-box" id="outputBox">
-        <span>Imagen procesada con IA Nexus ✨</span>
+        <span>Imagen procesada con IA ✨</span>
       </div>
       <button class="btn-style" onclick="showToast('Imagen descargada con éxito 📥')" style="background:var(--accent-color); color:white; width:100%; border:none; padding:10px; font-weight:bold;">Descargar Obra Maestra 💾</button>
     </div>
   </div>
 
-  <div id="toast">¡Sistema Galactic v7.0 Activo! 🚀</div>
+  <div id="toast">¡Sistema Multimodelo v8.0 Activo! 🚀</div>
 
   <script>
     let isOwner = false;
@@ -336,7 +338,7 @@
       } else if(style === 'Cinematic') {
         promptInput.value = "Cinematic award-winning editorial portrait, volumetric studio light, preserving exact reference facial features, photorealistic";
       }
-      showToast("Preset " + style + " cargado con precisión JSON ✨");
+      showToast("Preset " + style + " cargado con éxito ✨");
     }
 
     function generateAiPrompt() {
@@ -348,20 +350,17 @@
       showToast("🤖 IA generando prompt estructurado...");
       setTimeout(() => {
         document.getElementById('prompt').value = "Masterpiece hyperrealistic photograph of " + idea + ", cinematic volumetric studio lighting, preserving exact reference facial features and hair, 8k resolution";
-        showToast("¡Prompt galáctico autogenerado! ✨");
+        showToast("¡Prompt autogenerado! ✨");
       }, 1000);
     }
 
     function generateImage(mode) {
       const promptText = document.getElementById('prompt').value;
+      const selectedModel = document.getElementById('advancedModelSelect').value;
+
       if(!promptText.trim()) {
         showToast("Por favor escribe un prompt o usa el asistente ⚠️");
         return;
-      }
-
-      if(mode === 'premium' && !isOwner) {
-        let confirmPay = confirm("🔒 El Motor Galáctico Supreme VIP requiere créditos ilimitados o membresía Pro. ¿Deseas proceder?");
-        if(!confirmPay) return;
       }
 
       const btn = mode === 'free' ? document.getElementById('submitBtn') : document.getElementById('submitPremiumBtn');
@@ -370,19 +369,19 @@
 
       btn.disabled = true;
       spinner.style.display = 'block';
-      btnText.innerText = 'Renderizando con IA Galáctica...';
+      btnText.innerText = 'Procesando con ' + selectedModel.toUpperCase() + '...';
       
-      showToast(mode === 'premium' ? "👑 Ejecutando motor cuántico VIP..." : "🚀 Procesando diseño en la nube...");
+      showToast("🚀 Renderizando con el modelo " + selectedModel + "...");
 
       setTimeout(() => {
         spinner.style.display = 'none';
-        btnText.innerText = mode === 'premium' ? 'Ejecutar Motor Galáctico (VIP)' : 'Generar Versión Gratuita';
+        btnText.innerText = mode === 'premium' ? 'Ejecutar Motor Cuántico VIP' : 'Generar con Modelo Seleccionado';
         btn.disabled = false;
         
         document.getElementById('outputSection').style.display = 'block';
-        document.getElementById('outputBox').innerHTML = '<span style="color:#38bdf8; font-weight:bold;">✨ ¡Obra Maestra Generada con Éxito! (Rasgos Protegidos)</span>';
+        document.getElementById('outputBox').innerHTML = '<span style="color:#38bdf8; font-weight:bold;">✨ Obra Generada con Modelo: ' + selectedModel.toUpperCase() + ' (Rasgos Protegidos)</span>';
         
-        showToast("🎉 ¡Avatar generado e inmortalizado con éxito!");
+        showToast("🎉 ¡Imagen creada con éxito!");
       }, 3500);
     }
 
