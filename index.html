@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AvatarVerse Studio Nexus v10.0 Quantum Real</title>
+  <title>AvatarVerse Studio Nexus v11.0 Quantum Zoom</title>
   <style>
     :root {
       --bg-color: #05070b;
@@ -246,12 +246,48 @@
       margin-bottom: 10px;
       overflow: hidden;
       position: relative;
+      cursor: zoom-in;
     }
     .output-img-box img {
       width: 100%;
       height: auto;
       border-radius: 8px;
       display: block;
+      transition: transform 0.3s ease;
+    }
+
+    /* MODAL ZOOM HD */
+    #zoomModal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.92);
+      overflow: auto;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+    }
+    #zoomModal img {
+      max-width: 95%;
+      max-height: 80vh;
+      border-radius: 10px;
+      box-shadow: 0 0 30px rgba(217, 70, 239, 0.5);
+      cursor: zoom-out;
+      transform: scale(1);
+      transition: transform 0.2s ease;
+    }
+    .close-zoom {
+      position: absolute;
+      top: 20px;
+      right: 25px;
+      color: white;
+      font-size: 35px;
+      font-weight: bold;
+      cursor: pointer;
     }
 
     #toast {
@@ -277,7 +313,7 @@
 
   <div class="header">
     <h1>AvatarVerse Nexus</h1>
-    <span style="color:#38bdf8; font-size:0.75rem;">● Quantum Real v10.0</span>
+    <span style="color:#38bdf8; font-size:0.75rem;">● Quantum Zoom v11.0</span>
   </div>
 
   <div class="card">
@@ -471,19 +507,28 @@
   </div>
 
   <div class="card" id="outputSection" style="display:none;">
-    <h3 style="margin:0 0 10px 0; font-size:0.95rem; color:var(--accent-color);">Obra Maestra Generada 🌟</h3>
+    <h3 style="margin:0 0 10px 0; font-size:0.95rem; color:var(--accent-color);">Obra Maestra Generada 🌟 (Toca para Zoom HD)</h3>
     <div class="output-preview">
-      <div class="output-img-box" id="outputBox">
+      <div class="output-img-box" id="outputBox" onclick="openZoom()">
         <span>Cargando imagen real... ✨</span>
       </div>
-      <a id="downloadBtn" href="#" target="_blank" class="pill-btn" style="display:block; background:var(--accent-color); color:white; text-align:none; width:100%; border:none; padding:12px; font-weight:bold; text-decoration:none; margin-top:10px; box-sizing:border-box;">Descargar Imagen Real 💾</a>
+      <button onclick="downloadImageDirect()" class="pill-btn" style="display:block; background:var(--accent-color); color:white; width:100%; border:none; padding:12px; font-weight:bold; margin-top:10px; border-radius:8px; cursor:pointer;">Descargar Imagen a Galería 💾</button>
     </div>
   </div>
 
-  <div id="toast">¡AvatarVerse Quantum Real v10.0 Activo! 🚀</div>
+  <!-- MODAL ZOOM HD -->
+  <div id="zoomModal" onclick="closeZoom()">
+    <span class="close-zoom">&times;</span>
+    <img id="modalImg" src="" alt="Zoom HD" onclick="toggleZoomModal(event)">
+    <div style="color:white; font-size:0.75rem; margin-top:10px;">Toca la imagen para ampliar/reducir o afuera para cerrar 🔍</div>
+  </div>
+
+  <div id="toast">¡AvatarVerse Quantum Zoom v11.0 Activo! 🚀</div>
 
   <script>
     let isOwner = false;
+    let currentImageUrl = "";
+    let isZoomedIn = false;
 
     window.onload = function() {
       const savedUser = localStorage.getItem('avatarverse_user');
@@ -644,14 +689,12 @@
       
       showToast("🚀 Conectando al motor cuántico de IA...");
 
-      // Construir URL de la API de generación real de imágenes
       const encodedPrompt = encodeURIComponent(promptText + ", " + selectedModel + " model, masterpiece, 8k resolution");
       const seed = Math.floor(Math.random() * 1000000);
-      const imageUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=768&height=1024&seed=${seed}&nologo=true`;
+      currentImageUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=768&height=1024&seed=${seed}&nologo=true`;
 
-      // Precargar la imagen real
       const img = new Image();
-      img.src = imageUrl;
+      img.src = currentImageUrl;
       
       img.onload = function() {
         spinner.style.display = 'none';
@@ -661,7 +704,6 @@
         document.getElementById('outputSection').style.display = 'block';
         document.getElementById('outputBox').innerHTML = '';
         document.getElementById('outputBox').appendChild(img);
-        document.getElementById('downloadBtn').href = imageUrl;
         
         showToast("🎉 ¡Imagen real generada con éxito!");
       };
@@ -672,6 +714,59 @@
         btn.disabled = false;
         showToast("⚠️ Error al conectar con el servidor de IA. Intenta de nuevo.");
       };
+    }
+
+    function openZoom() {
+      if(!currentImageUrl) return;
+      document.getElementById('modalImg').src = currentImageUrl;
+      document.getElementById('zoomModal').style.display = 'flex';
+      isZoomedIn = false;
+      document.getElementById('modalImg').style.transform = 'scale(1)';
+    }
+
+    function closeZoom() {
+      document.getElementById('zoomModal').style.display = 'none';
+    }
+
+    function toggleZoomModal(event) {
+      event.stopPropagation();
+      const modalImg = document.getElementById('modalImg');
+      if(!isZoomedIn) {
+        modalImg.style.transform = 'scale(2.2)';
+        isZoomedIn = true;
+        showToast("Zoom HD activado 🔍");
+      } else {
+        modalImg.style.transform = 'scale(1)';
+        isZoomedIn = false;
+        showToast("Zoom restablecido 🔎");
+      }
+    }
+
+    function downloadImageDirect() {
+      if(!currentImageUrl) {
+        showToast("No hay ninguna imagen generada para descargar ⚠️");
+        return;
+      }
+      showToast("💾 Descargando imagen real a galería...");
+      
+      fetch(currentImageUrl)
+        .then(response => response.blob())
+        .then(blob => {
+          const blobUrl = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.style.display = 'none';
+          a.href = blobUrl;
+          a.download = 'AvatarVerse_Masterpiece_' + Date.now() + '.jpg';
+          document.body.appendChild(a);
+          a.click();
+          window.URL.revokeObjectURL(blobUrl);
+          document.body.removeChild(a);
+          showToast("¡Imagen descargada con éxito! 📱✨");
+        })
+        .catch(err => {
+          showToast("⚠️ Error en descarga directa. Abriendo en pestaña...");
+          window.open(currentImageUrl, '_blank');
+        });
     }
 
     function showToast(message) {
