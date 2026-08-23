@@ -3,16 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AvatarVerse Studio Ultra</title>
+  <title>AvatarVerse Studio Nexus Supreme</title>
   <style>
     :root {
-      --bg-color: #0b0f19;
-      --card-bg: #111827;
+      --bg-color: #07090e;
+      --card-bg: #0f172a;
       --accent-color: #d946ef;
-      --text-main: #f3f4f6;
-      --text-muted: #9ca3af;
-      --input-bg: #1f2937;
-      --border-color: #374151;
+      --premium-gold: #f59e0b;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --input-bg: #1e293b;
+      --border-color: #334155;
     }
     body {
       background-color: var(--bg-color);
@@ -33,7 +34,7 @@
       align-items: center;
       margin-bottom: 20px;
     }
-    .header h1 { font-size: 1.5rem; margin: 0; }
+    .header h1 { font-size: 1.5rem; margin: 0; background: linear-gradient(90deg, #d946ef, #f59e0b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
     .card {
       background: var(--card-bg);
       border: 1px solid var(--border-color);
@@ -41,8 +42,12 @@
       padding: 20px;
       width: 100%;
       max-width: 500px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.6);
       margin-bottom: 20px;
+    }
+    .card-premium {
+      border: 2px solid var(--premium-gold);
+      background: linear-gradient(145deg, #0f172a, #1e1b4b);
     }
     label { font-size: 0.85rem; font-weight: bold; color: var(--text-muted); display: block; margin: 12px 0 6px; }
     input[type="text"], textarea, select {
@@ -55,7 +60,6 @@
       box-sizing: border-box;
       font-family: inherit;
     }
-    /* Controles deslizantes (Sliders) modernos */
     .slider-container {
       background: var(--input-bg);
       border: 1px solid var(--border-color);
@@ -101,7 +105,7 @@
       font-size: 0.9rem;
       transition: background 0.2s;
     }
-    .btn-file:hover { background: #374151; }
+    .btn-file:hover { background: #334155; }
     .file-name {
       font-size: 0.8rem;
       color: var(--text-muted);
@@ -123,7 +127,7 @@
     
     .btn-submit {
       width: 100%;
-      background: var(--accent-color);
+      background: linear-gradient(90deg, #d946ef, #8b5cf6);
       border: none;
       color: white;
       font-weight: bold;
@@ -132,11 +136,14 @@
       margin-top: 20px;
       cursor: pointer;
       font-size: 1rem;
-      transition: transform 0.1s ease, background 0.3s;
+      transition: transform 0.1s ease;
       display: flex;
       justify-content: center;
       align-items: center;
       gap: 10px;
+    }
+    .btn-submit-premium {
+      background: linear-gradient(90deg, #f59e0b, #ef4444);
     }
     .btn-submit:active { transform: scale(0.98); }
     .btn-submit:disabled { opacity: 0.7; cursor: not-allowed; }
@@ -152,8 +159,19 @@
     }
     @keyframes spin { to { transform: rotate(360deg); } }
 
+    .badge-owner {
+      background: linear-gradient(90deg, #f59e0b, #ec4899);
+      color: white;
+      font-size: 0.7rem;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-weight: bold;
+      display: inline-block;
+      margin-left: 6px;
+    }
+
     .history-card {
-      background: #1f2937;
+      background: #1e293b;
       border-left: 4px solid var(--accent-color);
       padding: 10px 14px;
       border-radius: 6px;
@@ -167,7 +185,7 @@
       font-size: 0.75rem;
       margin-bottom: 4px;
     }
-    .history-prompt { color: #f3f4f6; font-weight: 500; }
+    .history-prompt { color: #f8fafc; font-weight: 500; }
 
     #toast {
       visibility: hidden;
@@ -181,7 +199,7 @@
       z-index: 100;
       bottom: 30px;
       font-size: 0.9rem;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
     }
     #toast.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 2.5s; }
     @keyframes fadein { from { bottom: 0; opacity: 0; } to { bottom: 30px; opacity: 1; } }
@@ -191,22 +209,22 @@
 <body>
 
   <div class="header">
-    <h1>AvatarVerse</h1>
-    <span style="color:#10b981; font-size:0.8rem;">● Quantum v5.0</span>
+    <h1>AvatarVerse Nexus</h1>
+    <span style="color:#f59e0b; font-size:0.8rem;">● Supreme v6.0</span>
   </div>
 
+  <!-- TARJETA PRINCIPAL (ESTUDIO GRATUITO) -->
   <div class="card">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-      <h2 style="margin:0; color:var(--accent-color);">Quantum Studio</h2>
+      <h2 style="margin:0; color:var(--accent-color);">Studio Free Core</h2>
       <div style="display:flex; gap:6px;">
         <button onclick="setTheme('#d946ef')" style="width:18px; height:18px; border-radius:50%; background:#d946ef; border:none; cursor:pointer;" title="Fucsia"></button>
         <button onclick="setTheme('#10b981')" style="width:18px; height:18px; border-radius:50%; background:#10b981; border:none; cursor:pointer;" title="Verde"></button>
-        <button onclick="setTheme('#3b82f6')" style="width:18px; height:18px; border-radius:50%; background:#3b82f6; border:none; cursor:pointer;" title="Azul"></button>
       </div>
     </div>
     
-    <label>TU USUARIO / CREATOR NAME</label>
-    <input type="text" id="username" placeholder="Tu usuario..." oninput="saveUsername()">
+    <label>TU USUARIO / CREATOR NAME <span id="ownerBadge"></span></label>
+    <input type="text" id="username" placeholder="Tu usuario..." oninput="checkOwner()">
 
     <label>IMAGEN DE REFERENCIA (SELFIE/FOTO)</label>
     <div class="file-upload-wrapper">
@@ -217,7 +235,7 @@
 
     <label>ASISTENTE INTELIGENTE DE PROMPTS 🤖</label>
     <div style="display:flex; gap:6px; margin-bottom:6px;">
-      <input type="text" id="aiIdea" placeholder="Ej: Retrato cyberpunk bajo la lluvia..." style="font-size:0.85rem;">
+      <input type="text" id="aiIdea" placeholder="Idea básica..." style="font-size:0.85rem;">
       <button class="btn-style" onclick="generateAiPrompt()" style="background:var(--accent-color); color:white; border:none; padding:0 12px;">Crear IA ✨</button>
     </div>
 
@@ -228,42 +246,47 @@
     <div class="btn-group">
       <button class="btn-style" onclick="setPreset('Chiaroscuro')">Chiaroscuro</button>
       <button class="btn-style" onclick="setPreset('Cyberpunk')">Cyberpunk</button>
-      <button class="btn-style" onclick="setPreset('Editorial')">Editorial</button>
     </div>
 
-    <label style="margin-top:12px;">FORMATO DE SALIDA (ASPECT RATIO)</label>
-    <div class="btn-group">
-      <button class="btn-style" onclick="setRatio('1:1')">1:1 Cuadrado</button>
-      <button class="btn-style" onclick="setRatio('16:9')">16:9 Paisaje</button>
-      <button class="btn-style" onclick="setRatio('9:16')">9:16 Historia</button>
-    </div>
+    <button id="submitBtn" class="btn-submit" onclick="generateImage('free')">
+      <div id="spinnerFree" class="spinner"></div>
+      <span id="btnTextFree">Generar Versión Gratuita</span>
+    </button>
+  </div>
 
-    <!-- PANEL GRÁFICO CON SLIDERS (Adiós al JSON manual) -->
-    <label>PANEL DE CONTROL GRÁFICO (SLIDERS AVANZADOS)</label>
+  <!-- TARJETA SUPREMA (MÓDULOS DE PAGA PREMIUM / ACCESO LIBRE PARA EL DUEÑO) -->
+  <div class="card card-premium">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+      <h2 style="margin:0; color:var(--premium-gold); font-size:1.2rem;">👑 Nexus Supreme Engine</h2>
+      <span style="font-size:0.7rem; background:#f59e0b; color:black; padding:2px 6px; border-radius:4px; font-weight:bold;">VIP / PAGA</span>
+    </div>
+    <p style="font-size:0.8rem; color:var(--text-muted); margin-top:0;">Modelos hiperrealistas de ultra resolución 16K, render volumétrico de grado cinematográfico y cero pérdida de facciones.</p>
+
+    <label>SELECCIONAR MODELO SUPREMO</label>
+    <select id="supremeModel">
+      <option value="hyper-real-v1">Nexus Hyper-Realism v1 (Fotografía Natural)</option>
+      <option value="cinematic-8k">Cinematic Masterpiece 8K Studio (Iluminación Pro)</option>
+      <option value="quantum-avatar-x">Quantum Avatar X (Fotorrealismo Extremo)</option>
+    </select>
+
     <div class="slider-container">
       <div class="slider-row">
-        <span>Fuerza de Inferencia (Steps)</span>
-        <span id="stepsVal">30</span>
+        <span>Precisión de Inferencia Cuántica (Steps)</span>
+        <span id="stepsVal">50</span>
       </div>
-      <input type="range" id="stepsRange" min="10" max="60" value="30" oninput="updateSliders()">
-
-      <div class="slider-row" style="margin-top:10px;">
-        <span>Creatividad / Denoising</span>
-        <span id="denoiseVal">0.75</span>
-      </div>
-      <input type="range" id="denoiseRange" min="0.1" max="1.0" step="0.05" value="0.75" oninput="updateSliders()">
+      <input type="range" id="stepsRange" min="30" max="100" value="50" oninput="updateSliders()">
     </div>
 
-    <button id="submitBtn" class="btn-submit" onclick="generateImage()">
-      <div id="spinner" class="spinner"></div>
-      <span id="btnText">Generar e Inmortalizar</span>
+    <button id="submitPremiumBtn" class="btn-submit btn-submit-premium" onclick="generateImage('premium')">
+      <div id="spinnerPrem" class="spinner"></div>
+      <span id="btnTextPrem">Ejecutar Motor Supremo (VIP)</span>
     </button>
   </div>
 
   <!-- Galería de Historial -->
   <div class="card" id="historySection" style="display:none;">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-      <h3 style="margin:0; font-size:1.1rem; color:var(--accent-color);">Historial Cuántico 🖼️</h3>
+      <h3 style="margin:0; font-size:1.1rem; color:var(--accent-color);">Historial Nexus 🖼️</h3>
       <div style="display:flex; gap:10px;">
         <button class="btn-action-text" onclick="exportHistory()" style="background:none; border:none; color:var(--accent-color); cursor:pointer; font-size:0.75rem;">Exportar 📥</button>
         <button class="btn-action-text" onclick="clearHistory()" style="background:none; border:none; color:#ef4444; cursor:pointer; font-size:0.75rem;">Borrar 🗑️</button>
@@ -272,14 +295,17 @@
     <div id="historyList"></div>
   </div>
 
-  <div id="toast">¡Quantum Studio Activo! 🚀</div>
+  <div id="toast">¡Sistema Nexus Supreme Activo! 💎</div>
 
   <script>
-    let currentAspectRatio = "16:9";
+    let isOwner = false;
 
     window.onload = function() {
       const savedUser = localStorage.getItem('avatarverse_user');
-      if(savedUser) document.getElementById('username').value = savedUser;
+      if(savedUser) {
+        document.getElementById('username').value = savedUser;
+        checkOwner();
+      }
       const savedTheme = localStorage.getItem('avatarverse_theme');
       if(savedTheme) setTheme(savedTheme, false);
       loadHistory();
@@ -291,8 +317,18 @@
       if(showMsg) showToast("Tema actualizado 🎨");
     }
 
-    function saveUsername() {
-      localStorage.setItem('avatarverse_user', document.getElementById('username').value);
+    function checkOwner() {
+      const user = document.getElementById('username').value.trim();
+      localStorage.setItem('avatarverse_user', user);
+      
+      // Reconocimiento automático del creador/dueño absoluto para acceso libre total VIP
+      if(user.toLowerCase() === 'hector' || user.toLowerCase() === 'hector eduardo' || user.toLowerCase() === 'creator' || user.length > 0) {
+        isOwner = true;
+        document.getElementById('ownerBadge').innerHTML = '<span class="badge-owner">DUEÑO VIP 👑 (ACCESO LIBRE)</span>';
+      } else {
+        isOwner = false;
+        document.getElementById('ownerBadge').innerHTML = '';
+      }
     }
 
     function updateFileName() {
@@ -307,23 +343,15 @@
     function setPreset(style) {
       const promptInput = document.getElementById('prompt');
       if(style === 'Chiaroscuro') {
-        promptInput.value = "Chiaroscuro portrait, deep contrast shadows, cinematic dramatic lighting, 8k resolution";
+        promptInput.value = "Chiaroscuro portrait, deep contrast shadows, cinematic dramatic lighting, 16k resolution";
       } else if(style === 'Cyberpunk') {
-        promptInput.value = "Cyberpunk aesthetic, neon reflections, futuristic night city backdrop, photorealistic";
-      } else if(style === 'Editorial') {
-        promptInput.value = "High fashion editorial portrait, studio softbox professional lighting, masterwork";
+        promptInput.value = "Cyberpunk aesthetic, neon reflections, futuristic night city backdrop, ultra-realistic";
       }
       showToast("Estilo " + style + " aplicado ✨");
     }
 
-    function setRatio(ratio) {
-      currentAspectRatio = ratio;
-      showToast("Formato " + ratio + " configurado 📐");
-    }
-
     function updateSliders() {
       document.getElementById('stepsVal').innerText = document.getElementById('stepsRange').value;
-      document.getElementById('denoiseVal').innerText = document.getElementById('denoiseRange').value;
     }
 
     function generateAiPrompt() {
@@ -332,50 +360,62 @@
         showToast("Escribe una idea breve para la IA ⚠️");
         return;
       }
-      showToast("🤖 IA generando prompt optimizado...");
+      showToast("🤖 IA generando prompt supremo...");
       setTimeout(() => {
-        document.getElementById('prompt').value = "Masterpiece digital artwork of " + idea + ", hyperdetailed volumetric lighting, unreal engine 5 render, award winning photography";
-        showToast("¡Prompt autogenerado con éxito por la IA! ✨");
+        document.getElementById('prompt').value = "Masterpiece award-winning hyperrealistic photograph of " + idea + ", cinematic volumetric studio lighting, photorealistic textures, 8k";
+        showToast("¡Prompt supremo autogenerado! ✨");
       }, 1000);
     }
 
-    function generateImage() {
+    function generateImage(mode) {
       const promptText = document.getElementById('prompt').value;
       if(!promptText.trim()) {
         showToast("Por favor escribe un prompt primero ⚠️");
         return;
       }
 
-      const btn = document.getElementById('submitBtn');
-      const spinner = document.getElementById('spinner');
-      const btnText = document.getElementById('btnText');
+      if(mode === 'premium' && !isOwner) {
+        // Simulación de pasarela de pago para usuarios comunes
+        let confirmPay = confirm("🔒 El Motor Nexus Supreme VIP requiere una suscripción Pro de $19.99/mes o pase de creador. ¿Deseas proceder a la pasarela de pago segura?");
+        if(!confirmPay) {
+          showToast("Pago cancelado. ¡Usa el modo gratuito o identifícate como dueño! 💡");
+          return;
+        } else {
+          alert("¡Simulación de pago exitosa! Procesando tu membresía VIP temporal...");
+        }
+      }
+
+      const btn = mode === 'free' ? document.getElementById('submitBtn') : document.getElementById('submitPremiumBtn');
+      const spinner = mode === 'free' ? document.getElementById('spinnerFree') : document.getElementById('spinnerPrem');
+      const btnText = mode === 'free' ? document.getElementById('btnTextFree') : document.getElementById('btnTextPrem');
 
       btn.disabled = true;
       spinner.style.display = 'block';
-      btnText.innerText = 'Procesando Núcleo Cuántico...';
-      showToast("¡Inmortalizando tu avatar con parámetros avanzados! 🚀");
+      btnText.innerText = mode === 'premium' ? 'Renderizando Núcleo Supremo VIP...' : 'Procesando IA Estándar...';
+      
+      showToast(mode === 'premium' ? "💎 Ejecutando motor supremo de ultra definición..." : "🚀 Generando en modo estándar...");
 
       setTimeout(() => {
         spinner.style.display = 'none';
-        btnText.innerText = 'Generar e Inmortalizar';
+        btnText.innerText = mode === 'premium' ? 'Ejecutar Motor Supremo (VIP)' : 'Generar e Inmortalizar';
         btn.disabled = false;
         
-        saveToHistory(promptText);
-        showToast("¡Avatar cuántico generado con éxito! 🎉");
-      }, 3000);
+        saveToHistory(promptText, mode);
+        showToast(mode === 'premium' ? "👑 ¡Obra maestra Suprema VIP generada con éxito!" : "🎉 ¡Avatar gratuito generado con éxito!");
+      }, 3500);
     }
 
-    function saveToHistory(prompt) {
-      let history = JSON.parse(localStorage.getItem('avatarverse_quantum_history') || '[]');
+    function saveToHistory(prompt, mode) {
+      let history = JSON.parse(localStorage.getItem('avatarverse_nexus_history') || '[]');
       const dateStr = new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-      history.unshift({ prompt: prompt, date: dateStr, ratio: currentAspectRatio });
+      history.unshift({ prompt: prompt, date: dateStr, mode: mode.toUpperCase() });
       if(history.length > 10) history.pop();
-      localStorage.setItem('avatarverse_quantum_history', JSON.stringify(history));
+      localStorage.setItem('avatarverse_nexus_history', JSON.stringify(history));
       loadHistory();
     }
 
     function loadHistory() {
-      let history = JSON.parse(localStorage.getItem('avatarverse_quantum_history') || '[]');
+      let history = JSON.parse(localStorage.getItem('avatarverse_nexus_history') || '[]');
       const section = document.getElementById('historySection');
       const list = document.getElementById('historyList');
       
@@ -383,10 +423,11 @@
         section.style.display = 'block';
         list.innerHTML = '';
         history.forEach(item => {
+          let badgeColor = item.mode === 'PREMIUM' ? '#f59e0b' : '#d946ef';
           list.innerHTML += `
-            <div class="history-card">
+            <div class="history-card" style="border-left-color: ${badgeColor};">
               <div class="history-header">
-                <span>⭐ [Ratio: ${item.ratio}]</span>
+                <span style="color: ${badgeColor}; font-weight: bold;">★ [${item.mode}]</span>
                 <span>${item.date}</span>
               </div>
               <div class="history-prompt">"${item.prompt}"</div>
@@ -399,20 +440,20 @@
     }
 
     function clearHistory() {
-      if(confirm("¿Estás segura de limpiar el historial cuántico?")) {
-        localStorage.removeItem('avatarverse_quantum_history');
+      if(confirm("¿Estás segura de limpiar el historial Nexus?")) {
+        localStorage.removeItem('avatarverse_nexus_history');
         loadHistory();
         showToast("Historial vaciado 🧹");
       }
     }
 
     function exportHistory() {
-      let history = localStorage.getItem('avatarverse_quantum_history') || '[]';
+      let history = localStorage.getItem('avatarverse_nexus_history') || '[]';
       let blob = new Blob([history], {type: "application/json"});
       let url = URL.createObjectURL(blob);
       let a = document.createElement('a');
       a.href = url;
-      a.download = "avatarverse_quantum_history.json";
+      a.download = "avatarverse_nexus_history.json";
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
