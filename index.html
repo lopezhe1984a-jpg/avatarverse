@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>AvatarVerse</title>
+  <style>
+    :root {
+      --bg-main: #0b0c10;
+      --card-bg: #16181f;
+      --card-hover: #1f222d;
+      --accent-yellow: #f5b800;
+      --accent-cyan: #00f2fe;
+      --text-white: #ffffff;
+      --text-muted: #8e8f9a;
+      --border-color: #2a2d3d;
+      --nav-bg: rgba(18, 19, 24, 0.95);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      user-select: none;
+    }
+
+    body {
+      background-color: var(--bg-main);
+      color: var(--text-white);
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* Container Principal */
+    .app-viewport {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px;
+      padding-bottom: 90px;
+    }
+
+    /* Top Navigation Original AvatarVerse */
+    .avatarverse-topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border-color);
+      margin-bottom: 16px;
+    }
+
+    .brand-logo-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-title {
+      font-size: 20px;
+      font-weight: 800;
+      background: linear-gradient(90deg, #ffffff, var(--text-muted));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .status-credits {
+      background: #1a1c24;
+      border: 1px solid var(--border-color);
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--accent-yellow);
+    }
+
+    /* Sistema de Pestañas */
+    .tab-pane {
+      display: none;
+      animation: fadeIn 0.25s ease-in-out forwards;
+    }
+
+    .tab-pane.active-tab {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* MÓDULO TÉCNICO DE GENERACIÓN IA */
+    .ai-module-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+
+    .mode-switch-container {
+      display: flex;
+      background: #000000;
+      border-radius: 12px;
+      padding: 3px;
+      margin-bottom: 16px;
+    }
+
+    .btn-mode-toggle {
+      flex: 1;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      padding: 10px;
+      border-radius: 9px;
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-mode-toggle.active {
+      background: var(--accent-yellow);
+      color: #000;
+    }
+
+    /* Scroll Horizontal de Motores */
+    .engines-scroll-list {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 8px;
+      margin-bottom: 16px;
+    }
+
+    .engines-scroll-list::-webkit-scrollbar {
+      display: none;
+    }
+
+    .chip-engine {
+      background: #101117;
+      border: 1px solid var(--border-color);
+      color: var(--text-white);
+      padding: 8px 16px;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 600;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+
+    .chip-engine.active {
+      border-color: var(--accent-yellow);
+      color: var(--accent-yellow);
+      background: rgba(245, 184, 0, 0.08);
+    }
+
+    /* Selector de Modelo Activo */
+    .model-selector-banner {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: #101117;
+      border: 1px solid var(--accent-cyan);
+      border-radius: 12px;
+      padding: 10px 14px;
+      margin-bottom: 16px;
+      cursor: pointer;
+    }
+
+    .model-thumb-box {
+      width: 42px;
+      height: 42px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #7a3ef8, #00f2fe);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    .model-details-text {
+      flex: 1;
+    }
+
+    .model-name {
+      font-weight: 700;
+      font-size: 14px;
+      display: block;
+    }
+
+    .model-tag {
+      font-size: 10px;
+      color: var(--accent-cyan);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* Grid de Tareas */
+    .tasks-grid-list {
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+      margin-bottom: 16px;
+      padding-bottom: 4px;
+    }
+
+    .task-item-card {
+      min-width: 90px;
+      background: #101117;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 12px 8px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .task-item-card.active {
+      border-color: var(--accent-yellow);
+      background: rgba(245, 184, 0, 0.05);
+    }
+
+    .task-icon-box {
+      font-size: 20px;
+      margin-bottom: 6px;
+    }
+
+    .task-title {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-white);
+    }
+
+    /* Opciones y Switches */
+    .control-block {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .switch-row-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #101117;
+      padding: 12px;
+      border-radius: 10px;
+      border: 1px solid var(--border-color);
+    }
+
+    .switch-info-text strong {
+      display: block;
+      font-size: 13px;
+    }
+
+    .switch-info-text small {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .prompt-textarea {
+      width: 100%;
+      background: #101117;
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      color: #fff;
+      padding: 12px;
+      font-size: 13px;
+      resize: none;
+      outline: none;
+    }
+
+    .prompt-textarea:focus {
+      border-color: var(--accent-yellow);
+    }
+
+    /* Barra de Navegación Inferior Flotante */
+    .bottom-navbar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 70px;
+      background: var(--nav-bg);
+      backdrop-filter: blur(12px);
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      z-index: 999;
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 10px;
+      font-weight: 600;
+      background: none;
+      border: none;
+    }
+
+    .nav-item.active {
+      color: var(--accent-yellow);
+    }
+
+    .nav-icon {
+      font-size: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-viewport">
+    
+    <!-- Top Bar Original -->
+    <div class="avatarverse-topbar">
+      <div class="brand-logo-title">
+        <span style="font-size: 22px;">🌌</span>
+        <span class="brand-title">AvatarVerse</span>
+      </div>
+      <div class="status-credits">🪙 42 Credits</div>
+    </div>
+
+    <!-- PESTAÑA 1: INICIO ORIGINAL -->
+    <div id="tab-home" class="tab-pane active-tab">
+      <div class="ai-module-card">
+        <h3>Bienvenido a AvatarVerse</h3>
+        <p style="color: var(--text-muted); font-size: 13px; margin-top: 6px;">
+          Explora la suite completa de creación digital. Selecciona el estudio de IA en la barra inferior para acceder al motor de generación avanzada.
+        </p>
+      </div>
+    </div>
+
+    <!-- PESTAÑA 2: MÓDULO DE GENERACIÓN Y MOTORES IA (NUEVO ESTUDIO TÉCNICO) -->
+    <div id="tab-ai-studio" class="tab-pane">
+      
+      <!-- Selector de Modo Imagen / Video -->
+      <div class="mode-switch-container">
+        <button class="btn-mode-toggle active" id="btnModeImg" onclick="AvatarVerseEngine.setMode('image')">📷 Imagen</button>
+        <button class="btn-mode-toggle" id="btnModeVid" onclick="AvatarVerseEngine.setMode('video')">🎥 Video</button>
+      </div>
+
+      <!-- Scroll Horizontal de Motores -->
+      <div class="engines-scroll-list" id="enginesContainer"></div>
+
+      <!-- Selector de Modelo / Checkpoint -->
+      <div class="model-selector-banner">
+        <div class="model-thumb-box">AI</div>
+        <div class="model-details-text">
+          <span class="model-tag">Checkpoint Activo</span>
+          <span class="model-name" id="activeModelName">OileMayhem_SKD</span>
+        </div>
+      </div>
+
+      <!-- Grid Carrusel de Tareas -->
+      <div class="tasks-grid-list" id="tasksContainer"></div>
+
+      <!-- Formulario de Parámetros -->
+      <div class="ai-module-card">
+        <div class="control-block">
+          
+          <div class="switch-row-item">
+            <div class="switch-info-text">
+              <strong>Prompt Regional</strong>
+              <small>Múltiples instrucciones por zona</small>
+            </div>
+            <input type="checkbox" id="regionalSwitch">
+          </div>
+
+          <div>
+            <label style="font-size: 12px; color: var(--text-muted); display: block; margin-bottom: 6px;">Prompt Principal</label>
+            <textarea id="promptInputText" class="prompt-textarea" rows="3" placeholder="A futuristic camera lens app icon, central iris radiating neon magenta..."></textarea>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+    <!-- PESTAÑA 3: EDICIÓN -->
+    <div id="tab-editor" class="tab-pane">
+      <div class="ai-module-card">
+        <h3>Editor de Fotos y Canvas</h3>
+        <p style="color: var(--text-muted); font-size: 13px; margin-top: 6px;">Herramientas de retoque y edición fotográfica.</p>
+      </div>
+    </div>
+
+    <!-- PESTAÑA 4: HERRAMIENTAS -->
+    <div id="tab-tools" class="tab-pane">
+      <div class="ai-module-card">
+        <h3>Herramientas Avanzadas</h3>
+        <p style="color: var(--text-muted); font-size: 13px; margin-top: 6px;">Ajustes del sistema y presets personalizables.</p>
+      </div>
+    </div>
+
+    <!-- PESTAÑA 5: PERFIL -->
+    <div id="tab-profile" class="tab-pane">
+      <div class="ai-module-card">
+        <h3>Perfil de Usuario</h3>
+        <p style="color: var(--text-muted); font-size: 13px; margin-top: 6px;">Gestiona tus creaciones, membresía y galería.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Barra Inferior de Navegación AvatarVerse -->
+  <nav class="bottom-navbar">
+    <button class="nav-item active" onclick="AvatarVerseEngine.switchTab('tab-home', this)">
+      <span class="nav-icon">🏠</span>
+      <span>Inicio</span>
+    </button>
+    <button class="nav-item" onclick="AvatarVerseEngine.switchTab('tab-ai-studio', this)">
+      <span class="nav-icon">🎨</span>
+      <span>Estudio IA</span>
+    </button>
+    <button class="nav-item" onclick="AvatarVerseEngine.switchTab('tab-editor', this)">
+      <span class="nav-icon">✏️</span>
+      <span>Editor</span>
+    </button>
+    <button class="nav-item" onclick="AvatarVerseEngine.switchTab('tab-tools', this)">
+      <span class="nav-icon">🛠️</span>
+      <span>Ajustes</span>
+    </button>
+    <button class="nav-item" onclick="AvatarVerseEngine.switchTab('tab-profile', this)">
+      <span class="nav-icon">👤</span>
+      <span>Perfil</span>
+    </button>
+  </nav>
+
+  <script>
+    // Namespace Aislado y Protegido contra errores sintácticos
+    const AvatarVerseEngine = (function() {
+      const state = {
+        mode: 'image',
+        currentEngine: 'SDXL',
+        currentTask: 'txt2img',
+        engines: {
+          image: ['SDXL', 'Anima', 'Z Image', 'Krea2', 'SD1.5', 'Flux.2', 'Qwen', 'NB⚡', 'GPT Image⚡', 'Seedream⚡', 'Wan', 'Flux'],
+          video: ['Wan 2.2', 'Seedance⚡', 'Grok Imagine⚡', 'Kling⚡', 'Hunyuan']
+        },
+        tasks: {
+          image: [
+            { id: 'txt2img', name: 'Texto a imagen', icon: '🖼️' },
+            { id: 'img2img', name: 'Imagen a imagen', icon: '🔄' },
+            { id: 'inpaint', name: 'Inpaint', icon: '✏️' },
+            { id: 'outpaint', name: 'Pintar afuera', icon: '⤢' },
+            { id: 'draw', name: 'Dibujar', icon: '🎨' }
+          ],
+          video: [
+            { id: 'txt2vid', name: 'Texto a Video', icon: '🎥' },
+            { id: 'img2vid', name: 'Imagen a Video', icon: '🎬' },
+            { id: 'ref2vid', name: 'Referencia Video', icon: '🎞️' },
+            { id: 'lipsync', name: 'Lipsync', icon: '🎙️' },
+            { id: 'char_anim', name: 'Animación', icon: '👤' }
+          ]
+        }
+      };
+
+      function renderEngines() {
+        const container = document.getElementById('enginesContainer');
+        if (!container) return;
+        const list = state.engines[state.mode];
+        container.innerHTML = list.map((eng, idx) => `
+          <button class="chip-engine ${idx === 0 ? 'active' : ''}" onclick="AvatarVerseEngine.selectEngine('${eng}', this)">${eng}</button>
+        `).join('');
+      }
+
+      function renderTasks() {
+        const container = document.getElementById('tasksContainer');
+        if (!container) return;
+        const list = state.tasks[state.mode];
+        container.innerHTML = list.map((task, idx) => `
+          <div class="task-item-card ${idx === 0 ? 'active' : ''}" onclick="AvatarVerseEngine.selectTask('${task.id}', this)">
+            <div class="task-icon-box">${task.icon}</div>
+            <div class="task-title">${task.name}</div>
+          </div>
+        `).join('');
+      }
+
+      return {
+        init: function() {
+          renderEngines();
+          renderTasks();
+        },
+        switchTab: function(tabId, el) {
+          document.querySelectorAll('.tab-pane').forEach(tab => tab.classList.remove('active-tab'));
+          document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
+          
+          const target = document.getElementById(tabId);
+          if (target) target.classList.add('active-tab');
+          if (el) el.classList.add('active');
+        },
+        setMode: function(newMode) {
+          state.mode = newMode;
+          document.getElementById('btnModeImg').classList.toggle('active', newMode === 'image');
+          document.getElementById('btnModeVid').classList.toggle('active', newMode === 'video');
+          renderEngines();
+          renderTasks();
+        },
+        selectEngine: function(engName, el) {
+          state.currentEngine = engName;
+          document.querySelectorAll('.chip-engine').forEach(btn => btn.classList.remove('active'));
+          if (el) el.classList.add('active');
+        },
+        selectTask: function(taskId, el) {
+          state.currentTask = taskId;
+          document.querySelectorAll('.task-item-card').forEach(card => card.classList.remove('active'));
+          if (el) el.classList.add('active');
+        }
+      };
+    })();
+
+    document.addEventListener('DOMContentLoaded', function() {
+      AvatarVerseEngine.init();
+    });
+  </script>
+</body>
+</html>
