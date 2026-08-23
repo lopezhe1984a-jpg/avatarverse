@@ -53,6 +53,40 @@
       box-sizing: border-box;
       font-family: inherit;
     }
+    /* Estilo profesional para el selector de archivos */
+    .file-upload-wrapper {
+      position: relative;
+      overflow: hidden;
+      display: inline-block;
+      width: 100%;
+    }
+    .file-upload-wrapper input[type=file] {
+      font-size: 100px;
+      position: absolute;
+      left: 0;
+      top: 0;
+      opacity: 0;
+      cursor: pointer;
+    }
+    .btn-file {
+      display: block;
+      background: #1f2937;
+      border: 1px solid #374151;
+      color: #e5e7eb;
+      padding: 10px 16px;
+      border-radius: 8px;
+      text-align: center;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: background 0.2s;
+    }
+    .btn-file:hover { background: #374151; }
+    .file-name {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-top: 6px;
+      word-break: break-all;
+    }
     .btn-group { display: flex; gap: 8px; margin-top: 6px; }
     .btn-style {
       background: #1f2937;
@@ -102,14 +136,21 @@
 
   <div class="header">
     <h1>AvatarVerse</h1>
-    <span style="color:#10b981; font-size:0.8rem;">● Image-to-Image AI</span>
+    <span style="color:#10b981; font-size:0.8rem;">● Studio v2.1</span>
   </div>
 
   <div class="card">
     <h2 style="margin-top:0; color:var(--accent-color);">AvatarVerse Studio</h2>
     
     <label>TU USUARIO / CREATOR NAME</label>
-    <input type="text" id="username" placeholder="Tu usuario...">
+    <input type="text" id="username" placeholder="Tu usuario..." oninput="saveUsername()">
+
+    <label>IMAGEN DE REFERENCIA (SELFIE/FOTO)</label>
+    <div class="file-upload-wrapper">
+      <span class="btn-file">Seleccionar archivo</span>
+      <input type="file" id="fileInput" accept="image/*" onchange="updateFileName()">
+    </div>
+    <div id="fileNameDisplay" class="file-name">Sin archivos seleccionados</div>
 
     <label>ESCRIBE TU PROMPT AQUÍ...</label>
     <textarea id="prompt" rows="3" placeholder="Escribe la descripción de la imagen..."></textarea>
@@ -127,9 +168,33 @@
     <button class="btn-submit" onclick="generateImage()">Generar e Inmortalizar</button>
   </div>
 
-  <div id="toast">¡Procesando generación de avatar! 🌟</div>
+  <div id="toast">¡Notificación! 🌟</div>
 
   <script>
+    // Cargar el nombre guardado al abrir la app
+    window.onload = function() {
+      const savedUser = localStorage.getItem('avatarverse_user');
+      if(savedUser) {
+        document.getElementById('username').value = savedUser;
+      }
+    }
+
+    function saveUsername() {
+      const user = document.getElementById('username').value;
+      localStorage.setItem('avatarverse_user', user);
+    }
+
+    function updateFileName() {
+      const input = document.getElementById('fileInput');
+      const display = document.getElementById('fileNameDisplay');
+      if(input.files && input.files.length > 0) {
+        display.innerText = "📁 " + input.files[0].name;
+        showToast("Imagen cargada con éxito ✨");
+      } else {
+        display.innerText = "Sin archivos seleccionados";
+      }
+    }
+
     function setPreset(style) {
       const promptInput = document.getElementById('prompt');
       const jsonInput = document.getElementById('jsonConfig');
