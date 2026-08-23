@@ -24,6 +24,7 @@
       display: flex;
       flex-direction: column;
       align-items: center;
+      transition: background 0.3s ease;
     }
     .header {
       width: 100%;
@@ -118,7 +119,7 @@
     .btn-style:hover { background: var(--accent-color); border-color: var(--accent-color); }
     .btn-submit {
       width: 100%;
-      background: linear-gradient(90deg, #ec4899, #8b5cf6);
+      background: var(--accent-color);
       border: none;
       color: white;
       font-weight: bold;
@@ -127,7 +128,7 @@
       margin-top: 20px;
       cursor: pointer;
       font-size: 1rem;
-      transition: transform 0.1s ease;
+      transition: transform 0.1s ease, background 0.3s;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -165,6 +166,13 @@
     }
     .history-prompt { color: #f3f4f6; font-weight: 500; }
 
+    .history-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
     #toast {
       visibility: hidden;
       min-width: 250px;
@@ -188,11 +196,19 @@
 
   <div class="header">
     <h1>AvatarVerse</h1>
-    <span style="color:#10b981; font-size:0.8rem;">● Studio v3.0 Pro</span>
+    <span style="color:#10b981; font-size:0.8rem;">● Ultra Pro v4.0</span>
   </div>
 
   <div class="card">
-    <h2 style="margin-top:0; color:var(--accent-color);">AvatarVerse Studio</h2>
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+      <h2 style="margin:0; color:var(--accent-color);">Studio Master</h2>
+      <!-- Selector de Tema de Color -->
+      <div style="display:flex; gap:6px;">
+        <button onclick="setTheme('#d946ef')" style="width:18px; height:18px; border-radius:50%; background:#d946ef; border:none; cursor:pointer;" title="Fucsia Púrpura"></button>
+        <button onclick="setTheme('#10b981')" style="width:18px; height:18px; border-radius:50%; background:#10b981; border:none; cursor:pointer;" title="Verde Neón"></button>
+        <button onclick="setTheme('#3b82f6')" style="width:18px; height:18px; border-radius:50%; background:#3b82f6; border:none; cursor:pointer;" title="Azul Eléctrico"></button>
+      </div>
+    </div>
     
     <label>TU USUARIO / CREATOR NAME</label>
     <input type="text" id="username" placeholder="Tu usuario..." oninput="saveUsername()">
@@ -235,7 +251,13 @@
 
   <!-- Tarjeta de Historial / Galería Local -->
   <div class="card" id="historySection" style="display:none;">
-    <h3 style="margin-top:0; font-size:1.1rem; color:var(--accent-color);">Historial del Estudio 🖼️</h3>
+    <div class="history-actions">
+      <h3 style="margin:0; font-size:1.1rem; color:var(--accent-color);">Historial del Estudio 🖼️</h3>
+      <div style="display:flex; gap:10px;">
+        <button class="btn-action-text" onclick="exportHistory()">Exportar JSON 📥</button>
+        <button class="btn-action-text" style="color:#ef4444;" onclick="clearHistory()">Borrar 🗑️</button>
+      </div>
+    </div>
     <div id="historyList"></div>
   </div>
 
@@ -247,7 +269,17 @@
       if(savedUser) {
         document.getElementById('username').value = savedUser;
       }
+      const savedTheme = localStorage.getItem('avatarverse_theme');
+      if(savedTheme) {
+        setTheme(savedTheme, false);
+      }
       loadHistory();
+    }
+
+    function setTheme(color, showMsg = true) {
+      document.documentElement.style.setProperty('--accent-color', color);
+      localStorage.setItem('avatarverse_theme', color);
+      if(showMsg) showToast("Tema actualizado 🎨");
     }
 
     function saveUsername() {
@@ -344,7 +376,6 @@
         btnText.innerText = 'Generar e Inmortalizar';
         btn.disabled = false;
         
-        // Guardar en el historial local
         saveToHistory(promptText);
         showToast("¡Avatar generado con éxito! 🎉");
       }, 3000);
@@ -355,7 +386,7 @@
       const dateStr = new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
       
       history.unshift({ prompt: prompt, date: dateStr });
-      if(history.length > 5) history.pop(); // Mantener solo los últimos 5
+      if(history.length > 10) history.pop(); // Ampliado a 10 elementos
       
       localStorage.setItem('avatarverse_history', JSON.stringify(history));
       loadHistory();
@@ -380,7 +411,30 @@
             </div>
           `;
         });
+      } else {
+        section.style.display = 'none';
       }
+    }
+
+    function clearHistory() {
+      if(confirm("¿Estás segura de borrar todo el historial?")) {
+        localStorage.removeItem('avatarverse_history');
+        loadHistory();
+        showToast("Historial vaciado 🧹");
+      }
+    }
+
+    function exportHistory() {
+      let history = localStorage.getItem('avatarverse_history') || '[]';
+      let blob = new Blob([history], {type: "application/json"});
+      let url = URL.createObjectURL(blob);
+      let a = document.createElement('a');
+      a.href = url;
+      a.download = "avatarverse_history.json";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      showToast("Historial exportado a JSON 📥");
     }
 
     function showToast(message) {
