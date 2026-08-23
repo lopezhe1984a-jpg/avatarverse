@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AvatarVerse - Red Social AI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="/socket.io/socket.io.js"></script>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen pb-10">
+    <nav class="border-b border-slate-800 bg-slate-900/50 backdrop-blur sticky top-0 z-50 px-4 py-3 flex justify-between items-center">
+        <h1 class="text-xl font-bold bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent">AvatarVerse Studio</h1>
+        <div class="flex items-center gap-2">
+            <span class="w-2.5 h-2.5 bg-emerald-500 rounded-full animate-pulse"></span>
+            <span class="text-xs text-slate-400">Image-to-Image AI</span>
+        </div>
+    </nav>
+
+    <main class="max-w-md mx-auto p-4 space-y-6">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-3 shadow-xl">
+            <h2 class="text-xs font-bold uppercase tracking-wider text-purple-400">Generar Publicación AI</h2>
+            
+            <input id="username" type="text" placeholder="Tu usuario / Creator Name" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-sm focus:outline-none focus:border-purple-500 text-slate-100">
+            
+            <textarea id="prompt" placeholder="Escribe tu prompt aquí..." class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-sm h-20 focus:outline-none focus:border-purple-500 text-slate-100"></textarea>
+            
+            <!-- Selector de Imagen de Referencia -->
+            <div>
+                <label class="text-[10px] uppercase font-bold text-slate-400 mb-1 block">Imagen de Referencia (Selfie/Foto)</label>
+                <input id="referenceImage" type="file" accept="image/*" class="w-full text-xs text-slate-400 bg-slate-950 border border-slate-800 rounded-lg p-2 focus:outline-none file:mr-3 file:py-1 file:px-2.5 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-purple-950 file:text-purple-300 hover:file:bg-purple-900">
+            </div>
+
+            <!-- Estilos Rápidos -->
+            <div>
+                <label class="text-[10px] uppercase font-bold text-slate-400 mb-1.5 block">Estilos Rápidos</label>
+                <div class="flex flex-wrap gap-1.5">
+                    <button onclick="applyStyle('chiaroscuro portrait, dramatic studio lighting, dark background')" class="text-[10px] bg-slate-800 hover:bg-purple-900/40 text-purple-300 border border-slate-700 px-2.5 py-1 rounded-full transition">Chiaroscuro</button>
+                    <button onclick="applyStyle('cyberpunk style, neon aesthetic, highly detailed, 8k')" class="text-[10px] bg-slate-800 hover:bg-purple-900/40 text-purple-300 border border-slate-700 px-2.5 py-1 rounded-full transition">Cyberpunk</button>
+                    <button onclick="applyStyle('editorial fashion portrait, studio lighting, sharp focus')" class="text-[10px] bg-slate-800 hover:bg-purple-900/40 text-purple-300 border border-slate-700 px-2.5 py-1 rounded-full transition">Editorial</button>
+                </div>
+            </div>
+
+            <div>
+                <label class="text-[10px] uppercase font-bold text-slate-400 mb-1 block">Configuración JSON (Opcional)</label>
+                <textarea id="jsonConfig" placeholder='{"lighting": "chiaroscuro", "aspectRatio": "16:9"}' class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 text-xs font-mono h-14 focus:outline-none focus:border-purple-500 text-purple-300"></textarea>
+            </div>
+
+            <button onclick="publishPost()" id="btnSubmit" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:opacity-90 font-semibold py-2.5 rounded-lg text-sm transition text-white shadow-lg shadow-purple-900/30">Generar e Inmortalizar</button>
+        </div>
+
+        <div id="feed" class="space-y-5"></div>
+    </main>
+
+    <script>
+        const socket = io();
+
+        function applyStyle(styleText) {
+            const promptBox = document.getElementById('prompt');
+            if(promptBox.value) {
+                promptBox.value += `, ${styleText}`;
+            } else {
+                promptBox.value = styleText;
+            }
+        }
+        
+        async function loadPosts() {
+            try {
+                const res = await fetch('/api/posts');
+                const data = await res.json();
+                const feed = document.getElementById('feed');
+                feed.innerHTML = '';
+                if(data.posts) data.posts.forEach(addPostToFeed);
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        function addPostToFeed(post) {
+            const feed = document.getElementById('feed');
+            const postEl = document.createElement('div');
+            postEl.id = `post-${post.id}`;
+            postEl.className = 'bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-lg';
+            
+            const initial = (post.username && post.username.length > 0) ? post.username.charAt(0).toUpperCase() : 'A';
+            const jsonText = (post.jsonConfig && Object.keys(post.jsonConfig).length > 0) ? JSON.stringify(post.jsonConfig, null, 2) : null;
+
+            postEl.innerHTML = `
+                <div class="p-3 border-b border-slate-800/80 flex items-center justify-between">
+                    <div class="flex items-center gap-2.5">
+                        <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-purple-600 to-pink-500 text-white flex items-center justify-center font-bold text-xs">${initial}</div>
+                        <div>
+                            <span class="font-medium text-sm text-slate-200 block leading-none">${post.username}</span>
+                            <span class="text-[10px] text-slate-500">${post.createdAt || 'Ahora'}</span>
+                        </div>
+                    </div>
+                    ${post.referenceImageUrl ? `<a href="${post.referenceImageUrl}" target="_blank" class="text-[10px] bg-purple-950 border border-purple-800 text-purple-300 px-2 py-0.5 rounded-full">Ref Img</a>` : ''}
+                </div>
+                <div class="relative bg-slate-950 min-h-[200px] flex items-center justify-center">
+                    <img src="${post.imageUrl}" class="w-full h-auto max-h-96 object-cover" loading="lazy" alt="AI Generated">
+                </div>
+                <div class="p-3.5 space-y-2">
+                    <p class="text-xs text-slate-300 leading-relaxed">${post.prompt}</p>
+                    ${jsonText ? `<pre class="text-[10px] bg-slate-950 p-2 rounded-lg border border-slate-800 text-purple-300 font-mono overflow-x-auto">${jsonText}</pre>` : ''}
+                    <div class="pt-2 flex items-center justify-between border-t border-slate-800/60">
+                        <button onclick="likePost(${post.id})" class="flex items-center gap-1.5 text-xs text-pink-400 hover:text-pink-300 bg-pink-950/30 border border-pink-900/40 px-3 py-1.5 rounded-lg transition">
+                            ❤️ <span id="likes-${post.id}">${post.likes || 0}</span>
+                        </button>
+                    </div>
+                </div>
+            `;
+            feed.prepend(postEl);
+        }
+
+        async function likePost(id) {
+            await fetch(`/api/posts/${id}/like`, { method: 'POST' });
+        }
+
+        async function publishPost() {
+            const btn = document.getElementById('btnSubmit');
+            const username = document.getElementById('username').value.trim() || 'Anónimo';
+            const prompt = document.getElementById('prompt').value.trim();
+            const jsonRaw = document.getElementById('jsonConfig').value.trim();
+            const imageInput = document.getElementById('referenceImage');
+            
+            if(!prompt) return alert('Por favor escribe un prompt');
+
+            const formData = new FormData();
+            formData.append('username', username);
+            formData.append('prompt', prompt);
+            formData.append('jsonConfig', jsonRaw);
+
+            if (imageInput.files[0]) {
+                formData.append('referenceImage', imageInput.files[0]);
+            }
+
+            btn.disabled = true;
+            btn.innerText = 'Generando Imagen IA...';
+
+            try {
+                await fetch('/api/posts', {
+                    method: 'POST',
+                    body: formData
+                });
+                document.getElementById('prompt').value = '';
+                document.getElementById('jsonConfig').value = '';
+                imageInput.value = '';
+            } catch (err) {
+                alert('Error al conectar con el servidor');
+            } finally {
+                btn.disabled = false;
+                btn.innerText = 'Generar e Inmortalizar';
+            }
+        }
+
+        socket.on('new_post', (post) => addPostToFeed(post));
+        socket.on('update_like', (data) => {
+            const likeCount = document.getElementById(`likes-${data.id}`);
+            if(likeCount) likeCount.innerText = data.likes;
+        });
+
+        loadPosts();
+    </script>
+</body>
+</html>
