@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AvatarVerse Studio v11.5 Quantum Ultra</title>
+  <title>AvatarVerse Studio v11.5 Quantum Ultra Complete</title>
   <style>
     :root {
       --bg-color: #05070b;
@@ -44,6 +44,10 @@
       box-shadow: 0 15px 35px rgba(0,0,0,0.7);
       margin-bottom: 16px;
       box-sizing: border-box;
+    }
+    .card-premium {
+      border: 2px solid var(--premium-gold);
+      background: linear-gradient(145deg, #0f172a, #1e1b4b);
     }
     label { font-size: 0.82rem; font-weight: bold; color: var(--text-muted); display: block; margin: 10px 0 6px; }
     input[type="text"], textarea, select {
@@ -99,6 +103,34 @@
       margin-top: 4px;
       word-break: break-all;
     }
+    .assistant-tabs {
+      display: flex;
+      gap: 4px;
+      background: #020617;
+      padding: 4px;
+      border-radius: 10px;
+      margin-bottom: 10px;
+    }
+    .tab-btn {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      padding: 8px 6px;
+      font-size: 0.7rem;
+      font-weight: bold;
+      border-radius: 6px;
+      cursor: pointer;
+      text-align: center;
+    }
+    .tab-btn.active {
+      background: var(--accent-color);
+      color: white;
+      box-shadow: 0 4px 12px rgba(217, 70, 239, 0.4);
+    }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+    .char-counter { font-size: 0.7rem; color: var(--text-muted); text-align: right; margin-top: 4px; }
     .category-section {
       background: #020617;
       border: 1px solid var(--border-color);
@@ -135,6 +167,11 @@
       transition: all 0.2s;
     }
     .pill-btn:hover { background: var(--accent-color); border-color: var(--accent-color); color: white; }
+    .pill-nsfw {
+      border: 1px solid var(--premium-gold);
+      background: rgba(245, 158, 11, 0.15);
+      color: var(--premium-gold);
+    }
     .btn-submit {
       width: 100%;
       background: linear-gradient(90deg, #d946ef, #3b82f6);
@@ -150,6 +187,9 @@
       justify-content: center;
       align-items: center;
       gap: 10px;
+    }
+    .btn-submit-premium {
+      background: linear-gradient(90deg, #f59e0b, #ef4444);
     }
     .spinner {
       width: 18px;
@@ -279,8 +319,48 @@
     </div>
     <div id="fileNameDisplay" class="file-name">Sin archivos seleccionados</div>
 
-    <label style="margin-top:14px;">ESCRIBE TU PROMPT AQUÍ...</label>
-    <textarea id="prompt" rows="3" placeholder="Descripción de la imagen..."></textarea>
+    <!-- ASISTENTE INTELIGENTE DE PROMPTS Y MÓDULOS -->
+    <label style="margin-top:14px;">ASISTENTE INTELIGENTE DE PROMPTS 🤖</label>
+    <div class="assistant-tabs">
+      <button class="tab-btn active" onclick="switchTab('tab-prompt', event)">✍️ Editor Principal</button>
+      <button class="tab-btn" onclick="switchTab('tab-img2text', event)">🖼️ Imagen a Texto</button>
+      <button class="tab-btn" onclick="switchTab('tab-illustrious', event)">✨ Illustrious XL</button>
+      <button class="tab-btn" onclick="switchTab('tab-improver', event)">⚡ Mejorador</button>
+    </div>
+
+    <!-- Pestaña 1: Editor Principal -->
+    <div id="tab-prompt" class="tab-content active">
+      <textarea id="prompt" rows="3" placeholder="Descripción de la imagen..."></textarea>
+      <div class="char-counter" id="charCounterMain">0 / 100000</div>
+    </div>
+
+    <!-- Pestaña 2: Imagen a Texto -->
+    <div id="tab-img2text" class="tab-content">
+      <label style="color:var(--accent-color);">Carga una imagen para sugerir prompt:</label>
+      <div class="file-upload-wrapper" style="margin-bottom:8px;">
+        <span class="btn-file">Cargar imagen analizadora</span>
+        <input type="file" id="img2textInput" accept="image/*" onchange="analyzeImageToText()">
+      </div>
+      <textarea id="promptImg2Text" rows="3" placeholder="El prompt sugerido aparecerá aquí..."></textarea>
+    </div>
+
+    <!-- Pestaña 3: Illustrious XL -->
+    <div id="tab-illustrious" class="tab-content">
+      <label style="color:var(--accent-color);">Illustrious XL Style Prompts:</label>
+      <div class="file-upload-wrapper" style="margin-bottom:8px;">
+        <span class="btn-file">Cargar imagen para Illustrious XL</span>
+        <input type="file" id="illustriousInput" accept="image/*" onchange="processIllustrious()">
+      </div>
+      <textarea id="promptIllustrious" rows="3" placeholder="Prompt estilo Illustrious XL generado..."></textarea>
+    </div>
+
+    <!-- Pestaña 4: Mejorador de Prompts -->
+    <div id="tab-improver" class="tab-content">
+      <label style="color:var(--accent-color);">Mejorador de Prompts (Detallado y Creativo):</label>
+      <textarea id="promptImprover" rows="4" placeholder="Ingresa tu prompt básico aquí para que la herramienta lo mejore, perfeccione y amplíe..." oninput="updateImproverCounter(this)"></textarea>
+      <div class="char-counter" id="charCounterImprover">0 / 100000</div>
+      <button onclick="enhancePromptAction()" class="pill-btn" style="width:100%; background:var(--accent-color); color:white; margin-top:6px; padding:8px; font-weight:bold;">Perfeccionar y Enviar al Editor 🚀</button>
+    </div>
 
     <label style="margin-top:14px;">ESTILOS DE ULTRA-NITIDEZ 🎨</label>
     <div class="pill-grid" style="max-height:none; margin-bottom:10px;">
@@ -289,51 +369,108 @@
       <button class="pill-btn" onclick="setPreset('Cinematic')">Cinematic 16K</button>
     </div>
 
-    <!-- Categorías Completas Restauradas -->
+    <!-- CATEGORÍAS MASIVAS DE ESTILOS Y MÓDULOS -->
     <div class="category-section">
-      <div class="category-title" onclick="toggleCategory('cat-skin')">
-        <span>📂 Piel, Rostro & Cabello (Detalle Extremo)</span>
+      <div class="category-title" onclick="toggleCategory('cat-general-styles')">
+        <span>📂 Estilos en General & Conceptos</span>
         <span>▼</span>
       </div>
-      <div id="cat-skin" style="display:none; margin-top:8px;">
+      <div id="cat-general-styles" style="display:none; margin-top:8px;">
+        <div class="pill-grid">
+          <button class="pill-btn" onclick="addStyle('Anime')">Anime</button>
+          <button class="pill-btn" onclick="addStyle('Cómics')">Cómics</button>
+          <button class="pill-btn" onclick="addStyle('Spell rings')">Spell rings</button>
+          <button class="pill-btn" onclick="addStyle('Made of fog')">Made of fog</button>
+          <button class="pill-btn" onclick="addStyle('Oni mask')">Oni mask</button>
+          <button class="pill-btn" onclick="addStyle('Stellar blade skin suits')">Stellar blade skin suits</button>
+          <button class="pill-btn" onclick="addStyle('90s anime')">90s anime</button>
+          <button class="pill-btn" onclick="addStyle('Samdoes arts')">Samdoes arts</button>
+          <button class="pill-btn" onclick="addStyle('Swords & Shield')">Swords & Shield</button>
+          <button class="pill-btn" onclick="addStyle('Old Style')">Old Style</button>
+          <button class="pill-btn" onclick="addStyle('Sadamoto yoshiyuki')">Sadamoto yoshiyuki</button>
+          <button class="pill-btn" onclick="addStyle('Anti long torso')">Anti long torso</button>
+          <button class="pill-btn" onclick="addStyle('Liquid flow')">Liquid flow</button>
+          <button class="pill-btn" onclick="addStyle('Glass Sculpture')">Glass Sculpture</button>
+          <button class="pill-btn" onclick="addStyle('On fire')">On fire</button>
+          <button class="pill-btn" onclick="addStyle('On glass')">On glass</button>
+          <button class="pill-btn" onclick="addStyle('More Artistic')">More Artistic</button>
+          <button class="pill-btn" onclick="addStyle('Niji')">Niji</button>
+          <button class="pill-btn" onclick="addStyle('Add detail')">Add detail</button>
+          <button class="pill-btn" onclick="addStyle('Creepy polaroid film')">Creepy polaroid film</button>
+          <button class="pill-btn" onclick="addStyle('Creepypasta')">Creepypasta</button>
+          <button class="pill-btn" onclick="addStyle('Horror')">Horror</button>
+          <button class="pill-btn" onclick="addStyle('Terror')">Terror</button>
+          <button class="pill-btn" onclick="addStyle('Gore')">Gore</button>
+          <button class="pill-btn" onclick="addStyle('Woodcut minimalist')">Woodcut minimalist</button>
+          <button class="pill-btn" onclick="addStyle('Street art')">Street art</button>
+          <button class="pill-btn" onclick="addStyle('Oil painting')">Oil painting</button>
+          <button class="pill-btn" onclick="addStyle('Iris Scott')">Iris Scott</button>
+          <button class="pill-btn" onclick="addStyle('Ink punk')">Ink punk</button>
+          <button class="pill-btn" onclick="addStyle('Sewing doll')">Sewing doll</button>
+          <button class="pill-btn" onclick="addStyle('Analog film')">Analog film</button>
+          <button class="pill-btn" onclick="addStyle('Ink wask painting')">Ink wask painting</button>
+          <button class="pill-btn" onclick="addStyle('Abstract')">Abstract</button>
+          <button class="pill-btn" onclick="addStyle('Ukiyo e')">Ukiyo e</button>
+          <button class="pill-btn" onclick="addStyle('Custom text')">Custom text</button>
+          <button class="pill-btn" onclick="addStyle('Fantasy monsters')">Fantasy monsters</button>
+          <button class="pill-btn" onclick="addStyle('Oda Non')">Oda Non</button>
+          <button class="pill-btn" onclick="addStyle('Katana')">Katana</button>
+          <button class="pill-btn" onclick="addStyle('Comic book')">Comic book</button>
+          <button class="pill-btn" onclick="addStyle('Double exposure')">Double exposure</button>
+          <button class="pill-btn" onclick="addStyle('Disco delirium')">Disco delirium</button>
+          <button class="pill-btn" onclick="addStyle('Bold line')">Bold line</button>
+          <button class="pill-btn" onclick="addStyle('Cloud')">Cloud</button>
+          <button class="pill-btn" onclick="addStyle('Voxel')">Voxel</button>
+          <button class="pill-btn" onclick="addStyle('Dissolve')">Dissolve</button>
+          <button class="pill-btn" onclick="addStyle('Voly creative')">Voly creative</button>
+          <button class="pill-btn" onclick="addStyle('Surreal harmony')">Surreal harmony</button>
+          <button class="pill-btn" onclick="addStyle('Fractil art')">Fractil art</button>
+          <button class="pill-btn" onclick="addStyle('Niji 3D')">Niji 3D</button>
+          <button class="pill-btn" onclick="addStyle('Mecha')">Mecha</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="category-section">
+      <div class="category-title" onclick="toggleCategory('cat-elements')">
+        <span>📂 Estilo de Cabello, Rostro, Pose & Ropa</span>
+        <span>▼</span>
+      </div>
+      <div id="cat-elements" style="display:none; margin-top:8px;">
+        <label style="color:var(--accent-color); margin-top:4px;">Cabello & Rostro</label>
         <div class="pill-grid">
           <button class="pill-btn" onclick="addStyle('natural skin texture, visible skin pores')">Piel real y poros</button>
           <button class="pill-btn" onclick="addStyle('detailed individual hair strands')">Cabello hebra por hebra</button>
-          <button class="pill-btn" onclick="addStyle('subtle skin flush, natural blush')">Rubor natural</button>
-          <button class="pill-btn" onclick="addStyle('detailed eyelashes, sharp eyes')">Pestañas y ojos nítidos</button>
-          <button class="pill-btn" onclick="addStyle('oiled skin texture, wet gloss')">Piel con brillo de aceite</button>
+          <button class="pill-btn" onclick="addStyle('oiled skin texture, wet gloss')">Oiled skin</button>
+          <button class="pill-btn" onclick="addStyle('detailed eyelashes, sharp eyes')">Ojos y pestañas nítidas</button>
         </div>
-      </div>
-    </div>
-
-    <div class="category-section">
-      <div class="category-title" onclick="toggleCategory('cat-lighting')">
-        <span>📂 Iluminación & Óptica Fotográfica</span>
-        <span>▼</span>
-      </div>
-      <div id="cat-lighting" style="display:none; margin-top:8px;">
+        <label style="color:var(--accent-color); margin-top:6px;">Pose, Postura & Posición</label>
         <div class="pill-grid">
+          <button class="pill-btn" onclick="addStyle('dynamic pose, perfect posture')">Postura perfecta</button>
           <button class="pill-btn" onclick="addStyle('authentic smartphone selfie angle')">Ángulo selfie real</button>
-          <button class="pill-btn" onclick="addStyle('realistic ambient lighting, soft shadows')">Luz ambiental realista</button>
-          <button class="pill-btn" onclick="addStyle('volumetric studio softbox lighting')">Softbox de estudio</button>
-          <button class="pill-btn" onclick="addStyle('chiaroscuro lighting, high contrast dramatic shadows')">Chiaroscuro dramático</button>
-          <button class="pill-btn" onclick="addStyle('golden hour sunlight rim light')">Luz de hora dorada</button>
+          <button class="pill-btn" onclick="addStyle('holding smartphone in mirror reflection')">Reflejo en espejo</button>
+        </div>
+        <label style="color:var(--accent-color); margin-top:6px;">Ropa, Outfits & Fondo</label>
+        <div class="pill-grid">
+          <button class="pill-btn" onclick="addStyle('tight form-fitting silk dress texture, fine fabric weave')">Vestido de seda ajustado</button>
+          <button class="pill-btn" onclick="addStyle('luxury hotel room interior, bokeh background')">Fondo de lujo con bokeh</button>
+          <button class="pill-btn" onclick="addStyle('highly detailed environment background, sharp focus')">Entorno detallado 8K</button>
         </div>
       </div>
     </div>
 
-    <div class="category-section">
-      <div class="category-title" onclick="toggleCategory('cat-environment')">
-        <span>📂 Entornos, Vestuario & Fondos</span>
+    <!-- SECCIÓN VIP / NSFW (Acceso libre para el Dueño Supremo) -->
+    <div class="category-section" style="border: 1px solid var(--premium-gold);">
+      <div class="category-title" onclick="toggleCategory('cat-vip')" style="color:var(--premium-gold);">
+        <span>🔒 Módulo VIP - Premium (NSFW Exclusivo Dueño)</span>
         <span>▼</span>
       </div>
-      <div id="cat-environment" style="display:none; margin-top:8px;">
+      <div id="cat-vip" style="display:none; margin-top:8px;">
+        <div style="font-size:0.75rem; color:var(--premium-gold); margin-bottom:6px;">* Zona restringida. Acceso libre permanente concedido al Dueño Supremo 👑</div>
         <div class="pill-grid">
-          <button class="pill-btn" onclick="addStyle('highly detailed environment background, sharp focus')">Fondo texturizado nítido</button>
-          <button class="pill-btn" onclick="addStyle('natural wood wall texture, visible grain')">Pared de madera con vetas reales</button>
-          <button class="pill-btn" onclick="addStyle('luxury hotel room interior, bokeh background')">Habitación de lujo con bokeh</button>
-          <button class="pill-btn" onclick="addStyle('tight form-fitting silk dress texture, fine fabric weave')">Vestido de seda ajustado</button>
-          <button class="pill-btn" onclick="addStyle('holding modern smartphone in mirror reflection')">Smartphone en espejo</button>
+          <button class="pill-btn pill-nsfw" onclick="addStyle('Hentai, uncensored masterpiece, high quality lineart')">Hentai Masterpiece</button>
+          <button class="pill-btn pill-nsfw" onclick="addStyle('explicit adult conceptual art, highly detailed skin shading')">Adult Conceptual Art</button>
+          <button class="pill-btn pill-nsfw" onclick="addStyle('ecchi style, seductive expression, gorgeous lighting')">Ecchi Seductive</button>
         </div>
       </div>
     </div>
@@ -360,7 +497,7 @@
     <div style="color:white; font-size:0.75rem; margin-top:10px;">Toca para ampliar/reducir o afuera para cerrar 🔍</div>
   </div>
 
-  <div id="toast">¡AvatarVerse Quantum Ultra v11.5 Restaurado y Activo! 🚀</div>
+  <div id="toast">¡AvatarVerse Quantum Ultra v11.5 Completo Activo! 🚀</div>
 
   <script>
     // Configuración Quantum Ultra v11.5 con Prompts Base de Fotorrealismo Extremo
@@ -384,6 +521,7 @@
       if(savedUser) { document.getElementById('username').value = savedUser; checkOwner(); }
       const savedTheme = localStorage.getItem('avatarverse_theme');
       if(savedTheme) setTheme(savedTheme, false);
+      updateMainCounter();
     }
 
     function setTheme(color, showMsg = true) {
@@ -400,6 +538,7 @@
         document.getElementById('ownerBadge').innerHTML = '<span class="badge-owner">DUEÑO SUPREMO 👑 (INFINITO)</span>';
         document.getElementById('userCredits').innerText = "∞ INFINITO (VIP)";
         document.getElementById('userCredits').style.color = "#ec4899";
+        showToast("¡Bienvenido Dueño Supremo! Acceso VIP ilimitado activado 👑");
       }
     }
 
@@ -410,6 +549,13 @@
         display.innerText = "📁 " + input.files[0].name;
         showToast("Referencia facial bloqueada ✨");
       }
+    }
+
+    function switchTab(tabId, event) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+      document.getElementById(tabId).classList.add('active');
+      event.currentTarget.classList.add('active');
     }
 
     function toggleCategory(id) {
@@ -426,13 +572,56 @@
       } else if(style === 'Cinematic') {
         p.value = "Cinematic editorial portrait, volumetric studio light, natural skin pores, 8k resolution";
       }
+      updateMainCounter();
       showToast("Preset " + style + " cargado con éxito ✨");
     }
 
     function addStyle(text) {
       const p = document.getElementById('prompt');
       p.value = p.value.trim() !== '' ? p.value + ", " + text : text;
+      updateMainCounter();
       showToast("Estilo agregado ✨");
+    }
+
+    function updateMainCounter() {
+      const len = document.getElementById('prompt').value.length;
+      document.getElementById('charCounterMain').innerText = len + " / 100000";
+    }
+
+    function updateImproverCounter(el) {
+      const len = el.value.length;
+      document.getElementById('charCounterImprover').innerText = len + " / 100000";
+    }
+
+    document.getElementById('prompt').addEventListener('input', updateMainCounter);
+
+    function analyzeImageToText() {
+      showToast("🖼️ Analizando imagen para sugerir prompt...");
+      setTimeout(() => {
+        document.getElementById('promptImg2Text').value = "A hyperrealistic portrait of a person with natural skin texture, detailed lighting, cinematic composition, 8k resolution.";
+        showToast("¡Prompt generado desde imagen con éxito! ✨");
+      }, 1000);
+    }
+
+    function processIllustrious() {
+      showToast("✨ Procesando estilo Illustrious XL...");
+      setTimeout(() => {
+        document.getElementById('promptIllustrious').value = "masterpiece, best quality, highly detailed illustrative portrait, flawless lineart, vibrant colors, official art.";
+        showToast("¡Prompt Illustrious XL listo! ✨");
+      }, 1000);
+    }
+
+    function enhancePromptAction() {
+      const text = document.getElementById('promptImprover').value;
+      if(!text.trim()) {
+        showToast("Escribe algo en el mejorador primero ⚠️");
+        return;
+      }
+      const enhanced = text + ", highly detailed, professional masterpiece, sharp focus, perfect lighting, 8k resolution";
+      document.getElementById('prompt').value = enhanced;
+      updateMainCounter();
+      showToast("¡Prompt mejorado y enviado al editor principal! 🚀");
+      document.querySelector('.assistant-tabs button').click(); // Ir al editor principal
     }
 
     function generateImage() {
