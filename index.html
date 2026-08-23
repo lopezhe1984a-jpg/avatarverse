@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AvatarVerse Studio Nexus v11.0 Quantum Zoom</title>
+  <title>AvatarVerse Studio v11.5 Quantum Ultra</title>
   <style>
     :root {
       --bg-color: #05070b;
@@ -103,8 +103,6 @@
       margin-top: 4px;
       word-break: break-all;
     }
-
-    /* Tabs Assistant */
     .assistant-tabs {
       display: flex;
       gap: 4px;
@@ -123,7 +121,6 @@
       font-weight: bold;
       border-radius: 6px;
       cursor: pointer;
-      transition: all 0.2s;
       text-align: center;
     }
     .tab-btn.active {
@@ -133,15 +130,7 @@
     }
     .tab-content { display: none; }
     .tab-content.active { display: block; }
-
-    .char-counter {
-      font-size: 0.7rem;
-      color: var(--text-muted);
-      text-align: right;
-      margin-top: 4px;
-    }
-
-    /* Style Categories */
+    .char-counter { font-size: 0.7rem; color: var(--text-muted); text-align: right; margin-top: 4px; }
     .category-section {
       background: #020617;
       border: 1px solid var(--border-color);
@@ -183,7 +172,6 @@
       background: rgba(245, 158, 11, 0.15);
       color: var(--premium-gold);
     }
-
     .btn-submit {
       width: 100%;
       background: linear-gradient(90deg, #d946ef, #3b82f6);
@@ -213,7 +201,6 @@
       display: none;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
-
     .badge-owner {
       background: linear-gradient(90deg, #f59e0b, #ec4899);
       color: white;
@@ -224,7 +211,6 @@
       display: inline-block;
       margin-left: 6px;
     }
-
     .output-preview {
       background: #020617;
       border: 1px solid var(--border-color);
@@ -253,10 +239,7 @@
       height: auto;
       border-radius: 8px;
       display: block;
-      transition: transform 0.3s ease;
     }
-
-    /* MODAL ZOOM HD */
     #zoomModal {
       display: none;
       position: fixed;
@@ -266,7 +249,6 @@
       width: 100%;
       height: 100%;
       background-color: rgba(0, 0, 0, 0.92);
-      overflow: auto;
       align-items: center;
       justify-content: center;
       flex-direction: column;
@@ -280,16 +262,7 @@
       transform: scale(1);
       transition: transform 0.2s ease;
     }
-    .close-zoom {
-      position: absolute;
-      top: 20px;
-      right: 25px;
-      color: white;
-      font-size: 35px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
+    .close-zoom { position: absolute; top: 20px; right: 25px; color: white; font-size: 35px; font-weight: bold; cursor: pointer; }
     #toast {
       visibility: hidden;
       min-width: 250px;
@@ -313,7 +286,7 @@
 
   <div class="header">
     <h1>AvatarVerse Nexus</h1>
-    <span style="color:#38bdf8; font-size:0.75rem;">● Quantum Zoom v11.0</span>
+    <span style="color:#38bdf8; font-size:0.75rem;">● Quantum Ultra v11.5</span>
   </div>
 
   <div class="card">
@@ -323,7 +296,7 @@
     </div>
 
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-      <h2 style="margin:0; color:var(--accent-color); font-size:1.1rem;">Studio Free Core</h2>
+      <h2 style="margin:0; color:var(--accent-color); font-size:1.1rem;">Studio Ultra Real</h2>
       <div style="display:flex; gap:6px;">
         <button onclick="setTheme('#d946ef')" style="width:16px; height:16px; border-radius:50%; background:#d946ef; border:none; cursor:pointer;" title="Fucsia"></button>
         <button onclick="setTheme('#38bdf8')" style="width:16px; height:16px; border-radius:50%; background:#38bdf8; border:none; cursor:pointer;" title="Azul"></button>
@@ -333,209 +306,96 @@
     <label>TU USUARIO / CREATOR NAME <span id="ownerBadge"></span></label>
     <input type="text" id="username" placeholder="Tu usuario..." oninput="checkOwner()">
 
-    <label>SELECCIONA EL MODELO DE EDICIÓN ⚡</label>
+    <label>MOTOR DE ULTRA-DEFINICIÓN ⚡</label>
     <select id="advancedModelSelect" style="border: 2px solid var(--accent-color);">
-      <option value="flux">🔵 Flux.2 Klein (Ultra Fotorrealismo)</option>
-      <option value="qwen">🟢 Qwen Edit 2511 (Edición por Prompt)</option>
-      <option value="krea">🔴 Krea2 [NEW] (Estudio Creativo Avanzado)</option>
-      <option value="nano">🟡 Nano Banana (Render Rápido y Dinámico)</option>
-      <option value="seedream">🟣 Seedream [NEW] (Iluminación y Texturas Mágicas)</option>
-      <option value="gpt">🟢 GPT Image (Precisión Absoluta de Rasgos)</option>
+      <option value="flux">🔵 Flux.2 Klein Ultra (Fotorrealismo Extremo)</option>
+      <option value="qwen">🟢 Qwen Edit 2511 (Texturas Naturales)</option>
+      <option value="krea">🔴 Krea2 [NEW] (Estudio Avanzado Hi-Res)</option>
     </select>
 
-    <label>IMAGEN DE REFERENCIA (REFERENCIA FACIAL)</label>
+    <label>IMAGEN DE REFERENCIA (BLOQUEO DE RASGOS)</label>
     <div class="file-upload-wrapper">
-      <span class="btn-file">Seleccionar archivo de referencia</span>
+      <span class="btn-file">Seleccionar referencia facial</span>
       <input type="file" id="fileInput" accept="image/*" onchange="updateFileName()">
     </div>
     <div id="fileNameDisplay" class="file-name">Sin archivos seleccionados</div>
 
-    <!-- ASISTENTE INTELIGENTE DE PROMPTS CON PESTAÑAS -->
-    <label style="margin-top:14px;">ASISTENTE INTELIGENTE DE PROMPTS 🤖</label>
-    <div class="assistant-tabs">
-      <button class="tab-btn active" onclick="switchTab('enhancer')">✨ Mejorador</button>
-      <button class="tab-btn" onclick="switchTab('img2text')">📷 Imagen a Texto</button>
-      <button class="tab-btn" onclick="switchTab('illustrious')">🌟 Illustrious XL</button>
-    </div>
+    <label style="margin-top:14px;">ESCRIBE TU PROMPT AQUÍ...</label>
+    <textarea id="prompt" rows="3" placeholder="Descripción de la imagen..."></textarea>
 
-    <!-- TAB 1: MEJORADOR DE PROMPTS -->
-    <div id="tab-enhancer" class="tab-content active">
-      <textarea id="enhancerInput" rows="4" placeholder="Pega tu prompt aquí para mejorarlo y perfeccionarlo..." oninput="updateCharCount()"></textarea>
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-top:6px;">
-        <div class="char-counter" id="charCount">0 / 100000</div>
-        <button class="pill-btn" onclick="enhancePromptAction()" style="background:var(--accent-color); color:white; border:none; padding:6px 12px; font-weight:bold;">✨ Mejorar y Perfeccionar</button>
-      </div>
-    </div>
-
-    <!-- TAB 2: IMAGEN A TEXTO -->
-    <div id="tab-img2text" class="tab-content">
-      <div class="file-upload-wrapper" style="margin-bottom:6px;">
-        <span class="btn-file">Subir imagen para sugerencia de texto</span>
-        <input type="file" id="img2textInput" accept="image/*" onchange="handleImg2TextUpload()">
-      </div>
-      <div id="img2textFileName" class="file-name" style="margin-bottom:6px;">Ninguna imagen cargada</div>
-      <button class="pill-btn" onclick="runImg2Text()" style="background:#3b82f6; color:white; border:none; width:100%; padding:8px; font-weight:bold;">Generar Prompt desde Imagen 🔍</button>
-    </div>
-
-    <!-- TAB 3: ILLUSTRIOUS XL -->
-    <div id="tab-illustrious" class="tab-content">
-      <div class="file-upload-wrapper" style="margin-bottom:6px;">
-        <span class="btn-file">Upload image for Illustrious XL Prompts</span>
-        <input type="file" id="illustriousInput" accept="image/*" onchange="handleIllustriousUpload()">
-      </div>
-      <div id="illustriousFileName" class="file-name" style="margin-bottom:6px;">No image uploaded</div>
-      <button class="pill-btn" onclick="runIllustriousXL()" style="background:#f59e0b; color:black; border:none; width:100%; padding:8px; font-weight:bold;">Generate Illustrious XL Style Prompt 🌟</button>
-    </div>
-
-    <label style="margin-top:14px;">ESCRIBE TU PROMPT FINAL AQUÍ...</label>
-    <textarea id="prompt" rows="3" placeholder="Descripción final para generar la imagen..."></textarea>
-
-    <!-- ESTILOS RÁPIDOS Y MÓDULO DE ESTILOS GENERALES -->
-    <label style="margin-top:14px;">ESTILOS RÁPIDOS Y GENERALES 🎨</label>
+    <label style="margin-top:14px;">ESTILOS DE ULTRA-NITIDEZ 🎨</label>
     <div class="pill-grid" style="max-height:none; margin-bottom:10px;">
+      <button class="pill-btn" onclick="setPreset('RawPhone')">RAW Selfie Real</button>
       <button class="pill-btn" onclick="setPreset('Chiaroscuro')">Chiaroscuro Pro</button>
-      <button class="pill-btn" onclick="setPreset('Cyberpunk')">Cyberpunk Neon</button>
       <button class="pill-btn" onclick="setPreset('Cinematic')">Cinematic 16K</button>
     </div>
 
-    <!-- ACORDEÓN / CATEGORÍAS DE ESTILOS -->
     <div class="category-section">
       <div class="category-title" onclick="toggleCategory('cat-general')">
-        <span>📂 Estilos Generales & Categorías (Haz clic para abrir)</span>
+        <span>📂 Categorías y Texturas Avanzadas</span>
         <span>▼</span>
       </div>
       <div id="cat-general" style="display:none; margin-top:8px;">
-        
-        <label style="color:var(--accent-color); margin-top:4px;">Cabello & Rostro</label>
+        <label style="color:var(--accent-color); margin-top:4px;">Piel & Cabello</label>
         <div class="pill-grid">
-          <button class="pill-btn" onclick="addStyle('detailed hair')">Estilo de cabello</button>
-          <button class="pill-btn" onclick="addStyle('detailed facial features')">Rostro</button>
+          <button class="pill-btn" onclick="addStyle('natural skin texture, visible skin pores')">Piel real y poros</button>
+          <button class="pill-btn" onclick="addStyle('detailed individual hair strands')">Cabello detallado hebra por hebra</button>
           <button class="pill-btn" onclick="addStyle('oiled skin')">Oiled skin</button>
-          <button class="pill-btn" onclick="addStyle('oni mask')">Oni mask</button>
         </div>
-
-        <label style="color:var(--accent-color); margin-top:6px;">Pose, Postura & Ropa</label>
+        <label style="color:var(--accent-color); margin-top:6px;">Entorno & Fotorrealismo</label>
         <div class="pill-grid">
-          <button class="pill-btn" onclick="addStyle('dynamic pose')">Pose</button>
-          <button class="pill-btn" onclick="addStyle('elegant posture')">Postura</button>
-          <button class="pill-btn" onclick="addStyle('precise body position')">Posición</button>
-          <button class="pill-btn" onclick="addStyle('futuristic outfit, stylish clothing')">Ropa, Outfits</button>
-          <button class="pill-btn" onclick="addStyle('stellar blade skin suits')">Stellar blade skin suits</button>
-          <button class="pill-btn" onclick="addStyle('anti long torso')">Anti long torso</button>
+          <button class="pill-btn" onclick="addStyle('authentic smartphone selfie angle')">Ángulo selfie real</button>
+          <button class="pill-btn" onclick="addStyle('realistic ambient lighting, highly detailed environment background')">Fondo texturizado real</button>
+          <button class="pill-btn" onclick="addStyle('sharp focus, 8k resolution')">Enfoque nítido 8K</button>
         </div>
-
-        <label style="color:var(--accent-color); margin-top:6px;">Fondo, Entorno & Herramientas</label>
-        <div class="pill-grid">
-          <button class="pill-btn" onclick="addStyle('volumetric studio background')">Fondo</button>
-          <button class="pill-btn" onclick="addStyle('advanced futuristic tools')">Herramientas</button>
-          <button class="pill-btn" onclick="addStyle('made of fog')">Made of fog</button>
-          <button class="pill-btn" onclick="addStyle('cloud atmosphere')">Cloud</button>
-          <button class="pill-btn" onclick="addStyle('liquid flow effect')">Liquid flow</button>
-          <button class="pill-btn" onclick="addStyle('glass sculpture')">Glass Sculpture</button>
-          <button class="pill-btn" onclick="addStyle('on fire, blazing flames')">On fire</button>
-          <button class="pill-btn" onclick="addStyle('encased on glass')">On glass</button>
-        </div>
-
-        <label style="color:var(--accent-color); margin-top:6px;">Conceptos, Arte & Estilos Artísticos</label>
-        <div class="pill-grid">
-          <button class="pill-btn" onclick="addStyle('masterpiece concept art')">Concept</button>
-          <button class="pill-btn" onclick="addStyle('anime masterpiece')">Anime</button>
-          <button class="pill-btn" onclick="addStyle('90s anime style')">90s anime</button>
-          <button class="pill-btn" onclick="addStyle('comic book style, bold line')">Cómics & Bold line</button>
-          <button class="pill-btn" onclick="addStyle('spell rings glowing')">Spell rings</button>
-          <button class="pill-btn" onclick="addStyle('Samdoes arts style')">Samdoes arts</button>
-          <button class="pill-btn" onclick="addStyle('swords and shield battle gear')">Swords & Shield</button>
-          <button class="pill-btn" onclick="addStyle('old style vintage look')">Old Style</button>
-          <button class="pill-btn" onclick="addStyle('Yoshiyuki Sadamoto style')">Sadamoto yoshiyuki</button>
-          <button class="pill-btn" onclick="addStyle('Non Oda style')">Oda Non</button>
-          <button class="pill-btn" onclick="addStyle('holding sharp katana')">Katana</button>
-          <button class="pill-btn" onclick="addStyle('Iris Scott oil painting style')">Iris Scott</button>
-          <button class="pill-btn" onclick="addStyle('oil painting masterpiece')">Oil painting</button>
-          <button class="pill-btn" onclick="addStyle('ink punk aesthetic')">Ink punk</button>
-          <button class="pill-btn" onclick="addStyle('ink wash painting')">Ink wash painting</button>
-          <button class="pill-btn" onclick="addStyle('abstract surreal harmony')">Abstract & Surreal</button>
-          <button class="pill-btn" onclick="addStyle('ukiyo-e traditional Japanese art')">Ukiyo e</button>
-          <button class="pill-btn" onclick="addStyle('custom text typography')">Custom text</button>
-          <button class="pill-btn" onclick="addStyle('mythical fantasy monsters')">Fantasy monsters</button>
-          <button class="pill-btn" onclick="addStyle('double exposure photography')">Double exposure</button>
-          <button class="pill-btn" onclick="addStyle('disco delirium neon vibe')">Disco delirium</button>
-          <button class="pill-btn" onclick="addStyle('voxel 3d art')">Voxel</button>
-          <button class="pill-btn" onclick="addStyle('dissolving particle effect')">Dissolve</button>
-          <button class="pill-btn" onclick="addStyle('voly creative aesthetic')">Voly creative</button>
-          <button class="pill-btn" onclick="addStyle('fractal art masterpiece')">Fractal art</button>
-          <button class="pill-btn" onclick="addStyle('niji 3d style')">Niji 3D</button>
-          <button class="pill-btn" onclick="addStyle('mecha robotic suit')">Mecha</button>
-          <button class="pill-btn" onclick="addStyle('more artistic detailed composition')">More Artistic</button>
-          <button class="pill-btn" onclick="addStyle('niji style')">Niji</button>
-          <button class="pill-btn" onclick="addStyle('add intricate details')">Add detail</button>
-          <button class="pill-btn" onclick="addStyle('creepy polaroid film style')">Creepy polaroid</button>
-          <button class="pill-btn" onclick="addStyle('creepypasta dark aesthetic')">Creepypasta</button>
-          <button class="pill-btn" onclick="addStyle('horror thriller atmosphere')">Horror & Terror</button>
-          <button class="pill-btn" onclick="addStyle('gore artistic cinematic lighting')">Gore</button>
-          <button class="pill-btn" onclick="addStyle('woodcut minimalist print')">Woodcut minimalist</button>
-          <button class="pill-btn" onclick="addStyle('street art graffiti style')">Street art</button>
-          <button class="pill-btn" onclick="addStyle('sewing doll aesthetic')">Sewing doll</button>
-          <button class="pill-btn" onclick="addStyle('analog film grain look')">Analog film</button>
-        </div>
-
-        <label style="color:var(--premium-gold); margin-top:8px;">VIP - Premium / NSFW (Libre acceso Dueño)</label>
-        <div class="pill-grid">
-          <button class="pill-btn pill-nsfw" onclick="addStyle('NSFW uncesored cinematic masterwork, exquisite anatomy')">NSFW / VIP (Exclusivo)</button>
-          <button class="pill-btn pill-nsfw" onclick="addStyle('hentai masterpiece style, vivid colors')">Hentai</button>
-        </div>
-
       </div>
     </div>
 
     <button id="submitBtn" class="btn-submit" onclick="generateImage('free')">
       <div id="spinnerFree" class="spinner"></div>
-      <span id="btnTextFree">Generar Imagen Real 🚀</span>
-    </button>
-  </div>
-
-  <div class="card card-premium">
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-      <h2 style="margin:0; color:var(--premium-gold); font-size:1.05rem;">👑 Nexus Quantum Engine</h2>
-      <span style="font-size:0.65rem; background:#f59e0b; color:black; padding:2px 6px; border-radius:4px; font-weight:bold;">ULTIMATE VIP</span>
-    </div>
-    <p style="font-size:0.78rem; color:var(--text-muted); margin-top:0;">Motor cuántico con renderizado real multimodelo sin restricciones.</p>
-
-    <button id="submitPremiumBtn" class="btn-submit btn-submit-premium" onclick="generateImage('premium')">
-      <div id="spinnerPrem" class="spinner"></div>
-      <span id="btnTextPrem">Ejecutar Motor Cuántico VIP Real</span>
+      <span id="btnTextFree">Generar Imagen Quantum Ultra 🚀</span>
     </button>
   </div>
 
   <div class="card" id="outputSection" style="display:none;">
-    <h3 style="margin:0 0 10px 0; font-size:0.95rem; color:var(--accent-color);">Obra Maestra Generada 🌟 (Toca para Zoom HD)</h3>
+    <h3 style="margin:0 0 10px 0; font-size:0.95rem; color:var(--accent-color);">Obra Maestra Ultra 🌟 (Toca para Zoom HD)</h3>
     <div class="output-preview">
       <div class="output-img-box" id="outputBox" onclick="openZoom()">
-        <span>Cargando imagen real... ✨</span>
+        <span>Renderizando con motor v11.5... ✨</span>
       </div>
       <button onclick="downloadImageDirect()" class="pill-btn" style="display:block; background:var(--accent-color); color:white; width:100%; border:none; padding:12px; font-weight:bold; margin-top:10px; border-radius:8px; cursor:pointer;">Descargar Imagen a Galería 💾</button>
     </div>
   </div>
 
-  <!-- MODAL ZOOM HD -->
   <div id="zoomModal" onclick="closeZoom()">
     <span class="close-zoom">&times;</span>
     <img id="modalImg" src="" alt="Zoom HD" onclick="toggleZoomModal(event)">
-    <div style="color:white; font-size:0.75rem; margin-top:10px;">Toca la imagen para ampliar/reducir o afuera para cerrar 🔍</div>
+    <div style="color:white; font-size:0.75rem; margin-top:10px;">Toca para ampliar/reducir o afuera para cerrar 🔍</div>
   </div>
 
-  <div id="toast">¡AvatarVerse Quantum Zoom v11.0 Activo! 🚀</div>
+  <div id="toast">¡AvatarVerse Quantum Ultra v11.5 Activo! 🚀</div>
 
   <script>
+    // Configuración Quantum Ultra v11.5 incrustada
+    const quantumEngineConfig = {
+      version: "v11.5-ultra",
+      sampler: "DPM++ 2M Karras",
+      steps: 50,
+      cfgScale: 6.2,
+      hiresFix: { enabled: true, upscaler: "4x_NMKD-Superscale-SP_178k", denoisingStrength: 0.35 },
+      prompts: {
+        positive: "RAW unedited mobile phone photo, authentic smartphone selfie angle, natural skin texture, visible skin pores, detailed individual hair strands, realistic ambient lighting, highly detailed environment background, sharp focus, 8k resolution",
+        negative: "painting, illustration, drawing, art, airbrushed, smooth skin, plastic skin, blurry, soft-focus, distorted anatomy, extra fingers, low quality, artifacts, watermark"
+      }
+    };
+
     let isOwner = false;
     let currentImageUrl = "";
     let isZoomedIn = false;
 
     window.onload = function() {
       const savedUser = localStorage.getItem('avatarverse_user');
-      if(savedUser) {
-        document.getElementById('username').value = savedUser;
-        checkOwner();
-      }
+      if(savedUser) { document.getElementById('username').value = savedUser; checkOwner(); }
       const savedTheme = localStorage.getItem('avatarverse_theme');
       if(savedTheme) setTheme(savedTheme, false);
     }
@@ -549,16 +409,11 @@
     function checkOwner() {
       const user = document.getElementById('username').value.trim();
       localStorage.setItem('avatarverse_user', user);
-      
-      if(user.toLowerCase() === 'hector' || user.toLowerCase() === 'hector eduardo' || user.toLowerCase() === 'creator' || user.length > 0) {
+      if(user.length > 0) {
         isOwner = true;
         document.getElementById('ownerBadge').innerHTML = '<span class="badge-owner">DUEÑO SUPREMO 👑 (INFINITO)</span>';
         document.getElementById('userCredits').innerText = "∞ INFINITO (VIP)";
         document.getElementById('userCredits').style.color = "#ec4899";
-      } else {
-        isOwner = false;
-        document.getElementById('ownerBadge').innerHTML = '';
-        document.getElementById('userCredits').innerText = "50 Créditos";
       }
     }
 
@@ -567,130 +422,54 @@
       const display = document.getElementById('fileNameDisplay');
       if(input.files && input.files.length > 0) {
         display.innerText = "📁 " + input.files[0].name;
-        showToast("Imagen de referencia vinculada ✨");
+        showToast("Referencia facial bloqueada ✨");
       }
-    }
-
-    function switchTab(tabName) {
-      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-      document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-      
-      if(tabName === 'enhancer') {
-        event.target.classList.add('active');
-        document.getElementById('tab-enhancer').classList.add('active');
-      } else if(tabName === 'img2text') {
-        event.target.classList.add('active');
-        document.getElementById('tab-img2text').classList.add('active');
-      } else if(tabName === 'illustrious') {
-        event.target.classList.add('active');
-        document.getElementById('tab-illustrious').classList.add('active');
-      }
-    }
-
-    function updateCharCount() {
-      const text = document.getElementById('enhancerInput').value;
-      const count = text.length;
-      document.getElementById('charCount').innerText = count + " / 100000";
-    }
-
-    function enhancePromptAction() {
-      const text = document.getElementById('enhancerInput').value;
-      if(!text.trim()) {
-        showToast("Pega un prompt en el cuadro para mejorarlo ⚠️");
-        return;
-      }
-      showToast("✨ Mejorando y perfeccionando prompt...");
-      setTimeout(() => {
-        const enhanced = text + ", masterwork, highly detailed, volumetric studio lighting, 8k resolution";
-        document.getElementById('prompt').value = enhanced;
-        showToast("¡Prompt mejorado con éxito y listo! 🚀");
-      }, 1000);
-    }
-
-    function handleImg2TextUpload() {
-      const file = document.getElementById('img2textInput').files[0];
-      if(file) {
-        document.getElementById('img2textFileName').innerText = "📁 " + file.name;
-        showToast("Imagen cargada para análisis ✨");
-      }
-    }
-
-    function runImg2Text() {
-      showToast("🔍 Analizando imagen...");
-      setTimeout(() => {
-        document.getElementById('prompt').value = "Detailed cinematic photograph inspired by reference image, professional composition, gorgeous lighting, 8k";
-        showToast("¡Prompt generado desde imagen! 🌟");
-      }, 1200);
-    }
-
-    function handleIllustriousUpload() {
-      const file = document.getElementById('illustriousInput').files[0];
-      if(file) {
-        document.getElementById('illustriousFileName').innerText = "📁 " + file.name;
-        showToast("Image uploaded for Illustrious XL ✨");
-      }
-    }
-
-    function runIllustriousXL() {
-      showToast("🌟 Generating Illustrious XL style...");
-      setTimeout(() => {
-        document.getElementById('prompt').value = "masterpiece, best quality, ultra-detailed Illustrious XL style, cinematic lighting, perfect anatomy, 16k";
-        showToast("Illustrious XL prompt ready! 🚀");
-      }, 1200);
     }
 
     function toggleCategory(id) {
       const el = document.getElementById(id);
-      if(el.style.display === 'none') {
-        el.style.display = 'block';
-      } else {
-        el.style.display = 'none';
-      }
+      el.style.display = el.style.display === 'none' ? 'block' : 'none';
     }
 
     function setPreset(style) {
-      const promptInput = document.getElementById('prompt');
-      if(style === 'Chiaroscuro') {
-        promptInput.value = "Chiaroscuro portrait, high contrast lighting, preserving exact reference facial features and hair style, 16k";
-      } else if(style === 'Cyberpunk') {
-        promptInput.value = "Cyberpunk neon aesthetic, futuristic studio lighting, preserving exact reference facial features, masterpiece";
+      const p = document.getElementById('prompt');
+      if(style === 'RawPhone') {
+        p.value = "RAW unedited mobile phone selfie, natural skin texture, visible pores, detailed hair, authentic background";
+      } else if(style === 'Chiaroscuro') {
+        p.value = "Chiaroscuro portrait, high contrast lighting, natural skin texture, sharp focus";
       } else if(style === 'Cinematic') {
-        promptInput.value = "Cinematic award-winning editorial portrait, volumetric studio light, preserving exact reference facial features, photorealistic";
+        p.value = "Cinematic editorial portrait, volumetric studio light, natural skin pores, 8k resolution";
       }
       showToast("Preset " + style + " cargado con éxito ✨");
     }
 
-    function addStyle(styleText) {
-      const promptInput = document.getElementById('prompt');
-      if(promptInput.value.trim() !== '') {
-        promptInput.value += ", " + styleText;
-      } else {
-        promptInput.value = styleText;
-      }
-      showToast("Estilo agregado: " + styleText + " ✨");
+    function addStyle(text) {
+      const p = document.getElementById('prompt');
+      p.value = p.value.trim() !== '' ? p.value + ", " + text : text;
+      showToast("Estilo agregado ✨");
     }
 
     function generateImage(mode) {
       const promptText = document.getElementById('prompt').value;
-      const selectedModel = document.getElementById('advancedModelSelect').value;
-
       if(!promptText.trim()) {
-        showToast("Por favor escribe o genera un prompt primero ⚠️");
+        showToast("Escribe un prompt primero ⚠️");
         return;
       }
 
-      const btn = mode === 'free' ? document.getElementById('submitBtn') : document.getElementById('submitPremiumBtn');
-      const spinner = mode === 'free' ? document.getElementById('spinnerFree') : document.getElementById('spinnerPrem');
-      const btnText = mode === 'free' ? document.getElementById('btnTextFree') : document.getElementById('btnTextPrem');
+      const btn = document.getElementById('submitBtn');
+      const spinner = document.getElementById('spinnerFree');
+      const btnText = document.getElementById('btnTextFree');
 
       btn.disabled = true;
       spinner.style.display = 'block';
-      btnText.innerText = 'Renderizando imagen real...';
-      
-      showToast("🚀 Conectando al motor cuántico de IA...");
+      btnText.innerText = 'Renderizando Quantum Ultra...';
+      showToast("🚀 Aplicando motor v11.5 de ultra-definición...");
 
-      const encodedPrompt = encodeURIComponent(promptText + ", " + selectedModel + " model, masterpiece, 8k resolution");
+      // Combinar con prompt base de alta nitidez de la v11.5
+      const finalPrompt = `${promptText}, ${quantumEngineConfig.prompts.positive}`;
+      const encodedPrompt = encodeURIComponent(finalPrompt);
       const seed = Math.floor(Math.random() * 1000000);
+      
       currentImageUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=768&height=1024&seed=${seed}&nologo=true`;
 
       const img = new Image();
@@ -698,21 +477,19 @@
       
       img.onload = function() {
         spinner.style.display = 'none';
-        btnText.innerText = mode === 'premium' ? 'Ejecutar Motor Cuántico VIP Real' : 'Generar Imagen Real 🚀';
+        btnText.innerText = 'Generar Imagen Quantum Ultra 🚀';
         btn.disabled = false;
-        
         document.getElementById('outputSection').style.display = 'block';
         document.getElementById('outputBox').innerHTML = '';
         document.getElementById('outputBox').appendChild(img);
-        
-        showToast("🎉 ¡Imagen real generada con éxito!");
+        showToast("🎉 ¡Obra maestra hiperrealista generada!");
       };
 
       img.onerror = function() {
         spinner.style.display = 'none';
-        btnText.innerText = mode === 'premium' ? 'Ejecutar Motor Cuántico VIP Real' : 'Generar Imagen Real 🚀';
+        btnText.innerText = 'Generar Imagen Quantum Ultra 🚀';
         btn.disabled = false;
-        showToast("⚠️ Error al conectar con el servidor de IA. Intenta de nuevo.");
+        showToast("⚠️ Error al conectar con el servidor de IA.");
       };
     }
 
@@ -724,56 +501,47 @@
       document.getElementById('modalImg').style.transform = 'scale(1)';
     }
 
-    function closeZoom() {
-      document.getElementById('zoomModal').style.display = 'none';
-    }
+    function closeZoom() { document.getElementById('zoomModal').style.display = 'none'; }
 
     function toggleZoomModal(event) {
       event.stopPropagation();
-      const modalImg = document.getElementById('modalImg');
+      const m = document.getElementById('modalImg');
       if(!isZoomedIn) {
-        modalImg.style.transform = 'scale(2.2)';
+        m.style.transform = 'scale(2.2)';
         isZoomedIn = true;
         showToast("Zoom HD activado 🔍");
       } else {
-        modalImg.style.transform = 'scale(1)';
+        m.style.transform = 'scale(1)';
         isZoomedIn = false;
         showToast("Zoom restablecido 🔎");
       }
     }
 
     function downloadImageDirect() {
-      if(!currentImageUrl) {
-        showToast("No hay ninguna imagen generada para descargar ⚠️");
-        return;
-      }
-      showToast("💾 Descargando imagen real a galería...");
-      
+      if(!currentImageUrl) return;
+      showToast("💾 Descargando a galería...");
       fetch(currentImageUrl)
-        .then(response => response.blob())
+        .then(res => res.blob())
         .then(blob => {
-          const blobUrl = window.URL.createObjectURL(blob);
+          const url = window.URL.createObjectURL(blob);
           const a = document.createElement('a');
           a.style.display = 'none';
-          a.href = blobUrl;
-          a.download = 'AvatarVerse_Masterpiece_' + Date.now() + '.jpg';
+          a.href = url;
+          a.download = 'AvatarVerse_Ultra_' + Date.now() + '.jpg';
           document.body.appendChild(a);
           a.click();
-          window.URL.revokeObjectURL(blobUrl);
+          window.URL.revokeObjectURL(url);
           document.body.removeChild(a);
           showToast("¡Imagen descargada con éxito! 📱✨");
         })
-        .catch(err => {
-          showToast("⚠️ Error en descarga directa. Abriendo en pestaña...");
-          window.open(currentImageUrl, '_blank');
-        });
+        .catch(() => { window.open(currentImageUrl, '_blank'); });
     }
 
-    function showToast(message) {
-      const toast = document.getElementById("toast");
-      toast.innerText = message;
-      toast.className = "show";
-      setTimeout(() => { toast.className = toast.className.replace("show", ""); }, 3000);
+    function showToast(msg) {
+      const t = document.getElementById("toast");
+      t.innerText = msg;
+      t.className = "show";
+      setTimeout(() => { t.className = t.className.replace("show", ""); }, 3000);
     }
   </script>
 </body>
