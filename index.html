@@ -3,13 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AvatarVerse Studio</title>
+  <title>AvatarVerse Studio Ultra</title>
   <style>
     :root {
       --bg-color: #0b0f19;
       --card-bg: #111827;
       --accent-color: #d946ef;
-      --accent-hover: #c026d3;
       --text-main: #f3f4f6;
       --text-muted: #9ca3af;
       --input-bg: #1f2937;
@@ -45,23 +44,8 @@
       box-shadow: 0 10px 25px rgba(0,0,0,0.5);
       margin-bottom: 20px;
     }
-    .label-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin: 12px 0 6px;
-    }
-    label { font-size: 0.85rem; font-weight: bold; color: var(--text-muted); display: block; }
-    .btn-action-text {
-      background: none;
-      border: none;
-      color: var(--accent-color);
-      font-size: 0.75rem;
-      cursor: pointer;
-      padding: 0;
-    }
-    .btn-action-text:hover { text-decoration: underline; }
-    input, textarea {
+    label { font-size: 0.85rem; font-weight: bold; color: var(--text-muted); display: block; margin: 12px 0 6px; }
+    input[type="text"], textarea, select {
       width: 100%;
       background: var(--input-bg);
       border: 1px solid var(--border-color);
@@ -71,7 +55,26 @@
       box-sizing: border-box;
       font-family: inherit;
     }
-    textarea.error { border-color: #ef4444; }
+    /* Controles deslizantes (Sliders) modernos */
+    .slider-container {
+      background: var(--input-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 12px;
+      margin-top: 10px;
+    }
+    .slider-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+    input[type="range"] {
+      width: 100%;
+      accent-color: var(--accent-color);
+      cursor: pointer;
+    }
     .file-upload-wrapper {
       position: relative;
       overflow: hidden;
@@ -117,6 +120,7 @@
       transition: all 0.2s ease;
     }
     .btn-style:hover { background: var(--accent-color); border-color: var(--accent-color); }
+    
     .btn-submit {
       width: 100%;
       background: var(--accent-color);
@@ -148,7 +152,6 @@
     }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* Estilos para la Galería de Historial */
     .history-card {
       background: #1f2937;
       border-left: 4px solid var(--accent-color);
@@ -165,13 +168,6 @@
       margin-bottom: 4px;
     }
     .history-prompt { color: #f3f4f6; font-weight: 500; }
-
-    .history-actions {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 10px;
-    }
 
     #toast {
       visibility: hidden;
@@ -196,17 +192,16 @@
 
   <div class="header">
     <h1>AvatarVerse</h1>
-    <span style="color:#10b981; font-size:0.8rem;">● Ultra Pro v4.0</span>
+    <span style="color:#10b981; font-size:0.8rem;">● Quantum v5.0</span>
   </div>
 
   <div class="card">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-      <h2 style="margin:0; color:var(--accent-color);">Studio Master</h2>
-      <!-- Selector de Tema de Color -->
+      <h2 style="margin:0; color:var(--accent-color);">Quantum Studio</h2>
       <div style="display:flex; gap:6px;">
-        <button onclick="setTheme('#d946ef')" style="width:18px; height:18px; border-radius:50%; background:#d946ef; border:none; cursor:pointer;" title="Fucsia Púrpura"></button>
-        <button onclick="setTheme('#10b981')" style="width:18px; height:18px; border-radius:50%; background:#10b981; border:none; cursor:pointer;" title="Verde Neón"></button>
-        <button onclick="setTheme('#3b82f6')" style="width:18px; height:18px; border-radius:50%; background:#3b82f6; border:none; cursor:pointer;" title="Azul Eléctrico"></button>
+        <button onclick="setTheme('#d946ef')" style="width:18px; height:18px; border-radius:50%; background:#d946ef; border:none; cursor:pointer;" title="Fucsia"></button>
+        <button onclick="setTheme('#10b981')" style="width:18px; height:18px; border-radius:50%; background:#10b981; border:none; cursor:pointer;" title="Verde"></button>
+        <button onclick="setTheme('#3b82f6')" style="width:18px; height:18px; border-radius:50%; background:#3b82f6; border:none; cursor:pointer;" title="Azul"></button>
       </div>
     </div>
     
@@ -220,10 +215,16 @@
     </div>
     <div id="fileNameDisplay" class="file-name">Sin archivos seleccionados</div>
 
-    <label>ESCRIBE TU PROMPT AQUÍ...</label>
-    <textarea id="prompt" rows="3" placeholder="Escribe la descripción de la imagen..."></textarea>
+    <label>ASISTENTE INTELIGENTE DE PROMPTS 🤖</label>
+    <div style="display:flex; gap:6px; margin-bottom:6px;">
+      <input type="text" id="aiIdea" placeholder="Ej: Retrato cyberpunk bajo la lluvia..." style="font-size:0.85rem;">
+      <button class="btn-style" onclick="generateAiPrompt()" style="background:var(--accent-color); color:white; border:none; padding:0 12px;">Crear IA ✨</button>
+    </div>
 
-    <label>ESTILOS ARTÍSTICOS RÁPIDOS</label>
+    <label>ESCRIBE TU PROMPT AQUÍ...</label>
+    <textarea id="prompt" rows="3" placeholder="Descripción de la imagen..."></textarea>
+
+    <label>ESTILOS ARTÍSTICOS</label>
     <div class="btn-group">
       <button class="btn-style" onclick="setPreset('Chiaroscuro')">Chiaroscuro</button>
       <button class="btn-style" onclick="setPreset('Cyberpunk')">Cyberpunk</button>
@@ -237,11 +238,21 @@
       <button class="btn-style" onclick="setRatio('9:16')">9:16 Historia</button>
     </div>
 
-    <div class="label-row">
-      <label>CONFIGURACIÓN JSON (VALIDADO)</label>
-      <button class="btn-action-text" onclick="copyJson()">Copiar JSON 📋</button>
+    <!-- PANEL GRÁFICO CON SLIDERS (Adiós al JSON manual) -->
+    <label>PANEL DE CONTROL GRÁFICO (SLIDERS AVANZADOS)</label>
+    <div class="slider-container">
+      <div class="slider-row">
+        <span>Fuerza de Inferencia (Steps)</span>
+        <span id="stepsVal">30</span>
+      </div>
+      <input type="range" id="stepsRange" min="10" max="60" value="30" oninput="updateSliders()">
+
+      <div class="slider-row" style="margin-top:10px;">
+        <span>Creatividad / Denoising</span>
+        <span id="denoiseVal">0.75</span>
+      </div>
+      <input type="range" id="denoiseRange" min="0.1" max="1.0" step="0.05" value="0.75" oninput="updateSliders()">
     </div>
-    <textarea id="jsonConfig" rows="2" oninput="validateJson()">{"lighting": "chiaroscuro", "aspectRatio": "16:9"}</textarea>
 
     <button id="submitBtn" class="btn-submit" onclick="generateImage()">
       <div id="spinner" class="spinner"></div>
@@ -249,30 +260,28 @@
     </button>
   </div>
 
-  <!-- Tarjeta de Historial / Galería Local -->
+  <!-- Galería de Historial -->
   <div class="card" id="historySection" style="display:none;">
-    <div class="history-actions">
-      <h3 style="margin:0; font-size:1.1rem; color:var(--accent-color);">Historial del Estudio 🖼️</h3>
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+      <h3 style="margin:0; font-size:1.1rem; color:var(--accent-color);">Historial Cuántico 🖼️</h3>
       <div style="display:flex; gap:10px;">
-        <button class="btn-action-text" onclick="exportHistory()">Exportar JSON 📥</button>
-        <button class="btn-action-text" style="color:#ef4444;" onclick="clearHistory()">Borrar 🗑️</button>
+        <button class="btn-action-text" onclick="exportHistory()" style="background:none; border:none; color:var(--accent-color); cursor:pointer; font-size:0.75rem;">Exportar 📥</button>
+        <button class="btn-action-text" onclick="clearHistory()" style="background:none; border:none; color:#ef4444; cursor:pointer; font-size:0.75rem;">Borrar 🗑️</button>
       </div>
     </div>
     <div id="historyList"></div>
   </div>
 
-  <div id="toast">¡Notificación Pro! 🌟</div>
+  <div id="toast">¡Quantum Studio Activo! 🚀</div>
 
   <script>
+    let currentAspectRatio = "16:9";
+
     window.onload = function() {
       const savedUser = localStorage.getItem('avatarverse_user');
-      if(savedUser) {
-        document.getElementById('username').value = savedUser;
-      }
+      if(savedUser) document.getElementById('username').value = savedUser;
       const savedTheme = localStorage.getItem('avatarverse_theme');
-      if(savedTheme) {
-        setTheme(savedTheme, false);
-      }
+      if(savedTheme) setTheme(savedTheme, false);
       loadHistory();
     }
 
@@ -283,8 +292,7 @@
     }
 
     function saveUsername() {
-      const user = document.getElementById('username').value;
-      localStorage.setItem('avatarverse_user', user);
+      localStorage.setItem('avatarverse_user', document.getElementById('username').value);
     }
 
     function updateFileName() {
@@ -292,71 +300,47 @@
       const display = document.getElementById('fileNameDisplay');
       if(input.files && input.files.length > 0) {
         display.innerText = "📁 " + input.files[0].name;
-        showToast("Imagen cargada con éxito ✨");
-      } else {
-        display.innerText = "Sin archivos seleccionados";
+        showToast("Imagen de referencia cargada ✨");
       }
     }
 
     function setPreset(style) {
       const promptInput = document.getElementById('prompt');
-      const jsonInput = document.getElementById('jsonConfig');
-      
       if(style === 'Chiaroscuro') {
-        promptInput.value = "Chiaroscuro portrait, deep contrast shadows, cinematic dramatic lighting";
-        jsonInput.value = '{"lighting": "chiaroscuro", "style": "dramatic", "aspectRatio": "16:9"}';
+        promptInput.value = "Chiaroscuro portrait, deep contrast shadows, cinematic dramatic lighting, 8k resolution";
       } else if(style === 'Cyberpunk') {
-        promptInput.value = "Cyberpunk aesthetic, neon reflections, futuristic night city backdrop";
-        jsonInput.value = '{"lighting": "neon", "style": "cyberpunk", "aspectRatio": "16:9"}';
+        promptInput.value = "Cyberpunk aesthetic, neon reflections, futuristic night city backdrop, photorealistic";
       } else if(style === 'Editorial') {
-        promptInput.value = "High fashion editorial portrait, studio softbox lighting, 8k photo detail";
-        jsonInput.value = '{"lighting": "softbox", "style": "editorial", "aspectRatio": "16:9"}';
+        promptInput.value = "High fashion editorial portrait, studio softbox professional lighting, masterwork";
       }
-      validateJson();
       showToast("Estilo " + style + " aplicado ✨");
     }
 
     function setRatio(ratio) {
-      const jsonInput = document.getElementById('jsonConfig');
-      try {
-        let obj = JSON.parse(jsonInput.value);
-        obj.aspectRatio = ratio;
-        jsonInput.value = JSON.stringify(obj, null, 2);
-        validateJson();
-        showToast("Formato " + ratio + " configurado 📐");
-      } catch (e) {
-        showToast("Ajusta el JSON antes de cambiar el ratio ⚠️");
-      }
+      currentAspectRatio = ratio;
+      showToast("Formato " + ratio + " configurado 📐");
     }
 
-    function validateJson() {
-      const jsonInput = document.getElementById('jsonConfig');
-      try {
-        JSON.parse(jsonInput.value);
-        jsonInput.classList.remove('error');
-      } catch (e) {
-        jsonInput.classList.add('error');
-      }
+    function updateSliders() {
+      document.getElementById('stepsVal').innerText = document.getElementById('stepsRange').value;
+      document.getElementById('denoiseVal').innerText = document.getElementById('denoiseRange').value;
     }
 
-    function copyJson() {
-      const jsonText = document.getElementById('jsonConfig');
-      jsonText.select();
-      navigator.clipboard.writeText(jsonText.value);
-      showToast("¡Configuración JSON copiada al portapapeles! 📋");
+    function generateAiPrompt() {
+      const idea = document.getElementById('aiIdea').value;
+      if(!idea.trim()) {
+        showToast("Escribe una idea breve para la IA ⚠️");
+        return;
+      }
+      showToast("🤖 IA generando prompt optimizado...");
+      setTimeout(() => {
+        document.getElementById('prompt').value = "Masterpiece digital artwork of " + idea + ", hyperdetailed volumetric lighting, unreal engine 5 render, award winning photography";
+        showToast("¡Prompt autogenerado con éxito por la IA! ✨");
+      }, 1000);
     }
 
     function generateImage() {
       const promptText = document.getElementById('prompt').value;
-      const jsonText = document.getElementById('jsonConfig').value;
-
-      try {
-        JSON.parse(jsonText);
-      } catch (e) {
-        showToast("Error: El formato JSON es inválido ❌");
-        return;
-      }
-
       if(!promptText.trim()) {
         showToast("Por favor escribe un prompt primero ⚠️");
         return;
@@ -368,8 +352,8 @@
 
       btn.disabled = true;
       spinner.style.display = 'block';
-      btnText.innerText = 'Procesando IA...';
-      showToast("¡Generando e inmortalizando tu avatar! 🚀");
+      btnText.innerText = 'Procesando Núcleo Cuántico...';
+      showToast("¡Inmortalizando tu avatar con parámetros avanzados! 🚀");
 
       setTimeout(() => {
         spinner.style.display = 'none';
@@ -377,23 +361,21 @@
         btn.disabled = false;
         
         saveToHistory(promptText);
-        showToast("¡Avatar generado con éxito! 🎉");
+        showToast("¡Avatar cuántico generado con éxito! 🎉");
       }, 3000);
     }
 
     function saveToHistory(prompt) {
-      let history = JSON.parse(localStorage.getItem('avatarverse_history') || '[]');
+      let history = JSON.parse(localStorage.getItem('avatarverse_quantum_history') || '[]');
       const dateStr = new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-      
-      history.unshift({ prompt: prompt, date: dateStr });
-      if(history.length > 10) history.pop(); // Ampliado a 10 elementos
-      
-      localStorage.setItem('avatarverse_history', JSON.stringify(history));
+      history.unshift({ prompt: prompt, date: dateStr, ratio: currentAspectRatio });
+      if(history.length > 10) history.pop();
+      localStorage.setItem('avatarverse_quantum_history', JSON.stringify(history));
       loadHistory();
     }
 
     function loadHistory() {
-      let history = JSON.parse(localStorage.getItem('avatarverse_history') || '[]');
+      let history = JSON.parse(localStorage.getItem('avatarverse_quantum_history') || '[]');
       const section = document.getElementById('historySection');
       const list = document.getElementById('historyList');
       
@@ -404,7 +386,7 @@
           list.innerHTML += `
             <div class="history-card">
               <div class="history-header">
-                <span>⭐ Creación Pro</span>
+                <span>⭐ [Ratio: ${item.ratio}]</span>
                 <span>${item.date}</span>
               </div>
               <div class="history-prompt">"${item.prompt}"</div>
@@ -417,24 +399,24 @@
     }
 
     function clearHistory() {
-      if(confirm("¿Estás segura de borrar todo el historial?")) {
-        localStorage.removeItem('avatarverse_history');
+      if(confirm("¿Estás segura de limpiar el historial cuántico?")) {
+        localStorage.removeItem('avatarverse_quantum_history');
         loadHistory();
         showToast("Historial vaciado 🧹");
       }
     }
 
     function exportHistory() {
-      let history = localStorage.getItem('avatarverse_history') || '[]';
+      let history = localStorage.getItem('avatarverse_quantum_history') || '[]';
       let blob = new Blob([history], {type: "application/json"});
       let url = URL.createObjectURL(blob);
       let a = document.createElement('a');
       a.href = url;
-      a.download = "avatarverse_history.json";
+      a.download = "avatarverse_quantum_history.json";
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
-      showToast("Historial exportado a JSON 📥");
+      showToast("Historial exportado con éxito 📥");
     }
 
     function showToast(message) {
