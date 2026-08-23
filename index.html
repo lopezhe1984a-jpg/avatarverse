@@ -1,0 +1,69 @@
+<!-- Pestaña Nueva: Estudio IA (Activada desde la barra inferior sin afectar otras pestañas) -->
+<div id="tab-studio-ia" class="tab-content" style="display: none;">
+
+  <!-- Header Estilo Dreamerland Pro -->
+  <div class="studio-top-bar">
+    <div class="brand">Dreamerland <span class="badge-pro">✨ PRO</span></div>
+    <div class="token-counter">🪙 42</div>
+  </div>
+
+  <!-- Banner Guía AI -->
+  <div class="ai-guide-card">
+    <div class="guide-text">
+      <span class="tag-new">¡NUEVA FUNCIÓN!</span>
+      <h3>Kumi</h3>
+      <p>Your AI creative guide</p>
+    </div>
+  </div>
+
+  <!-- Toggle Imagen / Video -->
+  <div class="mode-switch-wrapper">
+    <button class="mode-btn active" id="btnModeImg" onclick="setStudioMode('image')">📷 Imagen</button>
+    <button class="mode-btn" id="btnModeVid" onclick="setStudioMode('video')">🎥 Video</button>
+  </div>
+
+  <!-- Barra Horizontal de Motores -->
+  <div class="engine-scroll-container" id="engineList">
+    <!-- Se llena dinámicamente según el modo -->
+  </div>
+
+  <!-- Selector de Modelo Activo -->
+  <div class="model-active-card" onclick="openModelCatalog()">
+    <img src="preview_thumb.jpg" alt="Thumb" class="model-thumb" id="currentModelImg">
+    <div class="model-details">
+      <span class="model-title" id="currentModelTitle">OileMayhem_SKD</span>
+    </div>
+  </div>
+
+  <!-- Carrusel de Tareas -->
+  <div class="tasks-carousel" id="tasksContainer">
+    <!-- Generado por JS -->
+  </div>
+
+  <!-- Controles y Switches Avanzados -->
+  <div class="studio-controls-group">
+    <button class="accordion-btn" onclick="toggleCharacters()">
+      <span>👤 Personajes</span>
+      <i class="arrow-icon">❯</i>
+    </button>
+
+    <div class="switch-row">
+      <div class="switch-info">
+        <label class="switch-title">Prompt regional</label>
+        <span class="switch-desc">Prompts múltiples para diferentes regiones</span>
+      </div>
+      <input type="checkbox" id="regionalPromptSwitch" onchange="toggleRegionalPrompt(this.checked)">
+    </div>
+
+    <!-- Caja de Prompt Principal -->
+    <div class="prompt-input-wrapper">
+      <textarea id="studioPromptInput" rows="3" placeholder="A futuristic camera lens app icon, central iris radiating neon magenta..."></textarea>
+    </div>
+
+    <!-- Picker de Estilos -->
+    <button class="style-picker-btn" onclick="openStylesModal()">
+      😊 Elige tus estilos
+    </button>
+  </div>
+
+</div>
