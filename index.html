@@ -45,10 +45,6 @@
       margin-bottom: 16px;
       box-sizing: border-box;
     }
-    .card-premium {
-      border: 2px solid var(--premium-gold);
-      background: linear-gradient(145deg, #0f172a, #1e1b4b);
-    }
     label { font-size: 0.82rem; font-weight: bold; color: var(--text-muted); display: block; margin: 10px 0 6px; }
     input[type="text"], textarea, select {
       width: 100%;
@@ -103,34 +99,6 @@
       margin-top: 4px;
       word-break: break-all;
     }
-    .assistant-tabs {
-      display: flex;
-      gap: 4px;
-      background: #020617;
-      padding: 4px;
-      border-radius: 10px;
-      margin-bottom: 10px;
-    }
-    .tab-btn {
-      flex: 1;
-      background: transparent;
-      border: none;
-      color: var(--text-muted);
-      padding: 8px 6px;
-      font-size: 0.75rem;
-      font-weight: bold;
-      border-radius: 6px;
-      cursor: pointer;
-      text-align: center;
-    }
-    .tab-btn.active {
-      background: var(--accent-color);
-      color: white;
-      box-shadow: 0 4px 12px rgba(217, 70, 239, 0.4);
-    }
-    .tab-content { display: none; }
-    .tab-content.active { display: block; }
-    .char-counter { font-size: 0.7rem; color: var(--text-muted); text-align: right; margin-top: 4px; }
     .category-section {
       background: #020617;
       border: 1px solid var(--border-color);
@@ -152,7 +120,7 @@
       display: flex;
       flex-wrap: wrap;
       gap: 5px;
-      max-height: 120px;
+      max-height: 140px;
       overflow-y: auto;
       padding: 4px;
     }
@@ -167,11 +135,6 @@
       transition: all 0.2s;
     }
     .pill-btn:hover { background: var(--accent-color); border-color: var(--accent-color); color: white; }
-    .pill-nsfw {
-      border: 1px solid var(--premium-gold);
-      background: rgba(245, 158, 11, 0.15);
-      color: var(--premium-gold);
-    }
     .btn-submit {
       width: 100%;
       background: linear-gradient(90deg, #d946ef, #3b82f6);
@@ -187,9 +150,6 @@
       justify-content: center;
       align-items: center;
       gap: 10px;
-    }
-    .btn-submit-premium {
-      background: linear-gradient(90deg, #f59e0b, #ef4444);
     }
     .spinner {
       width: 18px;
@@ -231,7 +191,6 @@
       font-size: 0.85rem;
       margin-bottom: 10px;
       overflow: hidden;
-      position: relative;
       cursor: zoom-in;
     }
     .output-img-box img {
@@ -330,28 +289,56 @@
       <button class="pill-btn" onclick="setPreset('Cinematic')">Cinematic 16K</button>
     </div>
 
+    <!-- Categorías Completas Restauradas -->
     <div class="category-section">
-      <div class="category-title" onclick="toggleCategory('cat-general')">
-        <span>📂 Categorías y Texturas Avanzadas</span>
+      <div class="category-title" onclick="toggleCategory('cat-skin')">
+        <span>📂 Piel, Rostro & Cabello (Detalle Extremo)</span>
         <span>▼</span>
       </div>
-      <div id="cat-general" style="display:none; margin-top:8px;">
-        <label style="color:var(--accent-color); margin-top:4px;">Piel & Cabello</label>
+      <div id="cat-skin" style="display:none; margin-top:8px;">
         <div class="pill-grid">
           <button class="pill-btn" onclick="addStyle('natural skin texture, visible skin pores')">Piel real y poros</button>
-          <button class="pill-btn" onclick="addStyle('detailed individual hair strands')">Cabello detallado hebra por hebra</button>
-          <button class="pill-btn" onclick="addStyle('oiled skin')">Oiled skin</button>
-        </div>
-        <label style="color:var(--accent-color); margin-top:6px;">Entorno & Fotorrealismo</label>
-        <div class="pill-grid">
-          <button class="pill-btn" onclick="addStyle('authentic smartphone selfie angle')">Ángulo selfie real</button>
-          <button class="pill-btn" onclick="addStyle('realistic ambient lighting, highly detailed environment background')">Fondo texturizado real</button>
-          <button class="pill-btn" onclick="addStyle('sharp focus, 8k resolution')">Enfoque nítido 8K</button>
+          <button class="pill-btn" onclick="addStyle('detailed individual hair strands')">Cabello hebra por hebra</button>
+          <button class="pill-btn" onclick="addStyle('subtle skin flush, natural blush')">Rubor natural</button>
+          <button class="pill-btn" onclick="addStyle('detailed eyelashes, sharp eyes')">Pestañas y ojos nítidos</button>
+          <button class="pill-btn" onclick="addStyle('oiled skin texture, wet gloss')">Piel con brillo de aceite</button>
         </div>
       </div>
     </div>
 
-    <button id="submitBtn" class="btn-submit" onclick="generateImage('free')">
+    <div class="category-section">
+      <div class="category-title" onclick="toggleCategory('cat-lighting')">
+        <span>📂 Iluminación & Óptica Fotográfica</span>
+        <span>▼</span>
+      </div>
+      <div id="cat-lighting" style="display:none; margin-top:8px;">
+        <div class="pill-grid">
+          <button class="pill-btn" onclick="addStyle('authentic smartphone selfie angle')">Ángulo selfie real</button>
+          <button class="pill-btn" onclick="addStyle('realistic ambient lighting, soft shadows')">Luz ambiental realista</button>
+          <button class="pill-btn" onclick="addStyle('volumetric studio softbox lighting')">Softbox de estudio</button>
+          <button class="pill-btn" onclick="addStyle('chiaroscuro lighting, high contrast dramatic shadows')">Chiaroscuro dramático</button>
+          <button class="pill-btn" onclick="addStyle('golden hour sunlight rim light')">Luz de hora dorada</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="category-section">
+      <div class="category-title" onclick="toggleCategory('cat-environment')">
+        <span>📂 Entornos, Vestuario & Fondos</span>
+        <span>▼</span>
+      </div>
+      <div id="cat-environment" style="display:none; margin-top:8px;">
+        <div class="pill-grid">
+          <button class="pill-btn" onclick="addStyle('highly detailed environment background, sharp focus')">Fondo texturizado nítido</button>
+          <button class="pill-btn" onclick="addStyle('natural wood wall texture, visible grain')">Pared de madera con vetas reales</button>
+          <button class="pill-btn" onclick="addStyle('luxury hotel room interior, bokeh background')">Habitación de lujo con bokeh</button>
+          <button class="pill-btn" onclick="addStyle('tight form-fitting silk dress texture, fine fabric weave')">Vestido de seda ajustado</button>
+          <button class="pill-btn" onclick="addStyle('holding modern smartphone in mirror reflection')">Smartphone en espejo</button>
+        </div>
+      </div>
+    </div>
+
+    <button id="submitBtn" class="btn-submit" onclick="generateImage()">
       <div id="spinnerFree" class="spinner"></div>
       <span id="btnTextFree">Generar Imagen Quantum Ultra 🚀</span>
     </button>
@@ -373,16 +360,15 @@
     <div style="color:white; font-size:0.75rem; margin-top:10px;">Toca para ampliar/reducir o afuera para cerrar 🔍</div>
   </div>
 
-  <div id="toast">¡AvatarVerse Quantum Ultra v11.5 Activo! 🚀</div>
+  <div id="toast">¡AvatarVerse Quantum Ultra v11.5 Restaurado y Activo! 🚀</div>
 
   <script>
-    // Configuración Quantum Ultra v11.5 incrustada
+    // Configuración Quantum Ultra v11.5 con Prompts Base de Fotorrealismo Extremo
     const quantumEngineConfig = {
       version: "v11.5-ultra",
       sampler: "DPM++ 2M Karras",
       steps: 50,
       cfgScale: 6.2,
-      hiresFix: { enabled: true, upscaler: "4x_NMKD-Superscale-SP_178k", denoisingStrength: 0.35 },
       prompts: {
         positive: "RAW unedited mobile phone photo, authentic smartphone selfie angle, natural skin texture, visible skin pores, detailed individual hair strands, realistic ambient lighting, highly detailed environment background, sharp focus, 8k resolution",
         negative: "painting, illustration, drawing, art, airbrushed, smooth skin, plastic skin, blurry, soft-focus, distorted anatomy, extra fingers, low quality, artifacts, watermark"
@@ -449,7 +435,7 @@
       showToast("Estilo agregado ✨");
     }
 
-    function generateImage(mode) {
+    function generateImage() {
       const promptText = document.getElementById('prompt').value;
       if(!promptText.trim()) {
         showToast("Escribe un prompt primero ⚠️");
@@ -465,7 +451,7 @@
       btnText.innerText = 'Renderizando Quantum Ultra...';
       showToast("🚀 Aplicando motor v11.5 de ultra-definición...");
 
-      // Combinar con prompt base de alta nitidez de la v11.5
+      // Combinación automática con el prompt base de nitidez
       const finalPrompt = `${promptText}, ${quantumEngineConfig.prompts.positive}`;
       const encodedPrompt = encodeURIComponent(finalPrompt);
       const seed = Math.floor(Math.random() * 1000000);
