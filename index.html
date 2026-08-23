@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AvatarVerse SuperApp — Ultra System Edition</title>
+    <meta name="theme-color" content="#0a0712">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://download.agora.io/sdk/release/AgoraRTC_N-4.20.0.js"></script>
+    <style>
+        :root {
+            --bg-principal: #07040d;
+            --bg-card: rgba(20, 14, 34, 0.88);
+            --morado-neon: #a855f7;
+            --rosa-cosmico: #ec4899;
+            --azul-electrico: #06b6d4;
+            --dorado: #ffd700;
+            --texto-principal: #f8fafc;
+            --texto-secundario: #94a3b8;
+            --borde-glow: rgba(168, 85, 247, 0.35);
+            --borde-dorado: rgba(255, 215, 0, 0.6);
+            --rojo-vivo: #ef4444;
+            --verde-exito: #22c55e;
+            --radius-lg: 20px;
+            --radius-md: 12px;
+        }
+
+        * { margin:0; padding:0; box-sizing:border-box; font-family:'Plus Jakarta Sans', sans-serif; color:var(--texto-principal); -webkit-tap-highlight-color: transparent; }
+        body { background: var(--bg-principal); background-image: radial-gradient(circle at 50% 0%, #1f0b38 0%, var(--bg-principal) 75%); min-height: 100vh; padding-bottom: 90px; overflow-x: hidden; }
+        .container { max-width: 480px; margin: 0 auto; padding: 12px; }
+
+        .top-bar { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; background: rgba(7, 4, 13, 0.85); backdrop-filter: blur(16px); border-bottom: 1px solid var(--borde-glow); position: sticky; top: 0; z-index: 100; }
+        .logo { font-size: 1.3rem; font-weight: 800; background: linear-gradient(90deg, var(--morado-neon), var(--rosa-cosmico), var(--azul-electrico)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; display: flex; align-items: center; gap: 6px; }
+        .wallet-badge { display: flex; align-items: center; gap: 6px; background: rgba(255, 215, 0, 0.15); border: 1px solid var(--borde-dorado); padding: 5px 12px; border-radius: 20px; font-size: 0.82rem; font-weight: 700; color: var(--dorado); cursor: pointer; }
+
+        .trends-bar { display: flex; gap: 8px; overflow-x: auto; padding: 6px 0 12px 0; scrollbar-width: none; }
+        .trends-bar::-webkit-scrollbar { display: none; }
+        .trend-chip { background: rgba(255,255,255,0.05); border: 1px solid var(--borde-glow); padding: 6px 12px; border-radius: 16px; font-size: 0.75rem; white-space: nowrap; cursor: pointer; }
+        .trend-chip.active { background: var(--morado-neon); border-color: var(--morado-neon); font-weight: bold; }
+
+        .post-card { background: var(--bg-card); border-radius: var(--radius-lg); border: 1px solid var(--borde-glow); margin-bottom: 16px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .post-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; }
+        .post-avatar { width: 42px; height: 42px; border-radius: 50%; background: linear-gradient(135deg, var(--morado-neon), var(--rosa-cosmico)); display: flex; align-items: center; justify-content: center; font-weight: bold; overflow: hidden; }
+
+        .live-stage { position: relative; width: 100%; height: 340px; background: #000; border-radius: var(--radius-lg); overflow: hidden; border: 1px solid var(--borde-glow); }
+        .pk-bar-container { position: absolute; top: 12px; left: 10px; right: 10px; z-index: 20; }
+        .pk-progress { height: 10px; width: 100%; background: var(--azul-electrico); border-radius: 10px; overflow: hidden; display: flex; }
+        .pk-red { height: 100%; background: var(--rojo-vivo); width: 50%; transition: width 0.3s; }
+        .pk-scores { display: flex; justify-content: space-between; font-size: 0.75rem; font-weight: 800; margin-bottom: 4px; }
+
+        .quick-style-btn { background: rgba(26, 11, 46, 0.8); border: 1px solid var(--morado-neon); color: #f044ff; padding: 6px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; cursor: pointer; transition: all 0.2s ease; }
+        
+        /* Canvas Inpainting */
+        .canvas-container { position: relative; width: 100%; margin-top: 10px; border-radius: 12px; overflow: hidden; border: 1px solid var(--borde-glow); }
+        #inpaintingCanvas { background: #000; cursor: crosshair; touch-action: none; display: block; width: 100%; }
+
+        /* Leaderboard & Subastas */
+        .leader-item { display: flex; align-items: center; justify-content: space-between; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); padding: 8px 12px; border-radius: 12px; margin-bottom: 6px; }
+        .leader-rank { font-weight: 800; font-size: 0.9rem; color: var(--dorado); width: 24px; }
+
+        .auction-card { background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(168, 85, 247, 0.1)); border: 1px solid var(--borde-dorado); border-radius: var(--radius-md); padding: 12px; margin-top: 10px; }
+
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 68px; background: rgba(10, 7, 18, 0.95); backdrop-filter: blur(16px); border-top: 1px solid var(--borde-glow); display: flex; justify-content: space-around; align-items: center; z-index: 1000; max-width: 480px; margin: 0 auto; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 3px; font-size: 0.7rem; color: var(--texto-secundario); cursor: pointer; border: none; background: none; flex: 1; }
+        .nav-item.active { color: var(--morado-neon); }
+        .nav-add-btn { background: linear-gradient(135deg, var(--morado-neon), var(--rosa-cosmico)); border-radius: 50%; width: 46px; height: 46px; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 18px rgba(168, 85, 247, 0.6); transform: translateY(-8px); border: 2px solid var(--bg-principal); }
+
+        .card { background: var(--bg-card); backdrop-filter: blur(12px); border: 1px solid var(--borde-glow); border-radius: var(--radius-lg); padding: 18px; margin-bottom: 16px; }
+        .page { display: none; }
+        .page.active { display: block; animation: fadeIn 0.3s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+        input, textarea, select { width: 100%; background: rgba(7, 4, 13, 0.7); border: 1px solid var(--borde-glow); border-radius: var(--radius-md); padding: 12px; margin-bottom: 10px; font-size: 0.9rem; outline: none; }
+        .btn { border: none; border-radius: var(--radius-md); padding: 12px; font-weight: 700; cursor: pointer; font-size: 0.9rem; width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .btn-primario { background: linear-gradient(90deg, var(--morado-neon), var(--rosa-cosmico)); box-shadow: 0 4px 15px rgba(168, 85, 247, 0.4); }
+
+        #toastContainer { position: fixed; top: 15px; left: 50%; transform: translateX(-50%); z-index: 6000; width: 90%; max-width: 400px; pointer-events: none; }
+        .toast-msg { background: rgba(20, 14, 34, 0.95); border: 1px solid var(--morado-neon); box-shadow: 0 10px 25px rgba(0,0,0,0.5); backdrop-filter: blur(10px); padding: 12px 16px; border-radius: 14px; font-size: 0.85rem; font-weight: 600; display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+    </style>
+</head>
+<body>
+
+    <div id="toastContainer"></div>
+
+    <div class="top-bar container">
+        <div class="logo"><i data-lucide="sparkles"></i> AvatarVerse</div>
+        <div style="display:flex; gap:6px;">
+            <div class="wallet-badge" onclick="recargarCoinsRapido()">
+                <i data-lucide="coins"></i> <span id="userCoins">1,250</span> Coins
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+
+        <div class="trends-bar">
+            <div class="trend-chip active" onclick="mostrarPagina('inicio')">🌐 Feed</div>
+            <div class="trend-chip" onclick="mostrarPagina('market')">🛒 Prompt Market</div>
+            <div class="trend-chip" onclick="mostrarPagina('leaderboard')">🏆 Top 10 Creadores</div>
+            <div class="trend-chip" onclick="mostrarPagina('subastas')">🔨 Subastas VIP</div>
+        </div>
+
+        <!-- PAGE 1: FEED DE PUBLICACIONES Y PASE SUSCRIPCIÓN -->
+        <div id="page-inicio" class="page active">
+            <div class="card" style="border-color: var(--dorado); background: linear-gradient(135deg, rgba(255,215,0,0.08), rgba(20,14,34,0.9));">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <div>
+                        <strong style="color:var(--dorado); font-size:0.9rem;">⭐ Pase de Suscripción Creador VIP</strong>
+                        <p style="font-size:0.75rem; color:var(--texto-secundario);">Desbloquea galerías secretas y especificaciones JSON exclusivas.</p>
+                    </div>
+                    <button class="quick-style-btn" style="border-color:var(--dorado); color:var(--dorado);" onclick="suscribirseVIP()">Suscribir (100 C)</button>
+                </div>
+            </div>
+
+            <div id="feedPosts">
+                <p style="text-align: center; color: var(--texto-secundario); padding: 20px;">Cargando feed...</p>
+            </div>
+        </div>
+
+        <!-- PAGE 2: LIVE STREAMING, MÁSCARAS AR Y RULETA DE APUESTAS -->
+        <div id="page-envivo" class="page">
+            <div class="card">
+                <span style="color:var(--rojo-vivo); font-weight:bold; font-size:0.85rem; display:flex; align-items:center; gap:4px; margin-bottom:8px;">
+                    <i data-lucide="radio"></i> BATALLAS LIVE PK & AR FILTERS
+                </span>
+
+                <div class="live-stage" id="liveStageArea">
+                    <div class="pk-bar-container">
+                        <div class="pk-scores">
+                            <span style="color:var(--rojo-vivo)" id="scoreRed">5,400 pts</span>
+                            <span style="color:var(--azul-electrico)" id="scoreBlue">3,200 pts</span>
+                        </div>
+                        <div class="pk-progress"><div class="pk-red" id="pkRedBar"></div></div>
+                    </div>
+                    <div id="local-video-track" style="width:100%; height:100%;"></div>
+                </div>
+
+                <!-- Filtros AR y Minijuego -->
+                <div style="margin-top:10px; background:rgba(0,0,0,0.3); padding:10px; border-radius:12px;">
+                    <span style="font-size:0.75rem; color:var(--morado-neon); font-weight:bold; display:block; margin-bottom:6px;">🎭 Máscaras Neón / Filtros AR Cam:</span>
+                    <div style="display:flex; gap:6px; margin-bottom:10px;">
+                        <button class="quick-style-btn" onclick="aplicarAR('cyber')">🤖 Cyber Visor</button>
+                        <button class="quick-style-btn" onclick="aplicarAR('gold')">👑 Corona Neón</button>
+                        <button class="quick-style-btn" onclick="aplicarAR('chiaroscuro')">🕯️ Chiaroscuro Cam</button>
+                    </div>
+
+                    <span style="font-size:0.75rem; color:var(--dorado); font-weight:bold; display:block; margin-bottom:6px;">🎰 Minijuego: Ruleta de la Suerte (Aposta 20 Coins)</span>
+                    <button class="btn" style="background:linear-gradient(90deg, #f59e0b, #ef4444);" onclick="girarRuletaStream()">🎲 Girar Ruleta</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- PAGE 3: PUBLICAR -->
+        <div id="page-publicar" class="page">
+            <div class="card">
+                <h2><i data-lucide="plus-circle" style="color:var(--morado-neon);"></i> Nueva Publicación</h2>
+                <input type="text" id="postTitulo" placeholder="Título o Tópico (#Hashtag)">
+                <textarea id="postTexto" rows="4" placeholder="¿Qué quieres compartir con la comunidad?"></textarea>
+                <button class="btn btn-primario" onclick="guardarPost()"><i data-lucide="send"></i> Publicar</button>
+            </div>
+        </div>
+
+        <!-- PAGE 4: IA STUDIO + INPAINTING CANVAS + ANIMADOR DE VIDEO -->
+        <div id="page-ia" class="page">
+            <div class="card">
+                <h2><i data-lucide="wand-2" style="color:var(--morado-neon);"></i> Estudio Creativo & Inpainting Canvas</h2>
+                <textarea id="aiPrompt" rows="3" placeholder="Pega tu prompt o especificación JSON..."></textarea>
+                
+                <div style="display:flex; gap:6px; margin-bottom:10px;">
+                    <button class="btn btn-primario" onclick="generarIA()"><i data-lucide="sparkles"></i> Generar Obra</button>
+                    <button class="btn" style="background:var(--azul-electrico);" onclick="animarImagenAElements()"><i data-lucide="video"></i> Animar (Veo Loop)</button>
+                </div>
+
+                <div id="aiOutput" style="text-align: center;"></div>
+
+                <!-- Canvas para Inpainting / Retoque Visual -->
+                <div id="canvasSection" style="display:none; margin-top:15px;">
+                    <span style="font-size:0.75rem; color:var(--dorado); font-weight:bold; display:block; margin-bottom:4px;">🎨 Lienzo Inpainting: Selecciona con el pincel el área a editar</span>
+                    <div class="canvas-container">
+                        <canvas id="inpaintingCanvas" width="400" height="400"></canvas>
+                    </div>
+                    <button class="quick-style-btn" style="margin-top:8px; width:100%;" onclick="procesarInpainting()">🖌️ Re-generar Selección Seleccionada</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- PAGE 5: PROMPT MARKETPLACE (VENTA DE PROMPTS JSON) -->
+        <div id="page-market" class="page">
+            <div class="card">
+                <h2><i data-lucide="shopping-bag" style="color:var(--dorado);"></i> Prompt Marketplace</h2>
+                <p style="font-size:0.8rem; color:var(--texto-secundario); margin-bottom:12px;">Compra y vende especificaciones JSON probadas y listas para usar.</p>
+
+                <div style="background:rgba(255,255,255,0.04); border:1px solid var(--borde-glow); border-radius:12px; padding:12px; margin-bottom:10px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <strong>Preset Chiaroscuro VIP PRO</strong>
+                        <span style="color:var(--dorado); font-weight:bold;">50 Coins</span>
+                    </div>
+                    <p style="font-size:0.75rem; color:var(--texto-secundario); margin:6px 0;">Especializado en retrato de alto contraste con sombras de terciopelo.</p>
+                    <button class="btn btn-primario" style="font-size:0.8rem; padding:6px;" onclick="comprarPromptJSON('Chiaroscuro VIP PRO', 50)">Comprar Código JSON</button>
+                </div>
+
+                <div style="background:rgba(255,255,255,0.04); border:1px solid var(--borde-glow); border-radius:12px; padding:12px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <strong>Master Editorial Studio 8K</strong>
+                        <span style="color:var(--dorado); font-weight:bold;">80 Coins</span>
+                    </div>
+                    <p style="font-size:0.75rem; color:var(--texto-secundario); margin:6px 0;">Iluminación de estudio profesional con lente de 85mm.</p>
+                    <button class="btn btn-primario" style="font-size:0.8rem; padding:6px;" onclick="comprarPromptJSON('Master Editorial Studio 8K', 80)">Comprar Código JSON</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- PAGE 6: LEADERBOARD GLOBAL -->
+        <div id="page-leaderboard" class="page">
+            <div class="card">
+                <h2><i data-lucide="trophy" style="color:var(--dorado);"></i> Top 10 Creadores & Donantes</h2>
+                <p style="font-size:0.8rem; color:var(--texto-secundario); margin-bottom:12px;">Clasificación semanal en tiempo real.</p>
+
+                <div class="leader-item">
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        <span class="leader-rank">#1</span>
+                        <div><strong>Héctor Eduardo</strong><p style="font-size:0.7rem; color:var(--texto-secundario);">Master Creador VIP</p></div>
+                    </div>
+                    <span style="color:var(--dorado); font-weight:bold;">12,500 pts</span>
+                </div>
+
+                <div class="leader-item">
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        <span class="leader-rank" style="color:#c0c0c0;">#2</span>
+                        <div><strong>Flux Studio AI</strong><p style="font-size:0.7rem; color:var(--texto-secundario);">Prompt Architect</p></div>
+                    </div>
+                    <span style="color:var(--dorado); font-weight:bold;">9,200 pts</span>
+                </div>
+
+                <div class="leader-item">
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        <span class="leader-rank" style="color:#cd7f32;">#3</span>
+                        <div><strong>Chiaroscuro Master</strong><p style="font-size:0.7rem; color:var(--texto-secundario);">Digital Artist</p></div>
+                    </div>
+                    <span style="color:var(--dorado); font-weight:bold;">7,800 pts</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- PAGE 7: SUBASTAS EN VIVO -->
+        <div id="page-subastas" class="page">
+            <div class="card">
+                <h2><i data-lucide="gavel" style="color:var(--dorado);"></i> Subastas Digitales VIP</h2>
+                <p style="font-size:0.8rem; color:var(--texto-secundario);">Puja en vivo por creaciones únicas creadas durante transmisiones.</p>
+
+                <div class="auction-card">
+                    <strong>Arte Chiaroscuro Neón #001</strong>
+                    <p style="font-size:0.75rem; color:var(--texto-secundario);">Puja actual: <strong id="currentBid" style="color:var(--dorado);">350 Coins</strong></p>
+                    <p style="font-size:0.75rem; color:var(--rojo-vivo);">Termina en: 02m 15s</p>
+                    <button class="btn btn-primario" style="margin-top:8px;" onclick="pujarSubasta()">Pujar +50 Coins</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- PAGE 8: PERFIL DE USUARIO -->
+        <div id="page-perfil" class="page">
+            <div class="card">
+                <h2>👤 Héctor Eduardo (VIP)</h2>
+                <p style="font-size:0.8rem; color:var(--texto-secundario);">Creador Master & Prompt Architect</p>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- NAV INFERIOR -->
+    <nav class="bottom-nav">
+        <button class="nav-item active" onclick="mostrarPagina('inicio', this)"><i data-lucide="home"></i> Feed</button>
+        <button class="nav-item" onclick="mostrarPagina('envivo', this)"><i data-lucide="tv"></i> Live PK</button>
+        <button class="nav-item nav-add-btn" onclick="mostrarPagina('publicar', this)"><i data-lucide="plus" style="color:white;"></i></button>
+        <button class="nav-item" onclick="mostrarPagina('ia', this)"><i data-lucide="wand-2"></i> IA Studio</button>
+        <button class="nav-item" onclick="mostrarPagina('perfil', this)"><i data-lucide="user"></i> Perfil</button>
+    </nav>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
+        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyD_xIh3iuQWTuq-r8Sz5p5W_78QwwL_Bj4",
+            authDomain: "avatarverse-59fef.firebaseapp.com",
+            projectId: "avatarverse-59fef",
+            storageBucket: "avatarverse-59fef.firebasestorage.app",
+            messagingSenderId: "174175140340",
+            appId: "1:174175140340:web:34c2709699980d999c21a1"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        let saldoCoins = parseInt(localStorage.getItem('user_coins') || '1250');
+        let currentBidValue = 350;
+
+        window.mostrarToast = function(msg) {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = 'toast-msg';
+            toast.innerHTML = `<i data-lucide="bell" style="width:18px; color:var(--morado-neon);"></i> ${msg}`;
+            container.appendChild(toast);
+            lucide.createIcons();
+            setTimeout(() => toast.remove(), 3200);
+        };
+
+        window.recargarCoinsRapido = function() {
+            saldoCoins += 500;
+            document.getElementById('userCoins').innerText = saldoCoins.toLocaleString();
+            localStorage.setItem('user_coins', saldoCoins);
+            mostrarToast('💳 Recarga de +500 Coins completada');
+        };
+
+        window.mostrarPagina = function(id, btn) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            const p = document.getElementById('page-' + id);
+            if(p) p.classList.add('active');
+            if(btn) {
+                document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+                btn.classList.add('active');
+            }
+        };
+
+        /* Inpainting Canvas Logic */
+        let canvas = document.getElementById('inpaintingCanvas');
+        let ctx = canvas.getContext('2d');
+        let isDrawing = false;
+
+        function initCanvas() {
+            ctx.fillStyle = "#000";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.strokeStyle = "rgba(236, 72, 153, 0.8)";
+            ctx.lineWidth = 20;
+            ctx.lineCap = "round";
+        }
+
+        canvas.addEventListener('mousedown', () => isDrawing = true);
+        canvas.addEventListener('mouseup', () => { isDrawing = false; ctx.beginPath(); });
+        canvas.addEventListener('mousemove', draw);
+
+        function draw(e) {
+            if(!isDrawing) return;
+            let rect = canvas.getBoundingClientRect();
+            ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
+        }
+
+        window.procesarInpainting = function() {
+            mostrarToast('🖌️ Regenerando área seleccionada por Inpainting...');
+        };
+
+        /* IA & Video Animation */
+        window.generarIA = function() {
+            const output = document.getElementById('aiOutput');
+            output.innerHTML = `<p style="color:var(--morado-neon);">Generando arte...</p>`;
+            setTimeout(() => {
+                const url = `https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=600&auto=format&fit=crop&q=80`;
+                output.innerHTML = `<img src="${url}" style="width:100%; border-radius:12px;" alt="Result">`;
+                document.getElementById('canvasSection').style.display = 'block';
+                initCanvas();
+                mostrarToast('✨ Imagen creada con éxito');
+            }, 1000);
+        };
+
+        window.animarImagenAElements = function() {
+            mostrarToast('🎬 Convirtiendo imagen fija en animación/video de 5s...');
+        };
+
+        /* Minijuegos, AR & Subastas */
+        window.aplicarAR = function(tipo) {
+            mostrarToast(`🎭 Máscara AR / Filtro de Cámara activado: ${tipo.toUpperCase()}`);
+        };
+
+        window.girarRuletaStream = function() {
+            if(saldoCoins < 20) return mostrarToast('⚠️ Saldo insuficiente para girar');
+            saldoCoins -= 20;
+            const premio = Math.random() > 0.5 ? 50 : 0;
+            saldoCoins += premio;
+            document.getElementById('userCoins').innerText = saldoCoins.toLocaleString();
+            localStorage.setItem('user_coins', saldoCoins);
+            mostrarToast(premio > 0 ? `🎉 ¡Ganaste ${premio} Coins en la Ruleta!` : '❌ No hubo suerte esta vez');
+        };
+
+        window.comprarPromptJSON = function(nombre, precio) {
+            if(saldoCoins < precio) return mostrarToast('⚠️ Saldo insuficiente');
+            saldoCoins -= precio;
+            document.getElementById('userCoins').innerText = saldoCoins.toLocaleString();
+            localStorage.setItem('user_coins', saldoCoins);
+            mostrarToast(`📋 ¡Comprado! Código JSON de "${nombre}" copiado al portapapeles`);
+        };
+
+        window.suscribirseVIP = function() {
+            if(saldoCoins < 100) return mostrarToast('⚠️ Necesitas 100 Coins');
+            saldoCoins -= 100;
+            document.getElementById('userCoins').innerText = saldoCoins.toLocaleString();
+            localStorage.setItem('user_coins', saldoCoins);
+            mostrarToast('⭐ ¡Suscripción VIP Activada por 30 días!');
+        };
+
+        window.pujarSubasta = function() {
+            currentBidValue += 50;
+            document.getElementById('currentBid').innerText = `${currentBidValue} Coins`;
+            mostrarToast(`🔨 Puja realizada: ${currentBidValue} Coins`);
+        };
+
+        window.guardarPost = async function() {
+            const titulo = document.getElementById('postTitulo').value;
+            const texto = document.getElementById('postTexto').value;
+            if(!titulo && !texto) return;
+            await addDoc(collection(db, "posts"), { titulo, texto, autor: "Héctor Eduardo" });
+            document.getElementById('postTitulo').value = '';
+            document.getElementById('postTexto').value = '';
+            mostrarToast('🚀 Publicado con éxito');
+            mostrarPagina('inicio');
+        };
+
+        /* Feed */
+        const q = query(collection(db, "posts"));
+        onSnapshot(q, (snap) => {
+            const feed = document.getElementById('feedPosts');
+            feed.innerHTML = '';
+            snap.forEach(docSnap => {
+                const data = docSnap.data();
+                feed.innerHTML += `
+                    <div class="post-card">
+                        <div class="post-header"><strong>${data.autor || 'Usuario'}</strong></div>
+                        <div style="padding:0 14px 14px 14px;">
+                            <h3>${data.titulo || ''}</h3>
+                            <p style="color:var(--texto-secundario); font-size:0.85rem;">${data.texto || ''}</p>
+                        </div>
+                    </div>
+                `;
+            });
+        });
+
+        lucide.createIcons();
+    </script>
+</body>
+</html>
