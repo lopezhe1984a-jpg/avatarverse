@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AvatarVerse Studio Nexus v8.0 Multimodelo</title>
+  <title>AvatarVerse Studio Nexus v9.0 Quantum</title>
   <style>
     :root {
       --bg-color: #05070b;
@@ -31,24 +31,25 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 20px;
+      margin-bottom: 16px;
     }
-    .header h1 { font-size: 1.5rem; margin: 0; background: linear-gradient(90deg, #d946ef, #38bdf8, #f59e0b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .header h1 { font-size: 1.4rem; margin: 0; background: linear-gradient(90deg, #d946ef, #38bdf8, #f59e0b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
     .card {
       background: var(--card-bg);
       border: 1px solid var(--border-color);
       border-radius: 16px;
-      padding: 20px;
+      padding: 18px;
       width: 100%;
       max-width: 500px;
       box-shadow: 0 15px 35px rgba(0,0,0,0.7);
-      margin-bottom: 20px;
+      margin-bottom: 16px;
+      box-sizing: border-box;
     }
     .card-premium {
       border: 2px solid var(--premium-gold);
       background: linear-gradient(145deg, #0f172a, #1e1b4b);
     }
-    label { font-size: 0.85rem; font-weight: bold; color: var(--text-muted); display: block; margin: 12px 0 6px; }
+    label { font-size: 0.82rem; font-weight: bold; color: var(--text-muted); display: block; margin: 10px 0 6px; }
     input[type="text"], textarea, select {
       width: 100%;
       background: var(--input-bg);
@@ -58,13 +59,14 @@
       color: white;
       box-sizing: border-box;
       font-family: inherit;
+      font-size: 0.9rem;
     }
     .wallet-box {
       background: rgba(245, 158, 11, 0.1);
       border: 1px dashed var(--premium-gold);
       border-radius: 10px;
       padding: 10px;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -93,27 +95,95 @@
       border-radius: 8px;
       text-align: center;
       cursor: pointer;
-      font-size: 0.9rem;
+      font-size: 0.85rem;
     }
     .file-name {
-      font-size: 0.8rem;
+      font-size: 0.75rem;
       color: var(--text-muted);
-      margin-top: 6px;
+      margin-top: 4px;
       word-break: break-all;
     }
-    .btn-group { display: flex; gap: 6px; margin-top: 6px; flex-wrap: wrap; }
-    .btn-style {
+
+    /* Tabs Assistant */
+    .assistant-tabs {
+      display: flex;
+      gap: 4px;
+      background: #020617;
+      padding: 4px;
+      border-radius: 10px;
+      margin-bottom: 10px;
+    }
+    .tab-btn {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      padding: 8px 6px;
+      font-size: 0.75rem;
+      font-weight: bold;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+    }
+    .tab-btn.active {
+      background: var(--accent-color);
+      color: white;
+      box-shadow: 0 4px 12px rgba(217, 70, 239, 0.4);
+    }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    .char-counter {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      text-align: right;
+      margin-top: 4px;
+    }
+
+    /* Style Categories Accordion / Grid */
+    .category-section {
+      background: #020617;
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 10px;
+      margin-top: 10px;
+    }
+    .category-title {
+      font-size: 0.8rem;
+      font-weight: bold;
+      color: var(--accent-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      margin-bottom: 6px;
+    }
+    .pill-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      max-height: 120px;
+      overflow-y: auto;
+      padding: 4px;
+    }
+    .pill-btn {
       background: var(--input-bg);
       border: 1px solid var(--border-color);
       color: #e5e7eb;
-      padding: 6px 12px;
-      border-radius: 20px;
+      padding: 5px 10px;
+      border-radius: 16px;
       cursor: pointer;
-      font-size: 0.75rem;
+      font-size: 0.72rem;
       transition: all 0.2s;
     }
-    .btn-style:hover { background: var(--accent-color); border-color: var(--accent-color); }
-    
+    .pill-btn:hover { background: var(--accent-color); border-color: var(--accent-color); color: white; }
+    .pill-nsfw {
+      border: 1px solid var(--premium-gold);
+      background: rgba(245, 158, 11, 0.15);
+      color: var(--premium-gold);
+    }
+
     .btn-submit {
       width: 100%;
       background: linear-gradient(90deg, #d946ef, #3b82f6);
@@ -122,9 +192,9 @@
       font-weight: bold;
       padding: 14px;
       border-radius: 12px;
-      margin-top: 20px;
+      margin-top: 16px;
       cursor: pointer;
-      font-size: 1rem;
+      font-size: 0.95rem;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -147,8 +217,8 @@
     .badge-owner {
       background: linear-gradient(90deg, #f59e0b, #ec4899);
       color: white;
-      font-size: 0.7rem;
-      padding: 2px 8px;
+      font-size: 0.65rem;
+      padding: 2px 6px;
       border-radius: 10px;
       font-weight: bold;
       display: inline-block;
@@ -165,7 +235,7 @@
     }
     .output-img-box {
       width: 100%;
-      height: 200px;
+      height: 180px;
       background: linear-gradient(45deg, #1e293b, #0f172a);
       border-radius: 8px;
       display: flex;
@@ -174,8 +244,6 @@
       color: var(--text-muted);
       font-size: 0.85rem;
       margin-bottom: 10px;
-      position: relative;
-      overflow: hidden;
     }
 
     #toast {
@@ -189,7 +257,7 @@
       position: fixed;
       z-index: 100;
       bottom: 30px;
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       box-shadow: 0 4px 12px rgba(0,0,0,0.4);
     }
     #toast.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 2.5s; }
@@ -201,7 +269,7 @@
 
   <div class="header">
     <h1>AvatarVerse Nexus</h1>
-    <span style="color:#38bdf8; font-size:0.8rem;">● Multimodelo v8.0</span>
+    <span style="color:#38bdf8; font-size:0.75rem;">● Quantum v9.0</span>
   </div>
 
   <div class="card">
@@ -210,11 +278,11 @@
       <strong id="userCredits" style="color:var(--premium-gold);">50 Créditos</strong>
     </div>
 
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-      <h2 style="margin:0; color:var(--accent-color);">Studio Free Core</h2>
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+      <h2 style="margin:0; color:var(--accent-color); font-size:1.1rem;">Studio Free Core</h2>
       <div style="display:flex; gap:6px;">
-        <button onclick="setTheme('#d946ef')" style="width:18px; height:18px; border-radius:50%; background:#d946ef; border:none; cursor:pointer;" title="Fucsia"></button>
-        <button onclick="setTheme('#38bdf8')" style="width:18px; height:18px; border-radius:50%; background:#38bdf8; border:none; cursor:pointer;" title="Azul"></button>
+        <button onclick="setTheme('#d946ef')" style="width:16px; height:16px; border-radius:50%; background:#d946ef; border:none; cursor:pointer;" title="Fucsia"></button>
+        <button onclick="setTheme('#38bdf8')" style="width:16px; height:16px; border-radius:50%; background:#38bdf8; border:none; cursor:pointer;" title="Azul"></button>
       </div>
     </div>
     
@@ -233,25 +301,146 @@
 
     <label>IMAGEN DE REFERENCIA (REFERENCIA FACIAL)</label>
     <div class="file-upload-wrapper">
-      <span class="btn-file">Seleccionar archivo</span>
+      <span class="btn-file">Seleccionar archivo de referencia</span>
       <input type="file" id="fileInput" accept="image/*" onchange="updateFileName()">
     </div>
     <div id="fileNameDisplay" class="file-name">Sin archivos seleccionados</div>
 
-    <label>ASISTENTE INTELIGENTE DE PROMPTS 🤖</label>
-    <div style="display:flex; gap:6px; margin-bottom:6px;">
-      <input type="text" id="aiIdea" placeholder="Idea básica (ej. retrato en estudio)..." style="font-size:0.85rem;">
-      <button class="btn-style" onclick="generateAiPrompt()" style="background:var(--accent-color); color:white; border:none; padding:0 12px;">Crear IA ✨</button>
+    <!-- ASISTENTE INTELIGENTE DE PROMPTS CON PESTAÑAS -->
+    <label style="margin-top:14px;">ASISTENTE INTELIGENTE DE PROMPTS 🤖</label>
+    <div class="assistant-tabs">
+      <button class="tab-btn active" onclick="switchTab('enhancer')">✨ Mejorador</button>
+      <button class="tab-btn" onclick="switchTab('img2text')">📷 Imagen a Texto</button>
+      <button class="tab-btn" onclick="switchTab('illustrious')">🌟 Illustrious XL</button>
     </div>
 
-    <label>ESCRIBE TU PROMPT AQUÍ...</label>
-    <textarea id="prompt" rows="3" placeholder="Descripción de la imagen..."></textarea>
+    <!-- TAB 1: MEJORADOR DE PROMPTS -->
+    <div id="tab-enhancer" class="tab-content active">
+      <textarea id="enhancerInput" rows="4" placeholder="Pega tu prompt aquí para mejorarlo y perfeccionarlo..." oninput="updateCharCount()"></textarea>
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-top:6px;">
+        <div class="char-counter" id="charCount">0 / 100000</div>
+        <button class="pill-btn" onclick="enhancePromptAction()" style="background:var(--accent-color); color:white; border:none; padding:6px 12px; font-weight:bold;">✨ Mejorar y Perfeccionar</button>
+      </div>
+    </div>
 
-    <label>ESTILOS RÁPIDOS</label>
-    <div class="btn-group">
-      <button class="btn-style" onclick="setPreset('Chiaroscuro')">Chiaroscuro Pro</button>
-      <button class="btn-style" onclick="setPreset('Cyberpunk')">Cyberpunk Neon</button>
-      <button class="btn-style" onclick="setPreset('Cinematic')">Cinematic 16K</button>
+    <!-- TAB 2: IMAGEN A TEXTO -->
+    <div id="tab-img2text" class="tab-content">
+      <div class="file-upload-wrapper" style="margin-bottom:6px;">
+        <span class="btn-file">Subir imagen para sugerencia de texto</span>
+        <input type="file" id="img2textInput" accept="image/*" onchange="handleImg2TextUpload()">
+      </div>
+      <div id="img2textFileName" class="file-name" style="margin-bottom:6px;">Ninguna imagen cargada</div>
+      <button class="pill-btn" onclick="runImg2Text()" style="background:#3b82f6; color:white; border:none; width:100%; padding:8px; font-weight:bold;">Generar Prompt desde Imagen 🔍</button>
+    </div>
+
+    <!-- TAB 3: ILLUSTRIOUS XL -->
+    <div id="tab-illustrious" class="tab-content">
+      <div class="file-upload-wrapper" style="margin-bottom:6px;">
+        <span class="btn-file">Upload image for Illustrious XL Prompts</span>
+        <input type="file" id="illustriousInput" accept="image/*" onchange="handleIllustriousUpload()">
+      </div>
+      <div id="illustriousFileName" class="file-name" style="margin-bottom:6px;">No image uploaded</div>
+      <button class="pill-btn" onclick="runIllustriousXL()" style="background:#f59e0b; color:black; border:none; width:100%; padding:8px; font-weight:bold;">Generate Illustrious XL Style Prompt 🌟</button>
+    </div>
+
+    <label style="margin-top:14px;">ESCRIBE TU PROMPT FINAL AQUÍ...</label>
+    <textarea id="prompt" rows="3" placeholder="Descripción final para generar la imagen..."></textarea>
+
+    <!-- ESTILOS RÁPIDOS Y MÓDULO DE ESTILOS GENERALES -->
+    <label style="margin-top:14px;">ESTILOS RÁPIDOS Y GENERALES 🎨</label>
+    <div class="pill-grid" style="max-height:none; margin-bottom:10px;">
+      <button class="pill-btn" onclick="setPreset('Chiaroscuro')">Chiaroscuro Pro</button>
+      <button class="pill-btn" onclick="setPreset('Cyberpunk')">Cyberpunk Neon</button>
+      <button class="pill-btn" onclick="setPreset('Cinematic')">Cinematic 16K</button>
+    </div>
+
+    <!-- ACORDEÓN / CATEGORÍAS DE ESTILOS SOLICITADOS -->
+    <div class="category-section">
+      <div class="category-title" onclick="toggleCategory('cat-general')">
+        <span>📂 Estilos Generales & Categorías (Haz clic para abrir)</span>
+        <span>▼</span>
+      </div>
+      <div id="cat-general" style="display:none; margin-top:8px;">
+        
+        <label style="color:var(--accent-color); margin-top:4px;">Cabello & Rostro</label>
+        <div class="pill-grid">
+          <button class="pill-btn" onclick="addStyle('detailed hair')">Estilo de cabello</button>
+          <button class="pill-btn" onclick="addStyle('detailed facial features')">Rostro</button>
+          <button class="pill-btn" onclick="addStyle('oiled skin')">Oiled skin</button>
+          <button class="pill-btn" onclick="addStyle('oni mask')">Oni mask</button>
+        </div>
+
+        <label style="color:var(--accent-color); margin-top:6px;">Pose, Postura & Ropa</label>
+        <div class="pill-grid">
+          <button class="pill-btn" onclick="addStyle('dynamic pose')">Pose</button>
+          <button class="pill-btn" onclick="addStyle('elegant posture')">Postura</button>
+          <button class="pill-btn" onclick="addStyle('precise body position')">Posición</button>
+          <button class="pill-btn" onclick="addStyle('futuristic outfit, stylish clothing')">Ropa, Outfits</button>
+          <button class="pill-btn" onclick="addStyle('stellar blade skin suits')">Stellar blade skin suits</button>
+          <button class="pill-btn" onclick="addStyle('anti long torso')">Anti long torso</button>
+        </div>
+
+        <label style="color:var(--accent-color); margin-top:6px;">Fondo, Entorno & Herramientas</label>
+        <div class="pill-grid">
+          <button class="pill-btn" onclick="addStyle('volumetric studio background')">Fondo</button>
+          <button class="pill-btn" onclick="addStyle('advanced futuristic tools')">Herramientas</button>
+          <button class="pill-btn" onclick="addStyle('made of fog')">Made of fog</button>
+          <button class="pill-btn" onclick="addStyle('cloud atmosphere')">Cloud</button>
+          <button class="pill-btn" onclick="addStyle('liquid flow effect')">Liquid flow</button>
+          <button class="pill-btn" onclick="addStyle('glass sculpture')">Glass Sculpture</button>
+          <button class="pill-btn" onclick="addStyle('on fire, blazing flames')">On fire</button>
+          <button class="pill-btn" onclick="addStyle('encased on glass')">On glass</button>
+        </div>
+
+        <label style="color:var(--accent-color); margin-top:6px;">Conceptos, Arte & Estilos Artísticos</label>
+        <div class="pill-grid">
+          <button class="pill-btn" onclick="addStyle('masterpiece concept art')">Concept</button>
+          <button class="pill-btn" onclick="addStyle('anime masterpiece')">Anime</button>
+          <button class="pill-btn" onclick="addStyle('90s anime style')">90s anime</button>
+          <button class="pill-btn" onclick="addStyle('comic book style, bold line')">Cómics & Bold line</button>
+          <button class="pill-btn" onclick="addStyle('spell rings glowing')">Spell rings</button>
+          <button class="pill-btn" onclick="addStyle('Samdoes arts style')">Samdoes arts</button>
+          <button class="pill-btn" onclick="addStyle('swords and shield battle gear')">Swords & Shield</button>
+          <button class="pill-btn" onclick="addStyle('old style vintage look')">Old Style</button>
+          <button class="pill-btn" onclick="addStyle('Yoshiyuki Sadamoto style')">Sadamoto yoshiyuki</button>
+          <button class="pill-btn" onclick="addStyle('Non Oda style')">Oda Non</button>
+          <button class="pill-btn" onclick="addStyle('holding sharp katana')">Katana</button>
+          <button class="pill-btn" onclick="addStyle('Iris Scott oil painting style')">Iris Scott</button>
+          <button class="pill-btn" onclick="addStyle('oil painting masterpiece')">Oil painting</button>
+          <button class="pill-btn" onclick="addStyle('ink punk aesthetic')">Ink punk</button>
+          <button class="pill-btn" onclick="addStyle('ink wash painting')">Ink wash painting</button>
+          <button class="pill-btn" onclick="addStyle('abstract surreal harmony')">Abstract & Surreal</button>
+          <button class="pill-btn" onclick="addStyle('ukiyo-e traditional Japanese art')">Ukiyo e</button>
+          <button class="pill-btn" onclick="addStyle('custom text typography')">Custom text</button>
+          <button class="pill-btn" onclick="addStyle('mythical fantasy monsters')">Fantasy monsters</button>
+          <button class="pill-btn" onclick="addStyle('double exposure photography')">Double exposure</button>
+          <button class="pill-btn" onclick="addStyle('disco delirium neon vibe')">Disco delirium</button>
+          <button class="pill-btn" onclick="addStyle('voxel 3d art')">Voxel</button>
+          <button class="pill-btn" onclick="addStyle('dissolving particle effect')">Dissolve</button>
+          <button class="pill-btn" onclick="addStyle('voly creative aesthetic')">Voly creative</button>
+          <button class="pill-btn" onclick="addStyle('fractal art masterpiece')">Fractal art</button>
+          <button class="pill-btn" onclick="addStyle('niji 3d style')">Niji 3D</button>
+          <button class="pill-btn" onclick="addStyle('mecha robotic suit')">Mecha</button>
+          <button class="pill-btn" onclick="addStyle('more artistic detailed composition')">More Artistic</button>
+          <button class="pill-btn" onclick="addStyle('niji style')">Niji</button>
+          <button class="pill-btn" onclick="addStyle('add intricate details')">Add detail</button>
+          <button class="pill-btn" onclick="addStyle('creepy polaroid film style')">Creepy polaroid</button>
+          <button class="pill-btn" onclick="addStyle('creepypasta dark aesthetic')">Creepypasta</button>
+          <button class="pill-btn" onclick="addStyle('horror thriller atmosphere')">Horror & Terror</button>
+          <button class="pill-btn" onclick="addStyle('gore artistic cinematic lighting')">Gore</button>
+          <button class="pill-btn" onclick="addStyle('woodcut minimalist print')">Woodcut minimalist</button>
+          <button class="pill-btn" onclick="addStyle('street art graffiti style')">Street art</button>
+          <button class="pill-btn" onclick="addStyle('sewing doll aesthetic')">Sewing doll</button>
+          <button class="pill-btn" onclick="addStyle('analog film grain look')">Analog film</button>
+        </div>
+
+        <label style="color:var(--premium-gold); margin-top:8px;">VIP - Premium / NSFW (Libre acceso Dueño)</label>
+        <div class="pill-grid">
+          <button class="pill-btn pill-nsfw" onclick="addStyle('NSFW uncesored cinematic masterwork, exquisite anatomy')">NSFW / VIP (Exclusivo)</button>
+          <button class="pill-btn pill-nsfw" onclick="addStyle('hentai masterpiece style, vivid colors')">Hentai</button>
+        </div>
+
+      </div>
     </div>
 
     <button id="submitBtn" class="btn-submit" onclick="generateImage('free')">
@@ -262,10 +451,10 @@
 
   <div class="card card-premium">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-      <h2 style="margin:0; color:var(--premium-gold); font-size:1.1rem;">👑 Nexus Quantum Engine</h2>
-      <span style="font-size:0.7rem; background:#f59e0b; color:black; padding:2px 6px; border-radius:4px; font-weight:bold;">ULTIMATE VIP</span>
+      <h2 style="margin:0; color:var(--premium-gold); font-size:1.05rem;">👑 Nexus Quantum Engine</h2>
+      <span style="font-size:0.65rem; background:#f59e0b; color:black; padding:2px 6px; border-radius:4px; font-weight:bold;">ULTIMATE VIP</span>
     </div>
-    <p style="font-size:0.8rem; color:var(--text-muted); margin-top:0;">Motor cuántico con preservación absoluta de facciones y renderizado multimodelo sin restricciones.</p>
+    <p style="font-size:0.78rem; color:var(--text-muted); margin-top:0;">Motor cuántico con preservación absoluta de facciones y renderizado multimodelo sin restricciones.</p>
 
     <button id="submitPremiumBtn" class="btn-submit btn-submit-premium" onclick="generateImage('premium')">
       <div id="spinnerPrem" class="spinner"></div>
@@ -274,16 +463,16 @@
   </div>
 
   <div class="card" id="outputSection" style="display:none;">
-    <h3 style="margin:0 0 10px 0; font-size:1rem; color:var(--accent-color);">Resultado Multimodelo 🌟</h3>
+    <h3 style="margin:0 0 10px 0; font-size:0.95rem; color:var(--accent-color);">Resultado Cuántico 🌟</h3>
     <div class="output-preview">
       <div class="output-img-box" id="outputBox">
         <span>Imagen procesada con IA ✨</span>
       </div>
-      <button class="btn-style" onclick="showToast('Imagen descargada con éxito 📥')" style="background:var(--accent-color); color:white; width:100%; border:none; padding:10px; font-weight:bold;">Descargar Obra Maestra 💾</button>
+      <button class="pill-btn" onclick="showToast('Obra maestra descargada con éxito 📥')" style="background:var(--accent-color); color:white; width:100%; border:none; padding:10px; font-weight:bold;">Descargar Obra Maestra 💾</button>
     </div>
   </div>
 
-  <div id="toast">¡Sistema Multimodelo v8.0 Activo! 🚀</div>
+  <div id="toast">¡AvatarVerse Quantum v9.0 Activo! 🚀</div>
 
   <script>
     let isOwner = false;
@@ -329,6 +518,83 @@
       }
     }
 
+    function switchTab(tabName) {
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+      
+      if(tabName === 'enhancer') {
+        event.target.classList.add('active');
+        document.getElementById('tab-enhancer').classList.add('active');
+      } else if(tabName === 'img2text') {
+        event.target.classList.add('active');
+        document.getElementById('tab-img2text').classList.add('active');
+      } else if(tabName === 'illustrious') {
+        event.target.classList.add('active');
+        document.getElementById('tab-illustrious').classList.add('active');
+      }
+    }
+
+    function updateCharCount() {
+      const text = document.getElementById('enhancerInput').value;
+      const count = text.length;
+      document.getElementById('charCount').innerText = count + " / 100000";
+    }
+
+    function enhancePromptAction() {
+      const text = document.getElementById('enhancerInput').value;
+      if(!text.trim()) {
+        showToast("Pega un prompt en el cuadro para mejorarlo ⚠️");
+        return;
+      }
+      showToast("✨ Mejorando y perfeccionando prompt...");
+      setTimeout(() => {
+        const enhanced = text + ", masterwork, highly detailed, volumetric studio lighting, 8k resolution, preserving exact facial features";
+        document.getElementById('prompt').value = enhanced;
+        showToast("¡Prompt mejorado con éxito y listo para usar! 🚀");
+      }, 1000);
+    }
+
+    function handleImg2TextUpload() {
+      const file = document.getElementById('img2textInput').files[0];
+      if(file) {
+        document.getElementById('img2textFileName').innerText = "📁 " + file.name;
+        showToast("Imagen cargada para análisis de texto ✨");
+      }
+    }
+
+    function runImg2Text() {
+      showToast("🔍 Analizando imagen para extraer sugerencia...");
+      setTimeout(() => {
+        document.getElementById('prompt').value = "Detailed cinematic photograph inspired by reference image, professional composition, gorgeous lighting, 8k";
+        showToast("¡Sugerencia generada con éxito! 🌟");
+      }, 1200);
+    }
+
+    function handleIllustriousUpload() {
+      const file = document.getElementById('illustriousInput').files[0];
+      if(file) {
+        document.getElementById('illustriousFileName').innerText = "📁 " + file.name;
+        showToast("Image uploaded for Illustrious XL style ✨");
+      }
+    }
+
+    function runIllustriousXL() {
+      showToast("🌟 Generating Illustrious XL style prompt...");
+      setTimeout(() => {
+        document.getElementById('prompt').value = "masterpiece, best quality, ultra-detailed Illustrious XL style, cinematic lighting, perfect anatomy, 16k";
+        showToast("Illustrious XL prompt ready! 🚀");
+      }, 1200);
+    }
+
+    function toggleCategory(id) {
+      const el = document.getElementById(id);
+      if(el.style.display === 'none') {
+        el.style.display = 'block';
+      } else {
+        el.style.display = 'none';
+      }
+    }
+
     function setPreset(style) {
       const promptInput = document.getElementById('prompt');
       if(style === 'Chiaroscuro') {
@@ -341,17 +607,14 @@
       showToast("Preset " + style + " cargado con éxito ✨");
     }
 
-    function generateAiPrompt() {
-      const idea = document.getElementById('aiIdea').value;
-      if(!idea.trim()) {
-        showToast("Escribe una idea breve para la IA ⚠️");
-        return;
+    function addStyle(styleText) {
+      const promptInput = document.getElementById('prompt');
+      if(promptInput.value.trim() !== '') {
+        promptInput.value += ", " + styleText;
+      } else {
+        promptInput.value = styleText;
       }
-      showToast("🤖 IA generando prompt estructurado...");
-      setTimeout(() => {
-        document.getElementById('prompt').value = "Masterpiece hyperrealistic photograph of " + idea + ", cinematic volumetric studio lighting, preserving exact reference facial features and hair, 8k resolution";
-        showToast("¡Prompt autogenerado! ✨");
-      }, 1000);
+      showToast("Estilo agregado: " + styleText + " ✨");
     }
 
     function generateImage(mode) {
@@ -359,7 +622,7 @@
       const selectedModel = document.getElementById('advancedModelSelect').value;
 
       if(!promptText.trim()) {
-        showToast("Por favor escribe un prompt o usa el asistente ⚠️");
+        showToast("Por favor escribe o genera un prompt primero ⚠️");
         return;
       }
 
@@ -379,7 +642,7 @@
         btn.disabled = false;
         
         document.getElementById('outputSection').style.display = 'block';
-        document.getElementById('outputBox').innerHTML = '<span style="color:#38bdf8; font-weight:bold;">✨ Obra Generada con Modelo: ' + selectedModel.toUpperCase() + ' (Rasgos Protegidos)</span>';
+        document.getElementById('outputBox').innerHTML = '<span style="color:#38bdf8; font-weight:bold;">✨ Obra Generada con Modelo: ' + selectedModel.toUpperCase() + ' (Estilos Integrados)</span>';
         
         showToast("🎉 ¡Imagen creada con éxito!");
       }, 3500);
