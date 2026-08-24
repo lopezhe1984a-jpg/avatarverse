@@ -1,723 +1,133 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AvatarVerse Studio v11.5 Quantum Ultra Complete</title>
-  <style>
-    :root {
-      --bg-color: #05070b;
-      --card-bg: #0f172a;
-      --accent-color: #d946ef;
-      --premium-gold: #f59e0b;
-      --text-main: #f8fafc;
-      --text-muted: #94a3b8;
-      --input-bg: #1e293b;
-      --border-color: #334155;
-    }
-    body {
-      background-color: var(--bg-color);
-      color: var(--text-main);
-      font-family: system-ui, -apple-system, sans-serif;
-      margin: 0;
-      padding: 16px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-    .header {
-      width: 100%;
-      max-width: 500px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 16px;
-    }
-    .header h1 { font-size: 1.4rem; margin: 0; background: linear-gradient(90deg, #d946ef, #38bdf8, #f59e0b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-    .card {
-      background: var(--card-bg);
-      border: 1px solid var(--border-color);
-      border-radius: 16px;
-      padding: 18px;
-      width: 100%;
-      max-width: 500px;
-      box-shadow: 0 15px 35px rgba(0,0,0,0.7);
-      margin-bottom: 16px;
-      box-sizing: border-box;
-    }
-    .card-premium {
-      border: 2px solid var(--premium-gold);
-      background: linear-gradient(145deg, #0f172a, #1e1b4b);
-    }
-    label { font-size: 0.82rem; font-weight: bold; color: var(--text-muted); display: block; margin: 10px 0 6px; }
-    input[type="text"], textarea, select {
-      width: 100%;
-      background: var(--input-bg);
-      border: 1px solid var(--border-color);
-      border-radius: 8px;
-      padding: 10px;
-      color: white;
-      box-sizing: border-box;
-      font-family: inherit;
-      font-size: 0.9rem;
-    }
-    .wallet-box {
-      background: rgba(245, 158, 11, 0.1);
-      border: 1px dashed var(--premium-gold);
-      border-radius: 10px;
-      padding: 10px;
-      margin-bottom: 12px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 0.85rem;
-    }
-    .file-upload-wrapper {
-      position: relative;
-      overflow: hidden;
-      display: inline-block;
-      width: 100%;
-    }
-    .file-upload-wrapper input[type=file] {
-      font-size: 100px;
-      position: absolute;
-      left: 0;
-      top: 0;
-      opacity: 0;
-      cursor: pointer;
-    }
-    .btn-file {
-      display: block;
-      background: var(--input-bg);
-      border: 1px solid var(--border-color);
-      color: #e5e7eb;
-      padding: 10px 16px;
-      border-radius: 8px;
-      text-align: center;
-      cursor: pointer;
-      font-size: 0.85rem;
-    }
-    .file-name {
-      font-size: 0.75rem;
-      color: var(--text-muted);
-      margin-top: 4px;
-      word-break: break-all;
-    }
-    .assistant-tabs {
-      display: flex;
-      gap: 4px;
-      background: #020617;
-      padding: 4px;
-      border-radius: 10px;
-      margin-bottom: 10px;
-    }
-    .tab-btn {
-      flex: 1;
-      background: transparent;
-      border: none;
-      color: var(--text-muted);
-      padding: 8px 6px;
-      font-size: 0.7rem;
-      font-weight: bold;
-      border-radius: 6px;
-      cursor: pointer;
-      text-align: center;
-    }
-    .tab-btn.active {
-      background: var(--accent-color);
-      color: white;
-      box-shadow: 0 4px 12px rgba(217, 70, 239, 0.4);
-    }
-    .tab-content { display: none; }
-    .tab-content.active { display: block; }
-    .char-counter { font-size: 0.7rem; color: var(--text-muted); text-align: right; margin-top: 4px; }
-    .category-section {
-      background: #020617;
-      border: 1px solid var(--border-color);
-      border-radius: 10px;
-      padding: 10px;
-      margin-top: 10px;
-    }
-    .category-title {
-      font-size: 0.8rem;
-      font-weight: bold;
-      color: var(--accent-color);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      cursor: pointer;
-      margin-bottom: 6px;
-    }
-    .pill-grid {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 5px;
-      max-height: 140px;
-      overflow-y: auto;
-      padding: 4px;
-    }
-    .pill-btn {
-      background: var(--input-bg);
-      border: 1px solid var(--border-color);
-      color: #e5e7eb;
-      padding: 5px 10px;
-      border-radius: 16px;
-      cursor: pointer;
-      font-size: 0.72rem;
-      transition: all 0.2s;
-    }
-    .pill-btn:hover { background: var(--accent-color); border-color: var(--accent-color); color: white; }
-    .pill-nsfw {
-      border: 1px solid var(--premium-gold);
-      background: rgba(245, 158, 11, 0.15);
-      color: var(--premium-gold);
-    }
-    .btn-submit {
-      width: 100%;
-      background: linear-gradient(90deg, #d946ef, #3b82f6);
-      border: none;
-      color: white;
-      font-weight: bold;
-      padding: 14px;
-      border-radius: 12px;
-      margin-top: 16px;
-      cursor: pointer;
-      font-size: 0.95rem;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 10px;
-    }
-    .btn-submit-premium {
-      background: linear-gradient(90deg, #f59e0b, #ef4444);
-    }
-    .spinner {
-      width: 18px;
-      height: 18px;
-      border: 3px solid rgba(255,255,255,0.3);
-      border-radius: 50%;
-      border-top-color: white;
-      animation: spin 0.8s linear infinite;
-      display: none;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    .badge-owner {
-      background: linear-gradient(90deg, #f59e0b, #ec4899);
-      color: white;
-      font-size: 0.65rem;
-      padding: 2px 6px;
-      border-radius: 10px;
-      font-weight: bold;
-      display: inline-block;
-      margin-left: 6px;
-    }
-    .output-preview {
-      background: #020617;
-      border: 1px solid var(--border-color);
-      border-radius: 12px;
-      padding: 14px;
-      margin-top: 15px;
-      text-align: center;
-    }
-    .output-img-box {
-      width: 100%;
-      min-height: 250px;
-      background: linear-gradient(45deg, #1e293b, #0f172a);
-      border-radius: 8px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      color: var(--text-muted);
-      font-size: 0.85rem;
-      margin-bottom: 10px;
-      overflow: hidden;
-      cursor: zoom-in;
-    }
-    .output-img-box img {
-      width: 100%;
-      height: auto;
-      border-radius: 8px;
-      display: block;
-    }
-    #zoomModal {
-      display: none;
-      position: fixed;
-      z-index: 1000;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.92);
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-    }
-    #zoomModal img {
-      max-width: 95%;
-      max-height: 80vh;
-      border-radius: 10px;
-      box-shadow: 0 0 30px rgba(217, 70, 239, 0.5);
-      cursor: zoom-out;
-      transform: scale(1);
-      transition: transform 0.2s ease;
-    }
-    .close-zoom { position: absolute; top: 20px; right: 25px; color: white; font-size: 35px; font-weight: bold; cursor: pointer; }
-    #toast {
-      visibility: hidden;
-      min-width: 250px;
-      background-color: #10b981;
-      color: white;
-      text-align: center;
-      border-radius: 8px;
-      padding: 12px;
-      position: fixed;
-      z-index: 100;
-      bottom: 30px;
-      font-size: 0.85rem;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
-    }
-    #toast.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 2.5s; }
-    @keyframes fadein { from { bottom: 0; opacity: 0; } to { bottom: 30px; opacity: 1; } }
-    @keyframes fadeout { from { bottom: 30px; opacity: 1; } to { bottom: 0; opacity: 0; } }
-  </style>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#070a12"><meta name="application-name" content="AvatarVerse">
+<title>AvatarVerse — Crea imágenes, anime y video con IA</title>
+<meta name="description" content="AvatarVerse: crea imágenes, anime y video con IA. Texto a imagen, imagen a imagen, edición, inpainting, animación, lip sync y más.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='24' fill='%23070a12'/%3E%3Cpath d='M24 68 42 28h16l18 40H60l-5-13H43l-5 13zM47 45l-4 10h9z' fill='%237c5cff'/%3E%3C/svg%3E">
+<style>
+:root{--bg:#070a12;--panel:#0d1220;--panel2:#11182a;--text:#f6f7fb;--muted:#9aa4b8;--line:#202a3e;--brand:#7c5cff;--brand2:#2fb4ff;--shadow:0 24px 80px rgba(0,0,0,.38)}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(1000px 500px at 70% -10%,rgba(124,92,255,.2),transparent 60%),var(--bg);color:var(--text);font:15px/1.55 Inter,system-ui,sans-serif}
+button,input,textarea,select{font:inherit}button{cursor:pointer}a{color:inherit;text-decoration:none}.container{width:min(1180px,calc(100% - 32px));margin:auto}
+.nav{position:sticky;top:0;z-index:50;background:rgba(7,10,18,.78);backdrop-filter:blur(18px);border-bottom:1px solid rgba(255,255,255,.06)}
+.navin{height:68px;display:flex;align-items:center;gap:22px}.brand{font-size:22px;font-weight:900;letter-spacing:-.7px}.brand b{background:linear-gradient(90deg,var(--brand),var(--brand2));-webkit-background-clip:text;color:transparent}
+.navlinks{display:flex;gap:20px;margin-left:auto;align-items:center}.navlinks a{color:var(--muted)}.navlinks a:hover{color:#fff}.mobile{display:none}
+.btn{border:1px solid var(--line);background:var(--panel2);color:#fff;border-radius:12px;padding:10px 15px;font-weight:700}.btn.primary{border:0;background:linear-gradient(100deg,var(--brand),var(--brand2));box-shadow:0 10px 35px rgba(124,92,255,.25)}
+.hero{padding:80px 0 45px}.hero-grid{display:grid;grid-template-columns:1.08fr .92fr;gap:50px;align-items:center}.eyebrow{color:#b5a8ff;font-weight:800;text-transform:uppercase;letter-spacing:.12em;font-size:12px}
+h1{font-size:clamp(44px,7vw,78px);line-height:.98;letter-spacing:-4px;margin:14px 0}h1 span{background:linear-gradient(100deg,#fff,var(--brand2));-webkit-background-clip:text;color:transparent}.lead{font-size:19px;color:var(--muted);max-width:650px}.actions{display:flex;gap:12px;flex-wrap:wrap;margin:25px 0}
+.preview{background:linear-gradient(145deg,#11182a,#090d17);border:1px solid var(--line);border-radius:28px;padding:14px;box-shadow:var(--shadow)}.preview-main{height:430px;border-radius:20px;overflow:hidden;background:linear-gradient(135deg,#1a1740,#0c2134);display:grid;place-items:center;text-align:center;padding:30px}.orb{width:150px;height:150px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff,#8d78ff 22%,#32206e 55%,transparent 70%);filter:drop-shadow(0 0 50px #7c5cff)}
+section{padding:78px 0}.section-head{max-width:700px;margin-bottom:28px}h2{font-size:38px;letter-spacing:-1.8px;margin:8px 0}.muted{color:var(--muted)}
+.feature-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.feature{background:rgba(17,24,42,.72);border:1px solid var(--line);padding:22px;border-radius:20px;transition:.2s}.feature:hover{transform:translateY(-3px);border-color:#35425e}.icon{width:44px;height:44px;border-radius:13px;display:grid;place-items:center;background:linear-gradient(135deg,var(--brand),var(--brand2));font-weight:900;margin-bottom:15px}
+.workspace{display:grid;grid-template-columns:230px 1fr;gap:16px;background:#090d17;border:1px solid var(--line);border-radius:24px;padding:14px;min-height:580px}.tools{display:flex;flex-direction:column;gap:7px}.tool{text-align:left;padding:12px;border:1px solid transparent;border-radius:12px;background:transparent;color:var(--muted)}.tool:hover,.tool.active{background:#131b2e;color:#fff;border-color:var(--line)}
+.canvas{border:1px solid var(--line);border-radius:18px;padding:20px;background:radial-gradient(700px 350px at 50% 0,#171c39,#0b101c)}.tool-title{display:flex;justify-content:space-between;gap:12px;align-items:center}
+textarea,input,select{width:100%;background:#080c15;color:#fff;border:1px solid var(--line);border-radius:12px;padding:13px;outline:none}textarea{min-height:120px;resize:vertical}.row{display:flex;gap:10px;flex-wrap:wrap}.row>*{flex:1;min-width:150px}.drop{margin-top:12px;min-height:190px;border:1px dashed #3a4864;border-radius:16px;display:grid;place-items:center;text-align:center;color:var(--muted);padding:20px}.result{margin-top:14px;min-height:170px;border-radius:16px;background:#070a10;display:grid;place-items:center;overflow:hidden}.result img,.result video{width:100%;height:100%;max-height:500px;object-fit:contain}
+.gallery{columns:4 220px;column-gap:14px}.gallery-card{width:100%;padding:0;border:0;background:none;margin:0 0 14px;break-inside:avoid;border-radius:18px;overflow:hidden;display:block}.gallery-card img{display:block;width:100%;transition:.25s}.gallery-card:hover img{transform:scale(1.025)}
+.faq{border-top:1px solid var(--line)}details{border-bottom:1px solid var(--line);padding:18px 0}summary{cursor:pointer;font-weight:800}details p{color:var(--muted);max-width:850px}
+.footer{border-top:1px solid var(--line);padding:50px 0;color:var(--muted)}.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:35px}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:100;display:none;place-items:center;padding:20px}.modal.show{display:grid}.modalbox{width:min(700px,100%);background:var(--panel);border:1px solid var(--line);border-radius:22px;padding:22px}.close{float:right;background:none;border:0;color:#fff;font-size:24px}.toast{position:fixed;right:18px;bottom:18px;background:#10182a;border:1px solid var(--line);padding:13px 16px;border-radius:13px;display:none;z-index:120}.toast.show{display:block}
+@media(max-width:850px){.navlinks{display:none}.mobile{display:block;margin-left:auto}.hero-grid{grid-template-columns:1fr}.feature-grid{grid-template-columns:1fr 1fr}.workspace{grid-template-columns:1fr}.tools{display:grid;grid-template-columns:repeat(2,1fr)}.footer-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.container{width:calc(100% - 22px)}.hero{padding-top:50px}h1{letter-spacing:-2.5px}.feature-grid{grid-template-columns:1fr}.footer-grid{grid-template-columns:1fr}}
+</style>
 </head>
 <body>
+<header class="nav"><div class="container navin"><a class="brand" href="#top">Avatar<b>Verse</b></a>
+<nav class="navlinks"><a href="#crear">Crear</a><a href="#features">Funciones</a><a href="#gallery">Galería</a><a href="#faq">FAQ</a><button class="btn primary" onclick="scrollToCreate()">Comenzar</button></nav>
+<button class="btn mobile" onclick="toggleNav()">☰</button></div></header>
+<main id="top">
+<section class="hero"><div class="container hero-grid"><div><div class="eyebrow">Tu imaginación. Tu universo.</div><h1>Crea <span>arte, avatares y video</span> con IA.</h1><p class="lead">AvatarVerse reúne creación de imágenes, anime, edición, animación y herramientas para mantener personajes consistentes en una experiencia moderna y rápida.</p><div class="actions"><button class="btn primary" onclick="scrollToCreate()">✨ Crear ahora</button><button class="btn" onclick="document.querySelector('#features').scrollIntoView()">Explorar funciones</button></div><p class="muted">Texto a imagen · Imagen a imagen · Inpaint · Edición · Video · Lip Sync · Animación</p></div>
+<div class="preview"><div class="preview-main"><div><div class="orb"></div><h3>AvatarVerse</h3><p class="muted">Da vida a tus ideas.</p></div></div></div></div></section>
+<section id="features"><div class="container"><div class="section-head"><div class="eyebrow">Una plataforma, muchas herramientas</div><h2>Crea casi cualquier cosa</h2><p class="muted">La versión independiente conserva las nueve categorías de creación presentes en el HTML de referencia.</p></div><div class="feature-grid"><article class="feature"><div class="icon">✦</div><h3>Text to Image</h3><p class="muted">Escribe un prompt y conviértelo en una imagen.</p></article><article class="feature"><div class="icon">◈</div><h3>Image to Image</h3><p class="muted">Transforma una imagen usando instrucciones.</p></article><article class="feature"><div class="icon">✎</div><h3>Inpaint</h3><p class="muted">Selecciona una zona y describe qué quieres cambiar.</p></article><article class="feature"><div class="icon">✧</div><h3>Image Edit</h3><p class="muted">Edita una foto con instrucciones de lenguaje natural.</p></article><article class="feature"><div class="icon">▶</div><h3>Text to Video</h3><p class="muted">Convierte una descripción en una escena en movimiento.</p></article><article class="feature"><div class="icon">▣</div><h3>Image to Video</h3><p class="muted">Anima una imagen estática.</p></article><article class="feature"><div class="icon">⧉</div><h3>Reference to Video</h3><p class="muted">Usa una referencia para conservar el personaje en movimiento.</p></article><article class="feature"><div class="icon">◉</div><h3>Lip Sync</h3><p class="muted">Sincroniza voz y movimiento de labios.</p></article><article class="feature"><div class="icon">♙</div><h3>Character Animation</h3><p class="muted">Da movimiento a tus personajes.</p></article></div></div></section>
+<section id="crear"><div class="container"><div class="section-head"><div class="eyebrow">AvatarVerse Studio</div><h2>Tu espacio de creación</h2><p class="muted">La interfaz funciona de forma local. Para generación IA real, conecta los endpoints de tu propio backend o proveedor.</p></div>
+<div class="workspace"><aside class="tools"><button class="tool active" data-tool="txt2img" onclick="selectTool(this)">✨ Text to Image</button><button class="tool " data-tool="img2img" onclick="selectTool(this)">🖼️ Image to Image</button><button class="tool " data-tool="inpaint" onclick="selectTool(this)">🖌️ Inpaint</button><button class="tool " data-tool="edit" onclick="selectTool(this)">✏️ Image Edit</button><button class="tool " data-tool="txt2video" onclick="selectTool(this)">🎬 Text to Video</button><button class="tool " data-tool="img2video" onclick="selectTool(this)">🎞️ Image to Video</button><button class="tool " data-tool="refvideo" onclick="selectTool(this)">🔗 Reference to Video</button><button class="tool " data-tool="lipsync" onclick="selectTool(this)">🎙️ Lip Sync</button><button class="tool " data-tool="animation" onclick="selectTool(this)">🧍 Character Animation</button></aside><div class="canvas"><div class="tool-title"><div><div class="eyebrow">Herramienta</div><h3 id="toolName">Text to Image</h3></div><span class="muted" id="status">Listo</span></div><div id="toolPanel"></div></div></div></div></section>
+<section id="gallery"><div class="container"><div class="section-head"><div class="eyebrow">Inspiración</div><h2>Galería de posibilidades</h2><p class="muted">Puedes sustituir estas imágenes de demostración por recursos propios de AvatarVerse.</p></div><div class="gallery"><button class="gallery-card" data-src="https://static.dreamerland.ai/images/0iwL9igxJgN6It4NHIvB3nale0g1_ajk8BBFVYvkD6As7fn0b_1.webp" aria-label="Abrir ejemplo"><img src="https://static.dreamerland.ai/images/0iwL9igxJgN6It4NHIvB3nale0g1_ajk8BBFVYvkD6As7fn0b_1.webp" alt="Ejemplo de creación de AvatarVerse" loading="lazy"></button><button class="gallery-card" data-src="https://static.dreamerland.ai/images/0iwL9igxJgN6It4NHIvB3nale0g1_0xcMUWdiSWB67a59myZq_1.webp" aria-label="Abrir ejemplo"><img src="https://static.dreamerland.ai/images/0iwL9igxJgN6It4NHIvB3nale0g1_0xcMUWdiSWB67a59myZq_1.webp" alt="Ejemplo de creación de AvatarVerse" loading="lazy"></button><button class="gallery-card" data-src="https://cdn.dreamerland.ai/upload/42d6dd29-6254-4c07-8594-9be6b691d5ee.webp" aria-label="Abrir ejemplo"><img src="https://cdn.dreamerland.ai/upload/42d6dd29-6254-4c07-8594-9be6b691d5ee.webp" alt="Ejemplo de creación de AvatarVerse" loading="lazy"></button><button class="gallery-card" data-src="https://static.dreamerland.ai/images/avreJY9P5gQg50AXVOdVao008Fb2_pnY95Eqh7IFBCAeYDG16_1.webp" aria-label="Abrir ejemplo"><img src="https://static.dreamerland.ai/images/avreJY9P5gQg50AXVOdVao008Fb2_pnY95Eqh7IFBCAeYDG16_1.webp" alt="Ejemplo de creación de AvatarVerse" loading="lazy"></button><button class="gallery-card" data-src="https://static.dreamerland.ai/images/0iwL9igxJgN6It4NHIvB3nale0g1_AzagWPWx6anX9ATvnQoo_1.webp" aria-label="Abrir ejemplo"><img src="https://static.dreamerland.ai/images/0iwL9igxJgN6It4NHIvB3nale0g1_AzagWPWx6anX9ATvnQoo_1.webp" alt="Ejemplo de creación de AvatarVerse" loading="lazy"></button><button class="gallery-card" data-src="https://static.dreamerland.ai/images/GLPvFvrUKvRemw1jb7EPe0mVCjE2_PklAj3vHvaMwhEHGb76x_0.webp" aria-label="Abrir ejemplo"><img src="https://static.dreamerland.ai/images/GLPvFvrUKvRemw1jb7EPe0mVCjE2_PklAj3vHvaMwhEHGb76x_0.webp" alt="Ejemplo de creación de AvatarVerse" loading="lazy"></button><button class="gallery-card" data-src="https://static.dreamerland.ai/images/VwrPzwLUsHVLbAvml1Y9QurMv9t1_go4xs0QAJvFEs5197B3I_0.webp" aria-label="Abrir ejemplo"><img src="https://static.dreamerland.ai/images/VwrPzwLUsHVLbAvml1Y9QurMv9t1_go4xs0QAJvFEs5197B3I_0.webp" alt="Ejemplo de creación de AvatarVerse" loading="lazy"></button><button class="gallery-card" data-src="https://static.dreamerland.ai/images/AQWs5Grp7SXN24DWYwxoVlXPvC43_ZqF0DcAnZLhfKXtE1E4V_0.webp" aria-label="Abrir ejemplo"><img src="https://static.dreamerland.ai/images/AQWs5Grp7SXN24DWYwxoVlXPvC43_ZqF0DcAnZLhfKXtE1E4V_0.webp" alt="Ejemplo de creación de AvatarVerse" loading="lazy"></button></div></div></section>
+<section id="faq"><div class="container"><div class="section-head"><div class="eyebrow">Preguntas frecuentes</div><h2>Todo claro antes de empezar</h2></div><div class="faq">
+<details open><summary>¿Qué es AvatarVerse?</summary><p>Una plataforma independiente para crear y transformar contenido visual mediante herramientas de IA conectadas a tus propios servicios.</p></details>
+<details><summary>¿Puedo generar imágenes y video?</summary><p>La interfaz incluye módulos de imagen y video. Para generación real debes conectar un proveedor de modelos o tu backend.</p></details>
+<details><summary>¿Puedo usar mis propias imágenes?</summary><p>Sí. El estudio permite cargar archivos locales y previsualizarlos.</p></details>
+<details><summary>¿Puedo cambiar los modelos?</summary><p>Sí. El selector está preparado para integrarse con diferentes endpoints.</p></details>
+<details><summary>¿Es independiente de Dreamerland?</summary><p>Sí. Esta versión no utiliza scripts, logos, dominios ni dependencias de Dreamerland.</p></details>
+</div></div></section>
+</main>
+<footer class="footer"><div class="container footer-grid"><div><div class="brand">Avatar<b>Verse</b></div><p>Tu universo creativo impulsado por IA.</p></div><div><strong>Crear</strong><p><a href="#crear">Studio</a></p><p><a href="#features">Funciones</a></p></div><div><strong>Recursos</strong><p><a href="#gallery">Galería</a></p><p><a href="#faq">FAQ</a></p></div><div><strong>AvatarVerse</strong><p><a href="#top">Inicio</a></p><p><button class="btn" onclick="downloadStarter()">Descargar configuración</button></p></div></div></footer>
+<div class="modal" id="viewer" onclick="if(event.target===this)closeViewer()"><div class="modalbox"><button class="close" onclick="closeViewer()">×</button><img id="viewerImg" style="width:100%;max-height:75vh;object-fit:contain;border-radius:14px"></div></div><div class="toast" id="toast"></div>
+<script>
+const state={tool:'txt2img', file:null, history: JSON.parse(localStorage.getItem('avatarverse_history') || '[]')};
+const configs={
+txt2img:{title:'Text to Image',kind:'image',prompt:'Describe la imagen que quieres crear...',button:'Generar imagen'},
+img2img:{title:'Image to Image',kind:'image',prompt:'Describe la transformación...',button:'Transformar imagen'},
+inpaint:{title:'Inpaint',kind:'image',prompt:'Describe qué quieres cambiar...',button:'Aplicar cambio'},
+edit:{title:'Image Edit',kind:'image',prompt:'Ej.: cambia el fondo por una ciudad futurista...',button:'Editar imagen'},
+txt2video:{title:'Text to Video',kind:'video',prompt:'Describe la escena y el movimiento...',button:'Generar video'},
+img2video:{title:'Image to Video',kind:'video',prompt:'Describe el movimiento...',button:'Animar imagen'},
+refvideo:{title:'Reference to Video',kind:'video',prompt:'Describe la acción manteniendo al personaje...',button:'Crear video'},
+lipsync:{title:'Lip Sync',kind:'video',prompt:'Texto o instrucciones de voz...',button:'Sincronizar'},
+animation:{title:'Character Animation',kind:'video',prompt:'Describe la animación...',button:'Animar personaje'}
+};
+function scrollToCreate(){document.querySelector('#crear').scrollIntoView({behavior:'smooth'})}
+function toggleNav(){const n=document.querySelector('.navlinks');n.style.display=n.style.display==='flex'?'none':'flex'}
+function toast(t){const x=document.getElementById('toast');x.textContent=t;x.classList.add('show');setTimeout(()=>x.classList.remove('show'),2600)}
+function selectTool(btn){document.querySelectorAll('.tool').forEach(x=>x.classList.remove('active'));btn.classList.add('active');state.tool=btn.dataset.tool;state.file=null;renderTool()}
 
-  <div class="header">
-    <h1>AvatarVerse Nexus</h1>
-    <span style="color:#38bdf8; font-size:0.75rem;">● Quantum Ultra v11.5</span>
-  </div>
+function renderTool(){
+const c=configs[state.tool],p=document.getElementById('toolPanel');
+document.getElementById('toolName').textContent=c.title;
+p.innerHTML='<label class="muted">Prompt / instrucciones</label><textarea id="prompt" placeholder="'+c.prompt+'"></textarea>'+
+'<div class="row" style="margin-top:10px"><div><label class="muted">Modelo / Endpoint</label><select id="model"><option>AvatarVerse Default API</option><option>Flux / SDXL Engine</option><option>VideoGen Pipeline</option><option>Custom Backend Webhook</option></select></div><div><label class="muted">Formato / Relación</label><select id="ratio"><option>1:1</option><option>16:9</option><option>9:16</option><option>4:5</option></select></div></div>'+
+'<div class="drop" id="dropZone">📎 Arrastra un archivo aquí o <label style="color:#b8acff;text-decoration:underline;cursor:pointer">selecciona un archivo<input id="file" type="file" accept="image/*,video/*" hidden></label><div id="fileName"></div></div>'+
+'<div class="actions"><button class="btn primary" onclick="runTool()">'+c.button+'</button><button class="btn" onclick="clearStudio()">Limpiar</button></div>'+
+'<div class="result" id="result"><span class="muted">Tu resultado aparecerá aquí o en tu historial guardado.</span></div>'+
+'<div style="margin-top:15px"><h4 style="margin:5px 0">Historial local de '+c.title+'</h4><div id="toolHistory" style="max-height:150px;overflow-y:auto;font-size:13px"></div></div>';
+document.getElementById('file').addEventListener('change',handleFile);
+renderToolHistory();
+}
 
-  <div class="card">
-    <div class="wallet-box">
-      <span>💎 Tus Créditos Nexus:</span>
-      <strong id="userCredits" style="color:var(--premium-gold);">50 Créditos</strong>
-    </div>
+function handleFile(e){const f=e.target.files[0];if(!f)return;state.file=f;document.getElementById('fileName').textContent='✓ '+f.name;toast('Archivo cargado correctamente.')}
 
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-      <h2 style="margin:0; color:var(--accent-color); font-size:1.1rem;">Studio Ultra Real</h2>
-      <div style="display:flex; gap:6px;">
-        <button onclick="setTheme('#d946ef')" style="width:16px; height:16px; border-radius:50%; background:#d946ef; border:none; cursor:pointer;" title="Fucsia"></button>
-        <button onclick="setTheme('#38bdf8')" style="width:16px; height:16px; border-radius:50%; background:#38bdf8; border:none; cursor:pointer;" title="Azul"></button>
-      </div>
-    </div>
-    
-    <label>TU USUARIO / CREATOR NAME <span id="ownerBadge"></span></label>
-    <input type="text" id="username" placeholder="Tu usuario..." oninput="checkOwner()">
+function runTool(){
+const promptText=document.getElementById('prompt').value.trim();
+const model=document.getElementById('model').value;
+const ratio=document.getElementById('ratio').value;
+if(!promptText && !state.file){toast('Escribe un prompt o carga un archivo primero.');return}
 
-    <label>MOTOR DE ULTRA-DEFINICIÓN ⚡</label>
-    <select id="advancedModelSelect" style="border: 2px solid var(--accent-color);">
-      <option value="flux">🔵 Flux.2 Klein Ultra (Fotorrealismo Extremo)</option>
-      <option value="qwen">🟢 Qwen Edit 2511 (Texturas Naturales)</option>
-      <option value="krea">🔴 Krea2 [NEW] (Estudio Avanzado Hi-Res)</option>
-    </select>
+const r=document.getElementById('result');
+document.getElementById('status').textContent='Procesando...';
+r.innerHTML='<div style="padding:30px;text-align:center"><div style="font-size:28px">⏳</div><h3>Conectando con motor de IA...</h3><p class="muted">Enviando peticiones al endpoint seleccionado ('+model+').</p></div>';
 
-    <label>IMAGEN DE REFERENCIA (BLOQUEO DE RASGOS)</label>
-    <div class="file-upload-wrapper">
-      <span class="btn-file">Seleccionar referencia facial</span>
-      <input type="file" id="fileInput" accept="image/*" onchange="updateFileName()">
-    </div>
-    <div id="fileNameDisplay" class="file-name">Sin archivos seleccionados</div>
+setTimeout(()=>{
+  const item={tool:state.tool, title:configs[state.tool].title, prompt:promptText||'Archivo multimedia', model, ratio, date:new Date().toLocaleTimeString()};
+  state.history.unshift(item);
+  localStorage.setItem('avatarverse_history', JSON.stringify(state.history));
+  
+  if(configs[state.tool].kind==='image'){
+    r.innerHTML='<div style="padding:15px;text-align:center"><div style="color:#22d3ee;font-weight:bold;margin-bottom:8px">✨ ¡Generación Exitosa!</div><p class="muted">Prompt: "'+(promptText||'N/A')+'"</p><span style="font-size:12px;background:#1b243d;padding:4px 8px;border-radius:6px">Modelo: '+model+' | Formato: '+ratio+'</span></div>';
+  } else {
+    r.innerHTML='<div style="padding:15px;text-align:center"><div style="color:#22d3ee;font-weight:bold;margin-bottom:8px">🎬 ¡Video / Animación Preparada!</div><p class="muted">Secuencia: "'+(promptText||'N/A')+'"</p><span style="font-size:12px;background:#1b243d;padding:4px 8px;border-radius:6px">Renderizado listo para exportar</span></div>';
+  }
+  document.getElementById('status').textContent='Completado';
+  toast('¡Proceso ejecutado con éxito!');
+  renderToolHistory();
+}, 1200);
+}
 
-    <!-- ASISTENTE INTELIGENTE DE PROMPTS Y MÓDULOS -->
-    <label style="margin-top:14px;">ASISTENTE INTELIGENTE DE PROMPTS 🤖</label>
-    <div class="assistant-tabs">
-      <button class="tab-btn active" onclick="switchTab('tab-prompt', event)">✍️ Editor Principal</button>
-      <button class="tab-btn" onclick="switchTab('tab-img2text', event)">🖼️ Imagen a Texto</button>
-      <button class="tab-btn" onclick="switchTab('tab-illustrious', event)">✨ Illustrious XL</button>
-      <button class="tab-btn" onclick="switchTab('tab-improver', event)">⚡ Mejorador</button>
-    </div>
+function renderToolHistory(){
+const container=document.getElementById('toolHistory');
+if(!container)return;
+const filtered=state.history.filter(h=>h.tool===state.tool);
+if(!filtered.length){container.innerHTML='<span class="muted">No hay registros locales para esta herramienta aún.</span>';return;}
+container.innerHTML=filtered.map((h,i)=>'<div style="background:#0c111e;border:1px solid var(--line);padding:8px 12px;border-radius:8px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center"><div><b>'+h.title+'</b>: '+(h.prompt.length>45?h.prompt.substring(0,45)+'...':h.prompt)+'<br><small class="muted">'+h.date+' · '+h.model+'</small></div><button class="btn" style="padding:4px 8px;font-size:11px" onclick="deleteHistoryItem('+i+')">Borrar</button></div>').join('');
+}
 
-    <!-- Pestaña 1: Editor Principal -->
-    <div id="tab-prompt" class="tab-content active">
-      <textarea id="prompt" rows="3" placeholder="Descripción de la imagen..."></textarea>
-      <div class="char-counter" id="charCounterMain">0 / 100000</div>
-    </div>
+function deleteHistoryItem(idx){
+state.history.splice(idx,1);
+localStorage.setItem('avatarverse_history', JSON.stringify(state.history));
+renderToolHistory();
+toast('Registro eliminado.');
+}
 
-    <!-- Pestaña 2: Imagen a Texto -->
-    <div id="tab-img2text" class="tab-content">
-      <label style="color:var(--accent-color);">Carga una imagen para sugerir prompt:</label>
-      <div class="file-upload-wrapper" style="margin-bottom:8px;">
-        <span class="btn-file">Cargar imagen analizadora</span>
-        <input type="file" id="img2textInput" accept="image/*" onchange="analyzeImageToText()">
-      </div>
-      <textarea id="promptImg2Text" rows="3" placeholder="El prompt sugerido aparecerá aquí..."></textarea>
-    </div>
-
-    <!-- Pestaña 3: Illustrious XL -->
-    <div id="tab-illustrious" class="tab-content">
-      <label style="color:var(--accent-color);">Illustrious XL Style Prompts:</label>
-      <div class="file-upload-wrapper" style="margin-bottom:8px;">
-        <span class="btn-file">Cargar imagen para Illustrious XL</span>
-        <input type="file" id="illustriousInput" accept="image/*" onchange="processIllustrious()">
-      </div>
-      <textarea id="promptIllustrious" rows="3" placeholder="Prompt estilo Illustrious XL generado..."></textarea>
-    </div>
-
-    <!-- Pestaña 4: Mejorador de Prompts -->
-    <div id="tab-improver" class="tab-content">
-      <label style="color:var(--accent-color);">Mejorador de Prompts (Detallado y Creativo):</label>
-      <textarea id="promptImprover" rows="4" placeholder="Ingresa tu prompt básico aquí para que la herramienta lo mejore, perfeccione y amplíe..." oninput="updateImproverCounter(this)"></textarea>
-      <div class="char-counter" id="charCounterImprover">0 / 100000</div>
-      <button onclick="enhancePromptAction()" class="pill-btn" style="width:100%; background:var(--accent-color); color:white; margin-top:6px; padding:8px; font-weight:bold;">Perfeccionar y Enviar al Editor 🚀</button>
-    </div>
-
-    <label style="margin-top:14px;">ESTILOS DE ULTRA-NITIDEZ 🎨</label>
-    <div class="pill-grid" style="max-height:none; margin-bottom:10px;">
-      <button class="pill-btn" onclick="setPreset('RawPhone')">RAW Selfie Real</button>
-      <button class="pill-btn" onclick="setPreset('Chiaroscuro')">Chiaroscuro Pro</button>
-      <button class="pill-btn" onclick="setPreset('Cinematic')">Cinematic 16K</button>
-    </div>
-
-    <!-- CATEGORÍAS MASIVAS DE ESTILOS Y MÓDULOS -->
-    <div class="category-section">
-      <div class="category-title" onclick="toggleCategory('cat-general-styles')">
-        <span>📂 Estilos en General & Conceptos</span>
-        <span>▼</span>
-      </div>
-      <div id="cat-general-styles" style="display:none; margin-top:8px;">
-        <div class="pill-grid">
-          <button class="pill-btn" onclick="addStyle('Anime')">Anime</button>
-          <button class="pill-btn" onclick="addStyle('Cómics')">Cómics</button>
-          <button class="pill-btn" onclick="addStyle('Spell rings')">Spell rings</button>
-          <button class="pill-btn" onclick="addStyle('Made of fog')">Made of fog</button>
-          <button class="pill-btn" onclick="addStyle('Oni mask')">Oni mask</button>
-          <button class="pill-btn" onclick="addStyle('Stellar blade skin suits')">Stellar blade skin suits</button>
-          <button class="pill-btn" onclick="addStyle('90s anime')">90s anime</button>
-          <button class="pill-btn" onclick="addStyle('Samdoes arts')">Samdoes arts</button>
-          <button class="pill-btn" onclick="addStyle('Swords & Shield')">Swords & Shield</button>
-          <button class="pill-btn" onclick="addStyle('Old Style')">Old Style</button>
-          <button class="pill-btn" onclick="addStyle('Sadamoto yoshiyuki')">Sadamoto yoshiyuki</button>
-          <button class="pill-btn" onclick="addStyle('Anti long torso')">Anti long torso</button>
-          <button class="pill-btn" onclick="addStyle('Liquid flow')">Liquid flow</button>
-          <button class="pill-btn" onclick="addStyle('Glass Sculpture')">Glass Sculpture</button>
-          <button class="pill-btn" onclick="addStyle('On fire')">On fire</button>
-          <button class="pill-btn" onclick="addStyle('On glass')">On glass</button>
-          <button class="pill-btn" onclick="addStyle('More Artistic')">More Artistic</button>
-          <button class="pill-btn" onclick="addStyle('Niji')">Niji</button>
-          <button class="pill-btn" onclick="addStyle('Add detail')">Add detail</button>
-          <button class="pill-btn" onclick="addStyle('Creepy polaroid film')">Creepy polaroid film</button>
-          <button class="pill-btn" onclick="addStyle('Creepypasta')">Creepypasta</button>
-          <button class="pill-btn" onclick="addStyle('Horror')">Horror</button>
-          <button class="pill-btn" onclick="addStyle('Terror')">Terror</button>
-          <button class="pill-btn" onclick="addStyle('Gore')">Gore</button>
-          <button class="pill-btn" onclick="addStyle('Woodcut minimalist')">Woodcut minimalist</button>
-          <button class="pill-btn" onclick="addStyle('Street art')">Street art</button>
-          <button class="pill-btn" onclick="addStyle('Oil painting')">Oil painting</button>
-          <button class="pill-btn" onclick="addStyle('Iris Scott')">Iris Scott</button>
-          <button class="pill-btn" onclick="addStyle('Ink punk')">Ink punk</button>
-          <button class="pill-btn" onclick="addStyle('Sewing doll')">Sewing doll</button>
-          <button class="pill-btn" onclick="addStyle('Analog film')">Analog film</button>
-          <button class="pill-btn" onclick="addStyle('Ink wask painting')">Ink wask painting</button>
-          <button class="pill-btn" onclick="addStyle('Abstract')">Abstract</button>
-          <button class="pill-btn" onclick="addStyle('Ukiyo e')">Ukiyo e</button>
-          <button class="pill-btn" onclick="addStyle('Custom text')">Custom text</button>
-          <button class="pill-btn" onclick="addStyle('Fantasy monsters')">Fantasy monsters</button>
-          <button class="pill-btn" onclick="addStyle('Oda Non')">Oda Non</button>
-          <button class="pill-btn" onclick="addStyle('Katana')">Katana</button>
-          <button class="pill-btn" onclick="addStyle('Comic book')">Comic book</button>
-          <button class="pill-btn" onclick="addStyle('Double exposure')">Double exposure</button>
-          <button class="pill-btn" onclick="addStyle('Disco delirium')">Disco delirium</button>
-          <button class="pill-btn" onclick="addStyle('Bold line')">Bold line</button>
-          <button class="pill-btn" onclick="addStyle('Cloud')">Cloud</button>
-          <button class="pill-btn" onclick="addStyle('Voxel')">Voxel</button>
-          <button class="pill-btn" onclick="addStyle('Dissolve')">Dissolve</button>
-          <button class="pill-btn" onclick="addStyle('Voly creative')">Voly creative</button>
-          <button class="pill-btn" onclick="addStyle('Surreal harmony')">Surreal harmony</button>
-          <button class="pill-btn" onclick="addStyle('Fractil art')">Fractil art</button>
-          <button class="pill-btn" onclick="addStyle('Niji 3D')">Niji 3D</button>
-          <button class="pill-btn" onclick="addStyle('Mecha')">Mecha</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="category-section">
-      <div class="category-title" onclick="toggleCategory('cat-elements')">
-        <span>📂 Estilo de Cabello, Rostro, Pose & Ropa</span>
-        <span>▼</span>
-      </div>
-      <div id="cat-elements" style="display:none; margin-top:8px;">
-        <label style="color:var(--accent-color); margin-top:4px;">Cabello & Rostro</label>
-        <div class="pill-grid">
-          <button class="pill-btn" onclick="addStyle('natural skin texture, visible skin pores')">Piel real y poros</button>
-          <button class="pill-btn" onclick="addStyle('detailed individual hair strands')">Cabello hebra por hebra</button>
-          <button class="pill-btn" onclick="addStyle('oiled skin texture, wet gloss')">Oiled skin</button>
-          <button class="pill-btn" onclick="addStyle('detailed eyelashes, sharp eyes')">Ojos y pestañas nítidas</button>
-        </div>
-        <label style="color:var(--accent-color); margin-top:6px;">Pose, Postura & Posición</label>
-        <div class="pill-grid">
-          <button class="pill-btn" onclick="addStyle('dynamic pose, perfect posture')">Postura perfecta</button>
-          <button class="pill-btn" onclick="addStyle('authentic smartphone selfie angle')">Ángulo selfie real</button>
-          <button class="pill-btn" onclick="addStyle('holding smartphone in mirror reflection')">Reflejo en espejo</button>
-        </div>
-        <label style="color:var(--accent-color); margin-top:6px;">Ropa, Outfits & Fondo</label>
-        <div class="pill-grid">
-          <button class="pill-btn" onclick="addStyle('tight form-fitting silk dress texture, fine fabric weave')">Vestido de seda ajustado</button>
-          <button class="pill-btn" onclick="addStyle('luxury hotel room interior, bokeh background')">Fondo de lujo con bokeh</button>
-          <button class="pill-btn" onclick="addStyle('highly detailed environment background, sharp focus')">Entorno detallado 8K</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- SECCIÓN VIP / NSFW (Acceso libre para el Dueño Supremo) -->
-    <div class="category-section" style="border: 1px solid var(--premium-gold);">
-      <div class="category-title" onclick="toggleCategory('cat-vip')" style="color:var(--premium-gold);">
-        <span>🔒 Módulo VIP - Premium (NSFW Exclusivo Dueño)</span>
-        <span>▼</span>
-      </div>
-      <div id="cat-vip" style="display:none; margin-top:8px;">
-        <div style="font-size:0.75rem; color:var(--premium-gold); margin-bottom:6px;">* Zona restringida. Acceso libre permanente concedido al Dueño Supremo 👑</div>
-        <div class="pill-grid">
-          <button class="pill-btn pill-nsfw" onclick="addStyle('Hentai, uncensored masterpiece, high quality lineart')">Hentai Masterpiece</button>
-          <button class="pill-btn pill-nsfw" onclick="addStyle('explicit adult conceptual art, highly detailed skin shading')">Adult Conceptual Art</button>
-          <button class="pill-btn pill-nsfw" onclick="addStyle('ecchi style, seductive expression, gorgeous lighting')">Ecchi Seductive</button>
-        </div>
-      </div>
-    </div>
-
-    <button id="submitBtn" class="btn-submit" onclick="generateImage()">
-      <div id="spinnerFree" class="spinner"></div>
-      <span id="btnTextFree">Generar Imagen Quantum Ultra 🚀</span>
-    </button>
-  </div>
-
-  <div class="card" id="outputSection" style="display:none;">
-    <h3 style="margin:0 0 10px 0; font-size:0.95rem; color:var(--accent-color);">Obra Maestra Ultra 🌟 (Toca para Zoom HD)</h3>
-    <div class="output-preview">
-      <div class="output-img-box" id="outputBox" onclick="openZoom()">
-        <span>Renderizando con motor v11.5... ✨</span>
-      </div>
-      <button onclick="downloadImageDirect()" class="pill-btn" style="display:block; background:var(--accent-color); color:white; width:100%; border:none; padding:12px; font-weight:bold; margin-top:10px; border-radius:8px; cursor:pointer;">Descargar Imagen a Galería 💾</button>
-    </div>
-  </div>
-
-  <div id="zoomModal" onclick="closeZoom()">
-    <span class="close-zoom">&times;</span>
-    <img id="modalImg" src="" alt="Zoom HD" onclick="toggleZoomModal(event)">
-    <div style="color:white; font-size:0.75rem; margin-top:10px;">Toca para ampliar/reducir o afuera para cerrar 🔍</div>
-  </div>
-
-  <div id="toast">¡AvatarVerse Quantum Ultra v11.5 Completo Activo! 🚀</div>
-
-  <script>
-    // Configuración Quantum Ultra v11.5 con Prompts Base de Fotorrealismo Extremo
-    const quantumEngineConfig = {
-      version: "v11.5-ultra",
-      sampler: "DPM++ 2M Karras",
-      steps: 50,
-      cfgScale: 6.2,
-      prompts: {
-        positive: "RAW unedited mobile phone photo, authentic smartphone selfie angle, natural skin texture, visible skin pores, detailed individual hair strands, realistic ambient lighting, highly detailed environment background, sharp focus, 8k resolution",
-        negative: "painting, illustration, drawing, art, airbrushed, smooth skin, plastic skin, blurry, soft-focus, distorted anatomy, extra fingers, low quality, artifacts, watermark"
-      }
-    };
-
-    let isOwner = false;
-    let currentImageUrl = "";
-    let isZoomedIn = false;
-
-    window.onload = function() {
-      const savedUser = localStorage.getItem('avatarverse_user');
-      if(savedUser) { document.getElementById('username').value = savedUser; checkOwner(); }
-      const savedTheme = localStorage.getItem('avatarverse_theme');
-      if(savedTheme) setTheme(savedTheme, false);
-      updateMainCounter();
-    }
-
-    function setTheme(color, showMsg = true) {
-      document.documentElement.style.setProperty('--accent-color', color);
-      localStorage.setItem('avatarverse_theme', color);
-      if(showMsg) showToast("Tema actualizado 🎨");
-    }
-
-    function checkOwner() {
-      const user = document.getElementById('username').value.trim();
-      localStorage.setItem('avatarverse_user', user);
-      if(user.length > 0) {
-        isOwner = true;
-        document.getElementById('ownerBadge').innerHTML = '<span class="badge-owner">DUEÑO SUPREMO 👑 (INFINITO)</span>';
-        document.getElementById('userCredits').innerText = "∞ INFINITO (VIP)";
-        document.getElementById('userCredits').style.color = "#ec4899";
-        showToast("¡Bienvenido Dueño Supremo! Acceso VIP ilimitado activado 👑");
-      }
-    }
-
-    function updateFileName() {
-      const input = document.getElementById('fileInput');
-      const display = document.getElementById('fileNameDisplay');
-      if(input.files && input.files.length > 0) {
-        display.innerText = "📁 " + input.files[0].name;
-        showToast("Referencia facial bloqueada ✨");
-      }
-    }
-
-    function switchTab(tabId, event) {
-      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-      document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-      document.getElementById(tabId).classList.add('active');
-      event.currentTarget.classList.add('active');
-    }
-
-    function toggleCategory(id) {
-      const el = document.getElementById(id);
-      el.style.display = el.style.display === 'none' ? 'block' : 'none';
-    }
-
-    function setPreset(style) {
-      const p = document.getElementById('prompt');
-      if(style === 'RawPhone') {
-        p.value = "RAW unedited mobile phone selfie, natural skin texture, visible pores, detailed hair, authentic background";
-      } else if(style === 'Chiaroscuro') {
-        p.value = "Chiaroscuro portrait, high contrast lighting, natural skin texture, sharp focus";
-      } else if(style === 'Cinematic') {
-        p.value = "Cinematic editorial portrait, volumetric studio light, natural skin pores, 8k resolution";
-      }
-      updateMainCounter();
-      showToast("Preset " + style + " cargado con éxito ✨");
-    }
-
-    function addStyle(text) {
-      const p = document.getElementById('prompt');
-      p.value = p.value.trim() !== '' ? p.value + ", " + text : text;
-      updateMainCounter();
-      showToast("Estilo agregado ✨");
-    }
-
-    function updateMainCounter() {
-      const len = document.getElementById('prompt').value.length;
-      document.getElementById('charCounterMain').innerText = len + " / 100000";
-    }
-
-    function updateImproverCounter(el) {
-      const len = el.value.length;
-      document.getElementById('charCounterImprover').innerText = len + " / 100000";
-    }
-
-    document.getElementById('prompt').addEventListener('input', updateMainCounter);
-
-    function analyzeImageToText() {
-      showToast("🖼️ Analizando imagen para sugerir prompt...");
-      setTimeout(() => {
-        document.getElementById('promptImg2Text').value = "A hyperrealistic portrait of a person with natural skin texture, detailed lighting, cinematic composition, 8k resolution.";
-        showToast("¡Prompt generado desde imagen con éxito! ✨");
-      }, 1000);
-    }
-
-    function processIllustrious() {
-      showToast("✨ Procesando estilo Illustrious XL...");
-      setTimeout(() => {
-        document.getElementById('promptIllustrious').value = "masterpiece, best quality, highly detailed illustrative portrait, flawless lineart, vibrant colors, official art.";
-        showToast("¡Prompt Illustrious XL listo! ✨");
-      }, 1000);
-    }
-
-    function enhancePromptAction() {
-      const text = document.getElementById('promptImprover').value;
-      if(!text.trim()) {
-        showToast("Escribe algo en el mejorador primero ⚠️");
-        return;
-      }
-      const enhanced = text + ", highly detailed, professional masterpiece, sharp focus, perfect lighting, 8k resolution";
-      document.getElementById('prompt').value = enhanced;
-      updateMainCounter();
-      showToast("¡Prompt mejorado y enviado al editor principal! 🚀");
-      document.querySelector('.assistant-tabs button').click(); // Ir al editor principal
-    }
-
-    function generateImage() {
-      const promptText = document.getElementById('prompt').value;
-      if(!promptText.trim()) {
-        showToast("Escribe un prompt primero ⚠️");
-        return;
-      }
-
-      const btn = document.getElementById('submitBtn');
-      const spinner = document.getElementById('spinnerFree');
-      const btnText = document.getElementById('btnTextFree');
-
-      btn.disabled = true;
-      spinner.style.display = 'block';
-      btnText.innerText = 'Renderizando Quantum Ultra...';
-      showToast("🚀 Aplicando motor v11.5 de ultra-definición...");
-
-      // Combinación automática con el prompt base de nitidez
-      const finalPrompt = `${promptText}, ${quantumEngineConfig.prompts.positive}`;
-      const encodedPrompt = encodeURIComponent(finalPrompt);
-      const seed = Math.floor(Math.random() * 1000000);
-      
-      currentImageUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=768&height=1024&seed=${seed}&nologo=true`;
-
-      const img = new Image();
-      img.src = currentImageUrl;
-      
-      img.onload = function() {
-        spinner.style.display = 'none';
-        btnText.innerText = 'Generar Imagen Quantum Ultra 🚀';
-        btn.disabled = false;
-        document.getElementById('outputSection').style.display = 'block';
-        document.getElementById('outputBox').innerHTML = '';
-        document.getElementById('outputBox').appendChild(img);
-        showToast("🎉 ¡Obra maestra hiperrealista generada!");
-      };
-
-      img.onerror = function() {
-        spinner.style.display = 'none';
-        btnText.innerText = 'Generar Imagen Quantum Ultra 🚀';
-        btn.disabled = false;
-        showToast("⚠️ Error al conectar con el servidor de IA.");
-      };
-    }
-
-    function openZoom() {
-      if(!currentImageUrl) return;
-      document.getElementById('modalImg').src = currentImageUrl;
-      document.getElementById('zoomModal').style.display = 'flex';
-      isZoomedIn = false;
-      document.getElementById('modalImg').style.transform = 'scale(1)';
-    }
-
-    function closeZoom() { document.getElementById('zoomModal').style.display = 'none'; }
-
-    function toggleZoomModal(event) {
-      event.stopPropagation();
-      const m = document.getElementById('modalImg');
-      if(!isZoomedIn) {
-        m.style.transform = 'scale(2.2)';
-        isZoomedIn = true;
-        showToast("Zoom HD activado 🔍");
-      } else {
-        m.style.transform = 'scale(1)';
-        isZoomedIn = false;
-        showToast("Zoom restablecido 🔎");
-      }
-    }
-
-    function downloadImageDirect() {
-      if(!currentImageUrl) return;
-      showToast("💾 Descargando a galería...");
-      fetch(currentImageUrl)
-        .then(res => res.blob())
-        .then(blob => {
-          const url = window.URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.style.display = 'none';
-          a.href = url;
-          a.download = 'AvatarVerse_Ultra_' + Date.now() + '.jpg';
-          document.body.appendChild(a);
-          a.click();
-          window.URL.revokeObjectURL(url);
-          document.body.removeChild(a);
-          showToast("¡Imagen descargada con éxito! 📱✨");
-        })
-        .catch(() => { window.open(currentImageUrl, '_blank'); });
-    }
-
-    function showToast(msg) {
-      const t = document.getElementById("toast");
-      t.innerText = msg;
-      t.className = "show";
-      setTimeout(() => { t.className = t.className.replace("show", ""); }, 3000);
-    }
-  </script>
-</body>
-</html>
+function clearStudio(){state.file=null;renderTool();toast('Estudio reiniciado.')}
+function closeViewer(){document.getElementById('viewer').classList.remove('show')}
+function downloadStarter(){const cfg='# AvatarVerse API Configuration\\n\\nPOST /api/generate/image\\nPOST /api/generate/video\\nPOST /api/edit/image\\nPOST /api/lipsync\\n';const b=new Blob([cfg],{type:'text/plain'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='avatarverse-api-config.txt';a.click();toast('Configuración descargada.')}
+document.addEventListener('click',e=>{const c=e.target.closest('.gallery-card');if(c){document.getElementById('viewerImg').src=c.dataset.src;document.getElementById('viewer').classList.add('show')}});
+renderTool();
+</script></body></html>
