@@ -3,23 +3,23 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>AvatarVerse 2.4 — Community & Marketplace</title>
+<title>AvatarVerse 2.5 — User System & Pro Platform</title>
 <style>
-:root{--bg:#050816;--panel:#10172b;--line:#29375b;--text:#fff;--muted:#9aa7c5;--p:#8b5cf6;--c:#22d3ee}
+:root{--bg:#050816;--panel:#10172b;--line:#29375b;--p:#8b5cf6;--c:#22d3ee;--muted:#9aa7c5}
 *{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at top,#172554,#050816 55%);font-family:Arial,sans-serif;color:white;scroll-behavior:smooth}
-.app{display:grid;grid-template-columns:250px 1fr;min-height:100vh}
+.app{display:grid;grid-template-columns:260px 1fr;min-height:100vh}
 aside{background:#080d1c;padding:25px;border-right:1px solid var(--line);position:sticky;top:0;height:100vh;overflow-y:auto}
 .logo{font-size:30px;font-weight:900}.logo span{color:var(--c)}
-.menu button{width:100%;padding:14px;margin:7px 0;border-radius:14px;background:#111a33;color:white;border:1px solid var(--line);text-align:left;cursor:pointer;transition:.2s}
+.menu button{width:100%;margin:7px 0;padding:14px;border-radius:14px;background:#111a33;color:white;border:1px solid var(--line);text-align:left;cursor:pointer;transition:.2s}
 .menu button:hover,.menu button.active{background:var(--p);border-color:var(--c)}
 main{padding:30px;max-width:1200px}
 h1{font-size:42px;margin:10px 0}p{color:var(--muted)}
-.btn{padding:13px 20px;border-radius:14px;background:linear-gradient(90deg,var(--p),var(--c));border:0;color:white;font-weight:bold;cursor:pointer;transition:.2s}
+.btn{padding:13px 20px;border:0;border-radius:14px;background:linear-gradient(90deg,var(--p),var(--c));color:white;font-weight:bold;cursor:pointer;transition:.2s}
 .btn:hover{opacity:.9}
 .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:20px}
-.card{background:rgba(16,23,43,.9);border:1px solid var(--line);border-radius:22px;padding:20px;margin-bottom:20px}
-.art{height:180px;border-radius:18px;background:radial-gradient(circle,#8b5cf6,transparent 35%),#11172b;display:grid;place-items:center;font-size:55px;border:1px solid var(--line)}
-.tags span{display:inline-block;padding:8px 12px;background:#151d35;border-radius:10px;margin:5px;font-size:12px;border:1px solid var(--line)}
+.card{background:rgba(16,23,43,.92);border:1px solid var(--line);border-radius:24px;padding:22px;margin-bottom:20px}
+.icon{font-size:38px}
+.plan{border-top:4px solid var(--c)}
 input,textarea,select{width:100%;background:#070b16;color:white;border:1px solid var(--line);border-radius:12px;padding:12px;margin:8px 0;font-family:inherit}
 textarea{height:100px;resize:vertical}
 .toast{position:fixed;right:20px;bottom:20px;background:#111a33;border:1px solid var(--c);padding:14px 20px;border-radius:14px;display:none;z-index:100}
@@ -32,87 +32,135 @@ textarea{height:100px;resize:vertical}
 <aside>
 <div class="logo">Avatar<span>Verse</span></div>
 <div class="menu">
-<button class="active" onclick="switchTab('inicio', this)">🏠 Inicio</button>
-<button onclick="switchTab('create', this)">🎨 Crear</button>
-<button onclick="switchTab('community', this)">🌐 Comunidad</button>
-<button onclick="switchTab('favorites', this)">⭐ Favoritos</button>
-<button onclick="switchTab('marketplace', this)">🏪 Marketplace</button>
+<button class="active" onclick="switchView('dashboard', this)">🏠 Dashboard</button>
+<button onclick="switchView('profile', this)">👤 Mi Perfil</button>
+<button onclick="switchView('creations', this)">🎨 Mis Creaciones</button>
+<button onclick="switchView('credits', this)">💎 Créditos</button>
+<button onclick="switchView('plans', this)">⭐ Planes</button>
+<button onclick="switchView('settings', this)">⚙️ Configuración</button>
 </div>
 </aside>
 
 <main id="mainContent">
-<!-- VISTA INICIO -->
-<div id="tab-inicio">
-<h1>Community & Marketplace</h1>
-<p>Un universo donde los creadores comparten, descubren y construyen nuevos mundos digitales.</p>
 
-<button class="btn" style="margin:20px 0" onclick="switchTab('create', document.querySelectorAll('.menu button')[1])">🚀 Publicar creación</button>
+<!-- VISTA DASHBOARD -->
+<div id="view-dashboard">
+<h1>User System & Pro Platform</h1>
+<p>La base para convertir AvatarVerse en una plataforma completa con usuarios, perfiles y planes.</p>
 
-<h2>🔥 Creaciones destacadas</h2>
-<div class="grid" id="featuredGrid">
-<div class="card"><div class="art">🎭</div><h3>Avatar Creator</h3><p>Personajes digitales creados por la comunidad.</p><div class="tags"><span>Realista</span><span>IA</span></div></div>
-<div class="card"><div class="art">🌌</div><h3>Mundos Digitales</h3><p>Escenarios y universos imaginarios.</p><div class="tags"><span>Fantasía</span><span>Cinema</span></div></div>
-<div class="card"><div class="art">🎬</div><h3>Videos IA</h3><p>Historias animadas y contenido creativo.</p><div class="tags"><span>Video</span><span>Motion</span></div></div>
-</div>
-
-<h2>👤 Perfil de creador</h2>
-<div class="card">
-<p><b>Nombre del creador:</b> Héctor (AvatarVerse Creator)</p>
-<p class="muted">Portafolio activo · Seguidores: 1.2k · Proyectos publicados: <span id="pubCount">0</span></p>
-</div>
-
-<h2>🏪 Marketplace</h2>
-<div class="card">
-<p>Área preparada para recursos exclusivos:</p>
-<p>✨ Estilos · 🎭 Personajes · 🎨 Plantillas · 🧩 Recursos creativos</p>
-</div>
-</div>
-
-<!-- VISTA CREAR / PUBLICAR -->
-<div id="tab-create" style="display:none">
-<h1>Publicar en la Comunidad</h1>
-<p>Comparte tu arte, avatar o mundo digital con todos los creadores de AvatarVerse.</p>
-<div class="card" style="max-width:600px;margin-top:20px">
-<label>Título de la creación</label>
-<input id="pubTitle" placeholder="Ej.: Guardián de Nébula">
-<label>Descripción</label>
-<textarea id="pubDesc" placeholder="Describe tu obra o estilo..."></textarea>
-<label>Categoría</label>
-<select id="pubCategory">
-<option>Avatar Creator</option>
-<option>Mundo Digital</option>
-<option>Video IA</option>
-<option>Recurso Marketplace</option>
-</select>
-<label>Etiquetas (separadas por coma)</label>
-<input id="pubTags" placeholder="Cyberpunk, Fotorrealista, 8K">
-<button class="btn" style="margin-top:15px" onclick="publishCreation()">Publicar ahora</button>
-</div>
-</div>
-
-<!-- VISTA COMUNIDAD -->
-<div id="tab-community" style="display:none">
-<h1>Muro de la Comunidad</h1>
-<p>Explora lo que otros creadores están publicando en tiempo real.</p>
-<div class="grid" id="communityGrid">
-<div class="card"><p class="muted">Cargando publicaciones de la comunidad...</p></div>
-</div>
-</div>
-
-<!-- VISTA FAVORITOS -->
-<div id="tab-favorites" style="display:none">
-<h1>Tus Favoritos</h1>
-<p>Creaciones guardadas de la comunidad y el marketplace.</p>
-<div class="card"><p class="muted">Aún no tienes elementos en favoritos.</p></div>
-</div>
-
-<!-- VISTA MARKETPLACE -->
-<div id="tab-marketplace" style="display:none">
-<h1>AvatarVerse Marketplace</h1>
-<p>Adquiere y comparte recursos, estilos y plantillas avanzadas.</p>
 <div class="grid">
-<div class="card"><div class="art">✨</div><h3>Pack Estilos Pro</h3><p>Colección de iluminación y texturas fotorrealistas.</p><div class="tags"><span>Gratis</span><span>Estilos</span></div></div>
-<div class="card"><div class="art">🧩</div><h3>Plantillas Sci-Fi</h3><p>Estructuras JSON listas para consistencia de personajes.</p><div class="tags"><span>Recursos</span><span>JSON</span></div></div>
+<div class="card" style="cursor:pointer" onclick="switchView('profile', document.querySelectorAll('.menu button')[1])">
+<div class="icon">👤</div>
+<h2>Perfil del creador</h2>
+<p id="dashProfileSummary">Avatar, biografía, portafolio y seguidores.</p>
+</div>
+
+<div class="card" style="cursor:pointer" onclick="switchView('credits', document.querySelectorAll('.menu button')[3])">
+<div class="icon">💎</div>
+<h2>Sistema de créditos</h2>
+<p><span id="dashCredits">100</span> créditos disponibles en tu cuenta.</p>
+</div>
+
+<div class="card" style="cursor:pointer" onclick="switchView('settings', document.querySelectorAll('.menu button')[5])">
+<div class="icon">⚙️</div>
+<h2>Configuración</h2>
+<p>Cuenta, preferencias, idioma y notificaciones.</p>
+</div>
+</div>
+
+<h2>⭐ Planes AvatarVerse (Actual: <span id="currentPlanBadge" style="color:var(--c)">Free</span>)</h2>
+<div class="grid">
+<div class="card plan">
+<h2>🆓 Free</h2>
+<p>Acceso inicial a herramientas creativas y galería básica.</p>
+<button class="btn" style="margin-top:15px;background:#29375b" onclick="selectPlan('Free', 100)">Plan Actual</button>
+</div>
+
+<div class="card plan">
+<h2>⭐ Pro</h2>
+<p>Más capacidad, herramientas avanzadas y mejores opciones.</p>
+<button class="btn" style="margin-top:15px" onclick="selectPlan('Pro', 500)">Elegir Pro</button>
+</div>
+
+<div class="card plan">
+<h2>👑 Creator</h2>
+<p>Para creadores profesionales, portafolio y marketplace.</p>
+<button class="btn" style="margin-top:15px" onclick="selectPlan('Creator', 1500)">Elegir Creator</button>
+</div>
+</div>
+
+<h2>🚀 Bienvenido a tu universo</h2>
+<div class="card">
+<p>AvatarVerse está preparado para evolucionar con autenticación real, base de datos, pagos y conexión con servicios de inteligencia artificial.</p>
+</div>
+</div>
+
+<!-- VISTA PERFIL -->
+<div id="view-profile" style="display:none">
+<h1>Perfil del Creador</h1>
+<p>Gestiona tu identidad pública en AvatarVerse.</p>
+<div class="card" style="max-width:600px;margin-top:20px">
+<label>Nombre de creador</label>
+<input id="profileName" placeholder="Tu nombre artístico o legal">
+<label>Biografía</label>
+<textarea id="profileBio" placeholder="Cuéntale al universo quién eres..."></textarea>
+<label>Redes / Portfolio</label>
+<input id="profileSocial" placeholder="https://x.com/tu_usuario">
+<button class="btn" style="margin-top:15px" onclick="saveProfile()">Guardar perfil</button>
+</div>
+</div>
+
+<!-- VISTA CREACIONES -->
+<div id="view-creations" style="display:none">
+<h1>Mis Creaciones</h1>
+<p>Historial completo de tus avatares, imágenes y proyectos.</p>
+<div class="card"><p class="muted">Tus trabajos guardados aparecerán aquí.</p></div>
+</div>
+
+<!-- VISTA CREDITOS -->
+<div id="view-credits" style="display:none">
+<h1>Sistema de Créditos</h1>
+<p>Administra tu balance para la generación de IA.</p>
+<div class="card" style="max-width:500px;margin-top:20px">
+<h3>Balance actual: <span id="creditsBalance" style="color:var(--c)">100</span> Créditos</h3>
+<p class="muted">Cada generación de imagen o avatar consume de 5 a 10 créditos.</p>
+<button class="btn" style="margin-top:15px" onclick="addCredits(50)">✨ Recargar +50 Créditos</button>
+</div>
+</div>
+
+<!-- VISTA PLANES -->
+<div id="view-planes" style="display:none">
+<h1>Planes y Suscripciones</h1>
+<p>Escoge el nivel que se adapte a tu flujo de trabajo creativo.</p>
+<div class="grid">
+<div class="card plan">
+<h2>🆓 Free</h2>
+<p>100 créditos mensuales · Galería básica</p>
+<button class="btn" style="margin-top:15px;background:#29375b" onclick="selectPlan('Free', 100)">Seleccionar</button>
+</div>
+<div class="card plan">
+<h2>⭐ Pro</h2>
+<p>500 créditos mensuales · Prioridad en renderizado</p>
+<button class="btn" style="margin-top:15px" onclick="selectPlan('Pro', 500)">Seleccionar Pro</button>
+</div>
+<div class="card plan">
+<h2>👑 Creator</h2>
+<p>1500 créditos mensuales · Acceso total al Marketplace</p>
+<button class="btn" style="margin-top:15px" onclick="selectPlan('Creator', 1500)">Seleccionar Creator</button>
+</div>
+</div>
+</div>
+
+<!-- VISTA CONFIGURACIÓN -->
+<div id="view-settings" style="display:none">
+<h1>Configuración de la Cuenta</h1>
+<p>Preferencias de sistema y entorno.</p>
+<div class="card" style="max-width:600px;margin-top:20px">
+<label>Idioma de la plataforma</label>
+<select><option>Español (ES)</option><option>English (EN)</option></select>
+<label>Modo visual</label>
+<select><option>Oscuro (Dark Cyberpunk)</option></select>
+<button class="btn" style="margin-top:15px;background:#29375b" onclick="showToast('Configuración guardada con éxito.')">Guardar cambios</button>
 </div>
 </div>
 
@@ -122,16 +170,22 @@ textarea{height:100px;resize:vertical}
 <div class="toast" id="toastMsg">¡Acción ejecutada con éxito!</div>
 
 <script>
-let communityPosts = JSON.parse(localStorage.getItem('avatarverse_24_posts') || '[]');
+let userData = JSON.parse(localStorage.getItem('avatarverse_25_user') || JSON.stringify({
+  name: 'Héctor (AvatarVerse Creator)',
+  bio: 'Creador de mundos digitales e inteligencia artificial.',
+  social: 'https://x.com/',
+  plan: 'Free',
+  credits: 100
+}));
 
-function switchTab(tabName, btn){
-  document.querySelectorAll('[id^="tab-"]').forEach(t => t.style.display = 'none');
-  document.getElementById('tab-' + tabName).style.display = 'block';
+function switchView(viewName, btn){
+  document.querySelectorAll('[id^="view-"]').forEach(v => v.style.display = 'none');
+  document.getElementById('view-' + viewName).style.display = 'block';
   if(btn){
     document.querySelectorAll('.menu button').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
   }
-  if(tabName === 'community' || tabName === 'inicio') renderCommunity();
+  updateUserDataUI();
 }
 
 function showToast(msg){
@@ -141,60 +195,44 @@ function showToast(msg){
   setTimeout(() => t.classList.remove('show'), 2500);
 }
 
-function publishCreation(){
-  const title = document.getElementById('pubTitle').value.trim();
-  const desc = document.getElementById('pubDesc').value.trim();
-  const category = document.getElementById('pubCategory').value;
-  const tagsInput = document.getElementById('pubTags').value.trim();
+function updateUserDataUI(){
+  document.getElementById('dashCredits').textContent = userData.credits;
+  document.getElementById('creditsBalance').textContent = userData.credits;
+  document.getElementById('currentPlanBadge').textContent = userData.plan;
+  document.getElementById('dashProfileSummary').textContent = userData.name + ' · ' + (userData.bio ? userData.bio.substring(0, 40) + '...' : 'Sin biografía');
   
-  if(!title){ showToast('Por favor escribe un título para tu publicación.'); return; }
-
-  const tags = tagsInput ? tagsInput.split(',').map(t => t.trim()) : ['Comunidad', 'IA'];
-
-  communityPosts.unshift({title, desc, category, tags, date: new Date().toLocaleDateString()});
-  localStorage.setItem('avatarverse_24_posts', JSON.stringify(communityPosts));
-
-  showToast('¡Publicado con éxito en la comunidad!');
-  document.getElementById('pubTitle').value = '';
-  document.getElementById('pubDesc').value = '';
-  document.getElementById('pubTags').value = '';
-  
-  switchTab('community', document.querySelectorAll('.menu button')[2]);
-}
-
-function renderCommunity(){
-  const grid = document.getElementById('communityGrid');
-  const pubCount = document.getElementById('pubCount');
-  
-  if(pubCount) pubCount.textContent = communityPosts.length;
-
-  if(!communityPosts.length){
-    if(grid) grid.innerHTML = '<div class="card"><p class="muted">Aún no hay publicaciones en la comunidad. ¡Sé el primero en publicar!</p></div>';
-    return;
-  }
-
-  if(grid){
-    grid.innerHTML = communityPosts.map((p, idx) => `
-      <div class="card">
-        <div class="art">✨</div>
-        <h3>${p.title}</h3>
-        <p>${p.desc || 'Sin descripción'}</p>
-        <div class="tags">${p.tags.map(t => `<span>${t}</span>`).join('')}</div>
-        <small class="muted" style="display:block;margin-top:10px">Categoría: ${p.category} · ${p.date}</small>
-        <button class="btn" style="margin-top:12px;background:#29375b;padding:8px 14px;font-size:12px" onclick="deletePost(${idx})">Eliminar</button>
-      </div>
-    `).join('');
+  if(document.getElementById('profileName')){
+    document.getElementById('profileName').value = userData.name;
+    document.getElementById('profileBio').value = userData.bio;
+    document.getElementById('profileSocial').value = userData.social;
   }
 }
 
-function deletePost(idx){
-  communityPosts.splice(idx, 1);
-  localStorage.setItem('avatarverse_24_posts', JSON.stringify(communityPosts));
-  renderCommunity();
-  showToast('Publicación eliminada.');
+function saveProfile(){
+  userData.name = document.getElementById('profileName').value.trim() || 'Creador';
+  userData.bio = document.getElementById('profileBio').value.trim();
+  userData.social = document.getElementById('profileSocial').value.trim();
+  localStorage.setItem('avatarverse_25_user', JSON.stringify(userData));
+  showToast('¡Perfil actualizado con éxito!');
+  updateUserDataUI();
 }
 
-renderCommunity();
+function selectPlan(planName, creditsVal){
+  userData.plan = planName;
+  userData.credits += creditsVal;
+  localStorage.setItem('avatarverse_25_user', JSON.stringify(userData));
+  showToast('¡Has cambiado al plan ' + planName + ' (+ ' + creditsVal + ' créditos)!');
+  updateUserDataUI();
+}
+
+function addCredits(amount){
+  userData.credits += amount;
+  localStorage.setItem('avatarverse_25_user', JSON.stringify(userData));
+  showToast('¡Se han añadido ' + amount + ' créditos a tu balance!');
+  updateUserDataUI();
+}
+
+updateUserDataUI();
 </script>
 </body>
 </html>
