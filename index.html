@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>AvatarVerse 3.5 — Image Generation Integration</title>
+<title>AvatarVerse 3.6 — Video Creation Engine</title>
 <style>
 :root{--bg:#050816;--panel:#10172b;--panel2:#151d35;--line:#29375b;--p:#8b5cf6;--c:#22d3ee;--muted:#9aa7c5}
 *{box-sizing:border-box}
@@ -23,9 +23,11 @@ input,select,textarea{width:100%;padding:12px;margin:7px 0;background:#070b16;co
 textarea{min-height:120px;resize:vertical}
 .primary{background:linear-gradient(90deg,var(--p),var(--c));border:0;color:#fff;font-weight:bold;padding:13px 18px;border-radius:14px;cursor:pointer;transition:.2s}
 .primary:hover{opacity:.9}
-.preview{min-height:190px;border:1px dashed var(--line);border-radius:18px;background:#070b16;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px}
-.item{background:var(--panel2);border:1px solid var(--line);border-radius:15px;padding:16px;margin:12px 0;position:relative}
+.scene{background:var(--panel2);border:1px solid var(--line);border-radius:16px;padding:16px;margin:12px 0;position:relative}
 .tag{display:inline-block;padding:7px 10px;background:#202a48;border-radius:9px;margin:4px;border:1px solid var(--line)}
+.timeline{display:flex;gap:10px;overflow-x:auto;padding:10px 0}
+.step{min-width:160px;padding:14px;border-radius:12px;background:#151d35;border:1px solid var(--line)}
+.preview{min-height:170px;background:#070b16;border:1px dashed var(--line);border-radius:18px;padding:20px;display:flex;flex-direction:column;justify-content:center}
 small{color:var(--muted)}
 .toast{position:fixed;right:20px;bottom:20px;background:#111a33;border:1px solid var(--c);padding:14px 20px;border-radius:14px;display:none;z-index:100}
 .toast.show{display:block}
@@ -37,98 +39,97 @@ small{color:var(--muted)}
 <aside>
 <div class="logo">Avatar<span>Verse</span></div>
 <nav>
-<button class="active" onclick="show('home', this)">🖼️ Image Lab</button>
-<button onclick="show('generate', this)">✨ Generation Setup</button>
-<button onclick="show('references', this)">🎭 Character References</button>
-<button onclick="show('history', this)">🕒 Generation History</button>
+<button class="active" onclick="show('home', this)">🎬 Video Engine</button>
+<button onclick="show('project', this)">🎞️ Video Project</button>
+<button onclick="show('scenes', this)">🎭 Scene Builder</button>
+<button onclick="show('timeline', this)">🕒 Timeline</button>
+<button onclick="show('history', this)">📚 History</button>
 </nav>
 </aside>
 <main>
 
 <section id="home">
 <div class="hero">
-<h1>AvatarVerse 3.5</h1>
-<p><b>Image Generation Integration</b> — interfaz preparada para conectar un servicio real de generación de imágenes sin fingir que la ejecución local está activa.</p>
-<button class="primary" onclick="show('generate', document.querySelectorAll('nav button')[1])">＋ Preparar generación</button>
+<h1>AvatarVerse 3.6</h1>
+<p><b>Video Creation Engine</b> — planifica guiones, escenas, personajes, cámara, audio y configuraciones para la futura generación de video cinemático.</p>
+<button class="primary" onclick="show('project', document.querySelectorAll('nav button')[1])">＋ Crear proyecto de video</button>
 </div>
 <div class="grid">
-<div class="card" style="cursor:pointer" onclick="show('generate', document.querySelectorAll('nav button')[1])">
-🧠<h3>Prompt Engine</h3><p>Prompt estructurado y configurable por estilo.</p>
+<div class="card" style="cursor:pointer" onclick="show('project', document.querySelectorAll('nav button')[1])">
+📝<h3>Guion</h3><p>Define la idea, formato y narrativa central.</p>
 </div>
-<div class="card" style="cursor:pointer" onclick="show('references', document.querySelectorAll('nav button')[2])">
-🎭<h3>Character Reference</h3><p>Referencia textual estricta de continuidad.</p>
+<div class="card" style="cursor:pointer" onclick="show('scenes', document.querySelectorAll('nav button')[2])">
+🎭<h3>Escenas</h3><p>Construye secuencias, personajes y acciones.</p>
 </div>
-<div class="card" style="cursor:pointer" onclick="show('history', document.querySelectorAll('nav button')[3])">
-🕒<h3>History</h3><p>Registro local de generaciones preparadas.</p>
+<div class="card" style="cursor:pointer" onclick="show('timeline', document.querySelectorAll('nav button')[3])">
+🎥<h3>Timeline</h3><p>Organiza el flujo temporal y la línea de tiempo.</p>
 </div>
 </div>
 </section>
 
-<section id="generate" style="display:none">
+<section id="project" style="display:none">
 <div class="card" style="max-width:750px">
-<h2>✨ Generation Setup</h2>
-<textarea id="promptInput" placeholder="Describe la imagen que quieres crear..."></textarea>
+<h2>🎞️ Video Project</h2>
+<p>Configura los parámetros globales de tu producción audiovisual.</p>
+<input id="title" placeholder="Título del video">
+<textarea id="script" placeholder="Escribe el guion o concepto general de la producción..."></textarea>
 <div class="row">
 <div>
-<label style="font-size:13px;color:var(--muted)">Estilo Visual</label>
-<select id="style">
-<option>Fotorrealista</option>
-<option>Cinematográfico</option>
-<option>Ilustración digital</option>
-<option>3D Render</option>
-<option>Anime</option>
+<label style="font-size:13px;color:var(--muted)">Duración aproximada</label>
+<select id="duration">
+<option>15 segundos</option>
+<option>30 segundos</option>
+<option>60 segundos</option>
+<option>90 segundos</option>
+<option>2 minutos</option>
 </select>
 </div>
 <div>
-<label style="font-size:13px;color:var(--muted)">Relación de Aspecto</label>
-<select id="ratio">
-<option>1:1</option>
-<option>16:9</option>
-<option>9:16</option>
-<option>4:5</option>
+<label style="font-size:13px;color:var(--muted)">Formato de video</label>
+<select id="format">
+<option>9:16 — Vertical (Reels/TikTok)</option>
+<option>16:9 — Horizontal (Cinemático)</option>
+<option>1:1 — Cuadrado (Social Media)</option>
 </select>
 </div>
 </div>
-<div class="row" style="margin-top:10px">
-<div>
-<label style="font-size:13px;color:var(--muted)">Calidad</label>
-<select id="quality">
-<option>Alta calidad (8k)</option>
-<option>Ultra detallado</option>
-<option>Borrador rápido</option>
-</select>
-</div>
-<div>
-<label style="font-size:13px;color:var(--muted)">Variaciones</label>
-<select id="variations">
-<option>1 variación</option>
-<option>2 variaciones</option>
-<option>4 variaciones</option>
-</select>
-</div>
-</div>
-<input id="reference" placeholder="Referencia de personaje (opcional)" style="margin-top:15px">
-<button class="primary" onclick="prepare()" style="margin-top:10px">🚀 Preparar configuración de generación</button>
-<h3 style="margin-top:20px">Configuración final</h3>
-<div id="result" class="preview">Aquí aparecerá la configuración lista para la API.</div>
+<button class="primary" onclick="saveProject()" style="margin-top:15px">💾 Guardar proyecto de video</button>
 </div>
 </section>
 
-<section id="references" style="display:none">
+<section id="scenes" style="display:none">
 <div class="card" style="max-width:750px">
-<h2>🎭 Character References</h2>
-<p>Selecciona o escribe una referencia textual para mantener la coherencia del personaje al conectar el motor real.</p>
-<input id="charName" placeholder="Nombre del personaje">
-<textarea id="charDesc" placeholder="Descripción visual detallada y reglas de continuidad..."></textarea>
-<button class="primary" onclick="saveReference()" style="margin-top:10px">💾 Guardar referencia</button>
-<div id="refs" style="margin-top:20px"></div>
+<h2>🎭 Scene Builder</h2>
+<p>Añade y detalla cada plano que compondrá tu secuencia de video.</p>
+<input id="sceneName" placeholder="Nombre de la escena (Ej.: Intro Principal)">
+<textarea id="sceneDesc" placeholder="Describe qué sucede visualmente en la escena..."></textarea>
+<div class="row">
+<input id="character" placeholder="Personaje(s) en escena">
+<input id="camera" placeholder="Cámara / movimiento (Ej.: Dolly zoom)">
+</div>
+<div class="row">
+<input id="lighting" placeholder="Iluminación (Ej.: Chiaroscuro)">
+<input id="audio" placeholder="Música / diálogo / sonido">
+</div>
+<button class="primary" onclick="addScene()" style="margin-top:10px">＋ Añadir escena a la secuencia</button>
+<div id="sceneList" style="margin-top:20px"></div>
+</div>
+</section>
+
+<section id="timeline" style="display:none">
+<div class="card">
+<h2>🕒 Timeline</h2>
+<p>Secuencia visual organizada de las escenas de tu proyecto actual.</p>
+<div id="timelineBox" class="timeline"></div>
+<button class="primary" onclick="prepareVideo()" style="margin-top:20px">🚀 Preparar configuración de video</button>
+<div id="videoOutput" class="preview" style="margin-top:15px">Aquí aparecerá la configuración final lista para la API de video.</div>
 </div>
 </section>
 
 <section id="history" style="display:none">
 <div class="card">
-<h2>🕒 Generation History</h2>
-<p>Historial local de configuraciones preparadas para la API de imágenes.</p>
+<h2>📚 Video History</h2>
+<p>Historial de configuraciones de video preparadas.</p>
 <div id="historyList" style="margin-top:15px"></div>
 </div>
 </section>
@@ -139,9 +140,9 @@ small{color:var(--muted)}
 <div class="toast" id="toastMsg">¡Acción ejecutada con éxito!</div>
 
 <script>
-const H = "avatarverse35_history", R = "avatarverse35_refs";
+const P = "avatarverse36_project", S = "avatarverse36_scenes", H = "avatarverse36_history";
 
-function arr(k){ return JSON.parse(localStorage.getItem(k) || "[]"); }
+function get(k, d=[]){ return JSON.parse(localStorage.getItem(k) || JSON.stringify(d)); }
 function put(k, v){ localStorage.setItem(k, JSON.stringify(v)); }
 
 function show(id, btn){
@@ -162,114 +163,124 @@ function showToast(msg){
 }
 
 function esc(s){
-  return String(s || "").replace(/[&<>"']/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[m]));
+  return String(s || "").replace(/[&<>"']/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[m]))}
+
+function saveProject(){
+  const title = document.getElementById('title').value.trim() || "Video sin título";
+  const script = document.getElementById('script').value;
+  const duration = document.getElementById('duration').value;
+  const format = document.getElementById('format').value;
+
+  put(P, { title, script, duration, format, date: new Date().toLocaleString("es-ES") });
+  showToast("💾 Proyecto de video guardado.");
+  show('scenes', document.querySelectorAll('nav button')[2]);
 }
 
-function prepare(){
-  const p = document.getElementById("promptInput").value.trim() || "Sin prompt especificado";
-  const st = document.getElementById("style").value;
-  const rt = document.getElementById("ratio").value;
-  const qu = document.getElementById("quality").value;
-  const va = document.getElementById("variations").value;
-  const rf = document.getElementById("reference").value.trim();
+function addScene(){
+  const name = document.getElementById('sceneName').value.trim() || "Escena";
+  const desc = document.getElementById('sceneDesc').value;
+  const character = document.getElementById('character').value;
+  const camera = document.getElementById('camera').value;
+  const lighting = document.getElementById('lighting').value;
+  const audio = document.getElementById('audio').value;
 
-  const config = {
-    prompt: p,
-    style: st,
-    ratio: rt,
-    quality: qu,
-    variations: va,
-    reference: rf || "Ninguna",
-    date: new Date().toLocaleString("es-ES")
-  };
+  let x = get(S);
+  x.push({ name, desc, character, camera, lighting, audio });
+  put(S, x);
 
-  document.getElementById("result").innerHTML = `
-    <b style="color:var(--c)">✨ Generación preparada con éxito</b>
-    <p style="margin:8px 0">${esc(p)}</p>
-    <div>
-      <span class='tag'>${esc(st)}</span>
-      <span class='tag'>${esc(rt)}</span>
-      <span class='tag'>${esc(qu)}</span>
-      <span class='tag'>${esc(va)}</span>
-    </div>
-    <p style="margin-top:10px"><small style="color:var(--muted)">Referencia: ${esc(config.reference)}<br>La ejecución real requiere conectar un backend o API de renderizado.</small></p>
-  `;
+  document.getElementById('sceneName').value = "";
+  document.getElementById('sceneDesc').value = "";
+  document.getElementById('character').value = "";
+  document.getElementById('camera').value = "";
+  document.getElementById('lighting').value = "";
+  document.getElementById('audio').value = "";
 
-  let h = arr(H);
-  h.unshift(config);
-  put(H, h.slice(0, 30));
   render();
-  showToast("🚀 Configuración de imagen preparada.");
+  showToast("🎬 Escena añadida a la secuencia.");
 }
 
-function saveReference(){
-  const name = document.getElementById("charName").value.trim();
-  const desc = document.getElementById("charDesc").value.trim();
+function removeScene(i){
+  let x = get(S);
+  x.splice(i, 1);
+  put(S, x);
+  render();
+  showToast("🗑️ Escena eliminada.");
+}
 
-  if(!name || !desc){
-    showToast("⚠️ Ingresa el nombre y la descripción de la referencia.");
+function prepareVideo(){
+  let p = get(P, {}), s = get(S);
+  if(!s.length){
+    showToast("⚠️ Añade al menos una escena antes de preparar el video.");
     return;
   }
 
-  let r = arr(R);
-  r.unshift({
-    name,
-    desc,
-    date: new Date().toLocaleString("es-ES")
-  });
-  put(R, r);
+  let cfg = { project: p, scenes: s, date: new Date().toLocaleString("es-ES") };
+  
+  document.getElementById('videoOutput').innerHTML = `
+    <b style="color:var(--c)">✨ Configuración de video preparada</b>
+    <p style="margin:8px 0"><b>${esc(p.title || "Video sin título")}</b> · ${esc(p.duration || "Duración no definida")} · ${esc(p.format || "Formato no definido")}</p>
+    <div><span class='tag'>Total de escenas: ${s.length}</span></div>
+    <p style="margin-top:10px"><small style="color:var(--muted)">La generación real de video requiere conectar un backend o servicio de renderizado de IA.</small></p>
+  `;
 
-  document.getElementById("charName").value = "";
-  document.getElementById("charDesc").value = "";
-
+  let h = get(H);
+  h.unshift(cfg);
+  put(H, h.slice(0, 20));
   render();
-  showToast("🎭 Referencia de personaje guardada.");
+  showToast("🚀 Configuración de video lista.");
 }
 
 function render(){
-  const refsBox = document.getElementById("refs");
-  const histBox = document.getElementById("historyList");
+  let s = get(S);
+  const sceneList = document.getElementById('sceneList');
+  const timelineBox = document.getElementById('timelineBox');
+  const historyList = document.getElementById('historyList');
 
-  if(refsBox){
-    let r = arr(R);
-    refsBox.innerHTML = r.length ? r.map((x, i) => `
-      <div class="item">
-        <b>🎭 ${esc(x.name)}</b>
+  if(sceneList){
+    sceneList.innerHTML = s.length ? s.map((x, i) => `
+      <div class="scene">
+        <b>🎬 ${esc(x.name)}</b>
         <p style="margin:8px 0;color:var(--muted)">${esc(x.desc)}</p>
-        <small>Registrado: ${esc(x.date)}</small><br>
-        <button class="primary" onclick="removeRef(${i})" style="margin-top:10px;width:auto;padding:6px 14px;background:#29375b;font-size:12px">Eliminar</button>
+        <div>
+          <span class="tag">🎭 ${esc(x.character) || "Personaje"}</span>
+          <span class="tag">🎥 ${esc(x.camera) || "Cámara"}</span>
+          <span class="tag">💡 ${esc(x.lighting) || "Luz"}</span>
+          <span class="tag">🔊 ${esc(x.audio) || "Audio"}</span>
+        </div>
+        <button class="primary" onclick="removeScene(${i})" style="margin-top:12px;width:auto;padding:6px 14px;background:#29375b;font-size:12px">Eliminar escena</button>
       </div>
-    `).join("") : "<p style='color:var(--muted)'>No hay referencias guardadas todavía.</p>";
+    `).join("") : "<p style='color:var(--muted)'>No hay escenas añadidas todavía.</p>";
   }
 
-  if(histBox){
-    let h = arr(H);
-    histBox.innerHTML = h.length ? h.map((x, i) => `
-      <div class="item">
-        <b>🖼️ ${esc(x.style)} · ${esc(x.ratio)}</b>
-        <p style="margin:8px 0;color:var(--muted)">${esc(x.prompt)}</p>
-        <div><span class='tag'>${esc(x.quality)}</span><span class='tag'>${esc(x.variations)}</span></div>
-        <small style="display:block;margin-top:6px">Preparado: ${esc(x.date)}</small><br>
-        <button class="primary" onclick="removeHist(${i})" style="margin-top:10px;width:auto;padding:6px 14px;background:#29375b;font-size:12px">Eliminar</button>
+  if(timelineBox){
+    timelineBox.innerHTML = s.length ? s.map((x, i) => `
+      <div class="step">
+        <b style="color:var(--c)">Escena ${i+1}</b>
+        <p style="margin:6px 0 4px 0;font-size:14px">${esc(x.name)}</p>
+        <small>${esc(x.character) || "Sin personaje"}</small>
       </div>
-    `).join("") : "<p style='color:var(--muted)'>No hay generaciones preparadas todavía.</p>";
+    `).join("") : "<div class='step' style='min-width:100%'>Añade escenas en el Scene Builder para construir la línea de tiempo.</div>";
+  }
+
+  if(historyList){
+    let h = get(H);
+    historyList.innerHTML = h.length ? h.map((x, i) => `
+      <div class="scene">
+        <b>🎬 ${esc(x.project.title || "Sin título")}</b>
+        <p style="margin:6px 0;color:var(--muted)">Escenas: ${x.scenes.length} · ${esc(x.project.duration)} · ${esc(x.project.format)}</p>
+        <small>Preparado: ${esc(x.date)}</small><br>
+        <button class="primary" onclick="removeHistory(${i})" style="margin-top:10px;width:auto;padding:6px 14px;background:#29375b;font-size:12px">Eliminar registro</button>
+      </div>
+    `).join("") : "<p style='color:var(--muted)'>No hay configuraciones de video guardadas.</p>";
   }
 }
 
-function removeRef(i){
-  let r = arr(R);
-  r.splice(i, 1);
-  put(R, r);
-  render();
-  showToast("🗑️ Referencia eliminada.");
-}
-
-function removeHist(i){
-  let h = arr(H);
+function removeHistory(i){
+  let h = get(H);
   h.splice(i, 1);
   put(H, h);
   render();
-  showToast("🗑️ Registro de historial eliminado.");
+  showToast("🗑️ Registro eliminado del historial.");
 }
 
 render();
