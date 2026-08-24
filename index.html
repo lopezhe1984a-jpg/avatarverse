@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>AvatarVerse 2.8 — AI Assistant & Smart Creator</title>
+<title>AvatarVerse 2.9 — Creator Studio Pro</title>
 <style>
 :root{--bg:#050816;--panel:#10172b;--line:#29375b;--p:#8b5cf6;--c:#22d3ee;--muted:#9aa7c5}
 *{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at top,#172554,#050816 60%);font-family:Arial,sans-serif;color:white;scroll-behavior:smooth}
@@ -17,20 +17,16 @@ h1{font-size:42px;margin:10px 0}p{color:var(--muted)}
 .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:20px}
 .card{background:rgba(16,23,43,.92);border:1px solid var(--line);border-radius:24px;padding:22px;margin-bottom:20px}
 .icon{font-size:38px}
-.chat-box{min-height:180px;max-height:250px;overflow-y:auto;background:#070b16;border:1px solid var(--line);border-radius:14px;padding:15px;margin:10px 0}
-.msg{margin-bottom:10px;padding:10px 14px;border-radius:12px;font-size:14px}
-.msg.user{background:#151d35;text-align:right;border:1px solid var(--line)}
-.msg.ai{background:#111a33;border:1px solid var(--c);color:#e2e8f0}
+.workspace{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:20px}
+.timeline{background:#151d35;border-radius:15px;padding:15px;border:1px solid var(--line);margin:10px 0;display:flex;gap:10px;overflow-x:auto}
+.scene-tag{background:#111a33;padding:8px 14px;border-radius:10px;border:1px solid var(--c);font-size:13px;white-space:nowrap}
+.tag{display:inline-block;background:#151d35;padding:8px 12px;border-radius:10px;margin:5px;border:1px solid var(--line)}
 input,textarea,select{width:100%;background:#070b16;color:white;border:1px solid var(--line);border-radius:12px;padding:12px;margin:8px 0;font-family:inherit}
-textarea{height:90px;resize:vertical}
 .btn{padding:12px 20px;border-radius:14px;background:linear-gradient(90deg,var(--p),var(--c));border:0;color:white;font-weight:bold;cursor:pointer;transition:.2s}
 .btn:hover{opacity:.9}
-.tag{display:inline-block;background:#151d35;padding:8px 12px;border-radius:10px;margin:5px;border:1px solid var(--line);cursor:pointer;transition:.2s}
-.tag:hover{border-color:var(--c);background:#1a2342}
-.tag.active{background:var(--p);border-color:var(--c)}
 .toast{position:fixed;right:20px;bottom:20px;background:#111a33;border:1px solid var(--c);padding:14px 20px;border-radius:14px;display:none;z-index:100}
 .toast.show{display:block}
-@media(max-width:850px){.app{grid-template-columns:1fr}aside{display:none}.grid{grid-template-columns:1fr}}
+@media(max-width:850px){.app{grid-template-columns:1fr}aside{display:none}.grid,.workspace{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -38,118 +34,108 @@ textarea{height:90px;resize:vertical}
 <aside>
 <div class="logo">Avatar<span>Verse</span></div>
 <div style="margin-top:20px">
-<button class="active" onclick="switchSection('assistant', this)">🤖 AI Assistant</button>
-<button onclick="switchSection('builder', this)">✍️ Prompt Builder</button>
-<button onclick="switchSection('character', this)">🎭 Character AI</button>
-<button onclick="switchSection('content', this)">🎬 Content Creator</button>
-<button onclick="switchSection('projects', this)">📚 Projects</button>
+<button class="active" onclick="switchSection('studio', this)">🎬 Creator Studio</button>
+<button onclick="switchSection('image', this)">🖼️ Image Studio</button>
+<button onclick="switchSection('video', this)">🎞️ Video Studio</button>
+<button onclick="switchSection('character', this)">🎭 Character Universe</button>
+<button onclick="switchSection('projects', this)">📁 Projects Pro</button>
 </div>
 </aside>
 
 <main id="mainContent">
 
-<!-- SECCIÓN ASISTENTE -->
-<div id="sec-assistant">
-<h1>AI Assistant & Smart Creator</h1>
-<p>El asistente creativo interno de AvatarVerse para ayudar a transformar ideas en proyectos.</p>
+<!-- SECCIÓN CREATOR STUDIO -->
+<div id="sec-studio">
+<h1>Creator Studio Pro</h1>
+<p>El centro profesional de AvatarVerse para crear, organizar y producir contenido digital con IA.</p>
 
 <div class="grid">
-<div class="card">
-<div class="icon">🤖</div>
-<h2>AvatarVerse AI</h2>
-<p>Genera ideas, recomendaciones y ayuda durante el proceso creativo.</p>
-<input id="quickInput" placeholder="Escribe tu idea rápida..." onkeypress="if(event.key==='Enter') quickSend()">
+<div class="card" style="cursor:pointer" onclick="switchSection('image', document.querySelectorAll('aside button')[1])">
+<div class="icon">🖼️</div>
+<h2>Advanced Image Studio</h2>
+<p>Edición, variaciones, estilos y control creativo.</p>
 </div>
 
-<div class="card" style="cursor:pointer" onclick="switchSection('builder', document.querySelectorAll('aside button')[1])">
-<div class="icon">✍️</div>
-<h2>Prompt Builder</h2>
-<p>Convierte conceptos simples en instrucciones creativas avanzadas.</p>
-<div><span class="tag">Estilo</span><span class="tag">Cámara</span><span class="tag">Luz</span></div>
+<div class="card" style="cursor:pointer" onclick="switchSection('video', document.querySelectorAll('aside button')[2])">
+<div class="icon">🎬</div>
+<h2>Video Studio</h2>
+<p>Escenas, clips, voz y animaciones.</p>
 </div>
 
-<div class="card" style="cursor:pointer" onclick="switchSection('character', document.querySelectorAll('aside button')[2])">
+<div class="card" style="cursor:pointer" onclick="switchSection('character', document.querySelectorAll('aside button')[3])">
 <div class="icon">🎭</div>
-<h2>Character Assistant</h2>
-<p>Crea nombres, historias, personalidad y evolución de personajes.</p>
+<h2>Character Universe</h2>
+<p>Personajes con identidad y continuidad visual.</p>
 </div>
 </div>
 
-<h2>💬 Smart Creator Chat</h2>
+<h2>🎞️ Área de producción</h2>
+<div class="workspace">
 <div class="card">
-<div class="chat-box" id="chatContainer">
-<div class="msg ai">Hola, soy el asistente inteligente de AvatarVerse. ¿Qué gran universo o personaje quieres crear hoy?</div>
+<h3 id="currentProjTitle">Proyecto actual: Mi universo creativo</h3>
+<p class="muted">Línea de tiempo de escenas activas:</p>
+<div class="timeline" id="timelineScenes">
+<div class="scene-tag">🎬 Escena 1: Introducción</div>
+<div class="scene-tag">🎬 Escena 2: Desarrollo</div>
+<div class="scene-tag">🎬 Escena 3: Clímax</div>
 </div>
-<div style="display:flex;gap:10px">
-<input id="chatInput" placeholder="Describe tu próxima creación..." onkeypress="if(event.key==='Enter') sendChatMessage()">
-<button class="btn" onclick="sendChatMessage()">Enviar</button>
+<button class="btn" style="margin-top:10px;background:#29375b;padding:8px 14px;font-size:13px" onclick="addScene()">➕ Añadir Escena</button>
+<div style="margin-top:15px">
+<span class="tag">Imagen</span>
+<span class="tag">Video</span>
+<span class="tag">Voz</span>
 </div>
 </div>
 
-<h2>🎬 Content Creator</h2>
 <div class="card">
-<p>Preparado para ideas de videos, títulos, descripciones y conceptos para redes sociales.</p>
-<button class="btn" style="margin-top:10px" onclick="generateContentIdeas()">✨ Generar Ideas de Contenido</button>
+<h3>📁 Project Manager Pro</h3>
+<p>Organiza tus obras maestras:</p>
+<p class="muted">• Archivos y recursos<br>• Control de versiones Pro<br>• Historial de renderizado<br>• Compartir proyectos</p>
+<button class="btn" style="margin-top:15px" onclick="createNewProjectPrompt()">🚀 Nuevo proyecto</button>
+</div>
 </div>
 </div>
 
-<!-- SECCIÓN PROMPT BUILDER -->
-<div id="sec-builder" style="display:none">
-<h1>Prompt Builder Pro</h1>
-<p>Construye prompts estructurados con precisión milimétrica.</p>
+<!-- SECCIÓN IMAGE STUDIO -->
+<div id="sec-image" style="display:none">
+<h1>Advanced Image Studio</h1>
+<p>Laboratorio de control fotográfico y generación de imágenes de alta fidelidad.</p>
 <div class="card" style="max-width:700px;margin-top:20px">
-<label>Concepto Base</label>
-<input id="pbBase" placeholder="Ej.: Retrato cibernético de un guerrero estelar">
-<label>Estilo Visual</label>
-<div>
-<span class="tag" onclick="toggleTag(this)">Fotorrealista</span>
-<span class="tag" onclick="toggleTag(this)">Cyberpunk</span>
-<span class="tag" onclick="toggleTag(this)">Cinemático 8K</span>
-<span class="tag" onclick="toggleTag(this)">Anime Pro</span>
-</div>
-<label style="margin-top:10px">Iluminación y Cámara</label>
-<div>
-<span class="tag" onclick="toggleTag(this)">Chiaroscuro</span>
-<span class="tag" onclick="toggleTag(this)">Luz de Neón</span>
-<span class="tag" onclick="toggleTag(this)">Macro 50mm</span>
-<span class="tag" onclick="toggleTag(this)">Golden Hour</span>
-</div>
-<button class="btn" style="margin-top:15px" onclick="compilePrompt()">Compilar Prompt Avanzado</button>
-<div id="compiledResult" style="margin-top:15px;background:#070b16;padding:12px;border-radius:10px;font-family:monospace;color:var(--c);display:none"></div>
+<label>Prompt Avanzado</label>
+<textarea placeholder="Describe los detalles de iluminación, texturas y sujeto..."></textarea>
+<button class="btn" style="margin-top:10px" onclick="showToast('Renderizando imagen Pro...')">Generar Imagen Pro</button>
 </div>
 </div>
 
-<!-- SECCIÓN CHARACTER AI -->
+<!-- SECCIÓN VIDEO STUDIO -->
+<div id="sec-video" style="display:none">
+<h1>Video Studio Pro</h1>
+<p>Producción de secuencias y cinemáticas con movimiento inteligente.</p>
+<div class="card" style="max-width:700px;margin-top:20px">
+<label>Descripción de Movimiento</label>
+<textarea placeholder="Ej.: Cámara cenital girando alrededor del personaje principal..."></textarea>
+<button class="btn" style="margin-top:10px" onclick="showToast('🎬 Procesando cinemática de video...')">Renderizar Video</button>
+</div>
+</div>
+
+<!-- SECCIÓN CHARACTER UNIVERSE -->
 <div id="sec-character" style="display:none">
-<h1>Character Assistant</h1>
-<p>Genera perfiles detallados, rasgos y consistencia para tus avatares.</p>
-<div class="card" style="max-width:600px;margin-top:20px">
-<label>Nombre del Personaje</label>
-<input id="charName" placeholder="Ej.: Kaelen Vex">
-<label>Arquetipo</label>
-<select id="charRole"><option>Guerrero Cyberpunk</option><option>Mago Estelar</option><option>Explorador Fotorrealista</option></select>
-<button class="btn" style="margin-top:15px" onclick="generateCharacterProfile()">Generar Historia y Rasgos</button>
-<div id="charOutput" style="margin-top:15px"></div>
+<h1>Character Universe</h1>
+<p>Banco central de avatares con consistencia estricta de rostro y cabello.</p>
+<div class="card" style="max-width:700px;margin-top:20px">
+<h3>Avatares Sincronizados</h3>
+<p class="muted">Los rasgos faciales y estilos de referencia se mantienen intactos en todas las escenas del estudio.</p>
+<button class="btn" style="margin-top:10px" onclick="showToast('Consistencia de personaje verificada.')">Validar Identidad</button>
 </div>
 </div>
 
-<!-- SECCIÓN CONTENT CREATOR -->
-<div id="sec-content" style="display:none">
-<h1>Content Creator Studio</h1>
-<p>Estrategias de contenido y copys para redes sociales de tus creaciones.</p>
-<div class="card" style="margin-top:20px">
-<h3>Generador de Títulos y Descripciones</h3>
-<textarea id="contentIdea" placeholder="Escribe de qué trata tu proyecto..."></textarea>
-<button class="btn" style="margin-top:10px" onclick="runContentAI()">Crear Pack para Redes</button>
-<div id="contentOutput" style="margin-top:15px"></div>
-</div>
-</div>
-
-<!-- SECCIÓN PROJECTS -->
+<!-- SECCIÓN PROJECTS PRO -->
 <div id="sec-projects" style="display:none">
-<h1>Asistente — Biblioteca de Proyectos</h1>
-<p>Tus conversaciones y prompts guardados con ayuda de IA.</p>
-<div class="card"><p class="muted">No hay elementos guardados en esta sesión.</p></div>
+<h1>Projects Pro Library</h1>
+<p>Gestión avanzada de todos tus trabajos en AvatarVerse.</p>
+<div id="proProjectsList" style="margin-top:20px">
+<div class="card"><p class="muted">Cargando proyectos profesionales...</p></div>
+</div>
 </div>
 
 </main>
@@ -158,7 +144,9 @@ textarea{height:90px;resize:vertical}
 <div class="toast" id="toastMsg">¡Acción ejecutada con éxito!</div>
 
 <script>
-let chatHistory = JSON.parse(localStorage.getItem('avatarverse_28_chat') || '[]');
+let proProjects = JSON.parse(localStorage.getItem('avatarverse_29_pro') || JSON.stringify([
+  {name: 'Mi universo creativo', scenes: 3, date: new Date().toLocaleDateString()}
+]));
 
 function switchSection(secName, btn){
   document.querySelectorAll('[id^="sec-"]').forEach(s => s.style.display = 'none');
@@ -167,6 +155,7 @@ function switchSection(secName, btn){
     document.querySelectorAll('aside button').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
   }
+  if(secName === 'projects') renderProProjects();
 }
 
 function showToast(msg){
@@ -176,96 +165,47 @@ function showToast(msg){
   setTimeout(() => t.classList.remove('show'), 2200);
 }
 
-function sendChatMessage(){
-  const input = document.getElementById('chatInput');
-  const text = input.value.trim();
-  if(!text) return;
-
-  appendMessage(text, 'user');
-  input.value = '';
-
-  setTimeout(() => {
-    let reply = "¡Excelente idea! Analizando los parámetros de diseño, te sugiero combinar una iluminación dramática con texturas detalladas para maximizar el realismo.";
-    if(text.toLowerCase().includes('avatar')) {
-      reply = "Para tu avatar, te recomiendo mantener los rasgos faciales clave y usar un estilo cinemático con fondo de neón.";
-    } else if(text.toLowerCase().includes('video')) {
-      reply = "El motor de video está listo para animar esta escena fotograma a fotograma con fluidez óptima.";
-    }
-    appendMessage(reply, 'ai');
-    showToast('💡 Asistente respondió');
-  }, 1000);
-}
-
-function quickSend(){
-  const text = document.getElementById('quickInput').value.trim();
-  if(!text) return;
-  switchSection('assistant', document.querySelectorAll('aside button')[0]);
-  document.getElementById('chatInput').value = text;
-  document.getElementById('quickInput').value = '';
-  sendChatMessage();
-}
-
-function appendMessage(text, sender){
-  const box = document.getElementById('chatContainer');
+function addScene(){
+  const timeline = document.getElementById('timelineScenes');
+  const count = timeline.children.length + 1;
   const div = document.createElement('div');
-  div.className = 'msg ' + sender;
-  div.textContent = text;
-  box.appendChild(div);
-  box.scrollTop = box.scrollHeight;
+  div.className = 'scene-tag';
+  div.textContent = `🎬 Escena ${count}: Continuación`;
+  timeline.appendChild(div);
+  showToast(`Escena ${count} añadida al proyecto.`);
 }
 
-function toggleTag(tag){
-  tag.classList.toggle('active');
+function createNewProjectPrompt(){
+  const name = prompt("Nombre del nuevo proyecto Pro:", "Proyecto Épico 2.9");
+  if(!name) return;
+  proProjects.unshift({name, scenes: 1, date: new Date().toLocaleDateString()});
+  localStorage.setItem('avatarverse_29_pro', JSON.stringify(proProjects));
+  document.getElementById('currentProjTitle').textContent = 'Proyecto actual: ' + name;
+  showToast('¡Proyecto Pro creado con éxito!');
 }
 
-function compilePrompt(){
-  const base = document.getElementById('pbBase').value.trim() || 'Retreto creativo';
-  const activeTags = Array.from(document.querySelectorAll('.tag.active')).map(t => t.textContent);
-  const compiled = `${base}, ${activeTags.join(', ')}, ultra-detailed, 8k resolution, professional lighting, perfect composition --ar 16:9`;
-  
-  const res = document.getElementById('compiledResult');
-  res.style.display = 'block';
-  res.textContent = compiled;
-  showToast('¡Prompt compilado con éxito!');
-}
-
-function generateCharacterProfile(){
-  const name = document.getElementById('charName').value.trim() || 'Héroe Anónimo';
-  const role = document.getElementById('charRole').value;
-  const out = document.getElementById('charOutput');
-  
-  out.innerHTML = `
-    <div class="card" style="background:#070b16;margin-top:10px">
-      <h4>🎭 Perfil de: ${name} (${role})</h4>
-      <p style="font-size:13px;color:var(--muted)"><b>Personalidad:</b> Visionario, decidido y enfocado en la excelencia creativa.</p>
-      <p style="font-size:13px;color:var(--muted)"><b>Rasgos visuales:</b> Cabello definido, mirada expresiva, indumentaria con detalles tecnológicos.</p>
+function renderProProjects(){
+  const list = document.getElementById('proProjectsList');
+  if(!proProjects.length){
+    list.innerHTML = '<div class="card"><p class="muted">No hay proyectos registrados.</p></div>';
+    return;
+  }
+  list.innerHTML = proProjects.map((p, idx) => `
+    <div class="card" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px">
+      <div>
+        <h3>📁 ${p.name}</h3>
+        <p class="muted">Creado el ${p.date} · Escenas activas: ${p.scenes}</p>
+      </div>
+      <button class="btn" style="background:#29375b;padding:8px 14px;font-size:12px" onclick="deleteProProject(${idx})">Eliminar</button>
     </div>
-  `;
-  showToast('¡Perfil de personaje generado!');
+  `).join('');
 }
 
-function generateContentIdeas(){
-  showToast('🎬 Generando ideas virales para redes sociales...');
-  setTimeout(() => {
-    switchSection('content', document.querySelectorAll('aside button')[3]);
-    document.getElementById('contentIdea').value = "Creación de un universo digital con avatares fotorrealistas y consistencia de personajes.";
-    runContentAI();
-  }, 800);
-}
-
-function runContentAI(){
-  const idea = document.getElementById('contentIdea').value.trim();
-  if(!idea){ showToast('Escribe una idea de proyecto.'); return; }
-  
-  const out = document.getElementById('contentOutput');
-  out.innerHTML = `
-    <div class="card" style="background:#070b16;margin-top:10px">
-      <h4>🚀 Pack de Contenido Generado</h4>
-      <p style="font-size:13px"><b>Título sugerido:</b> Creando mundos con IA y AvatarVerse 2.8</p>
-      <p style="font-size:13px"><b>Copy para Redes:</b> Explora el futuro del diseño digital y la consistencia de personajes. ¡El límite es tu imaginación! ✨ #AvatarVerse #AIArt #DigitalCreation</p>
-    </div>
-  `;
-  showToast('¡Pack de contenido creado!');
+function deleteProProject(idx){
+  proProjects.splice(idx, 1);
+  localStorage.setItem('avatarverse_29_pro', JSON.stringify(proProjects));
+  renderProProjects();
+  showToast('Proyecto eliminado.');
 }
 </script>
 </body>
