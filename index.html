@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>AvatarVerse 3.4 — Avatar & Character Engine</title>
+<title>AvatarVerse 3.5 — Image Generation Integration</title>
 <style>
 :root{--bg:#050816;--panel:#10172b;--panel2:#151d35;--line:#29375b;--p:#8b5cf6;--c:#22d3ee;--muted:#9aa7c5}
 *{box-sizing:border-box}
@@ -20,13 +20,12 @@ h1{font-size:44px;margin:0 0 8px}h2{margin-top:5px}p{color:var(--muted);line-hei
 .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
 .row{display:grid;grid-template-columns:1fr 1fr;gap:15px}
 input,select,textarea{width:100%;padding:12px;margin:7px 0;background:#070b16;color:#fff;border:1px solid var(--line);border-radius:10px;font-family:inherit}
-textarea{min-height:110px;resize:vertical}
+textarea{min-height:120px;resize:vertical}
 .primary{background:linear-gradient(90deg,var(--p),var(--c));border:0;color:#fff;font-weight:bold;padding:13px 18px;border-radius:14px;cursor:pointer;transition:.2s}
 .primary:hover{opacity:.9}
-.avatar{background:var(--panel2);border:1px solid var(--line);border-radius:16px;padding:16px;margin:12px 0;position:relative}
+.preview{min-height:190px;border:1px dashed var(--line);border-radius:18px;background:#070b16;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px}
+.item{background:var(--panel2);border:1px solid var(--line);border-radius:15px;padding:16px;margin:12px 0;position:relative}
 .tag{display:inline-block;padding:7px 10px;background:#202a48;border-radius:9px;margin:4px;border:1px solid var(--line)}
-.meter{height:10px;background:#070b16;border-radius:20px;overflow:hidden;margin-top:10px}
-.meter i{display:block;height:100%;background:linear-gradient(90deg,var(--p),var(--c))}
 small{color:var(--muted)}
 .toast{position:fixed;right:20px;bottom:20px;background:#111a33;border:1px solid var(--c);padding:14px 20px;border-radius:14px;display:none;z-index:100}
 .toast.show{display:block}
@@ -38,76 +37,99 @@ small{color:var(--muted)}
 <aside>
 <div class="logo">Avatar<span>Verse</span></div>
 <nav>
-<button class="active" onclick="show('home', this)">🎭 Character Engine</button>
-<button onclick="show('create', this)">✨ Crear personaje</button>
-<button onclick="show('gallery', this)">🖼️ Galería</button>
-<button onclick="show('memory', this)">🧠 Memoria</button>
-<button onclick="show('projects', this)">📁 Proyectos</button>
+<button class="active" onclick="show('home', this)">🖼️ Image Lab</button>
+<button onclick="show('generate', this)">✨ Generation Setup</button>
+<button onclick="show('references', this)">🎭 Character References</button>
+<button onclick="show('history', this)">🕒 Generation History</button>
 </nav>
 </aside>
 <main>
 
 <section id="home">
 <div class="hero">
-<h1>AvatarVerse 3.4</h1>
-<p><b>Avatar & Character Engine</b> — crea personajes consistentes, organiza sus atributos y conserva su identidad dentro de tus proyectos de inteligencia artificial.</p>
-<button class="primary" onclick="show('create', document.querySelectorAll('nav button')[1])">＋ Crear personaje</button>
+<h1>AvatarVerse 3.5</h1>
+<p><b>Image Generation Integration</b> — interfaz preparada para conectar un servicio real de generación de imágenes sin fingir que la ejecución local está activa.</p>
+<button class="primary" onclick="show('generate', document.querySelectorAll('nav button')[1])">＋ Preparar generación</button>
 </div>
 <div class="grid">
-<div class="card" style="cursor:pointer" onclick="show('gallery', document.querySelectorAll('nav button')[2])">
-🎭<h3>Identidad</h3><p>Ficha central de atributos y rasgos visuales.</p>
+<div class="card" style="cursor:pointer" onclick="show('generate', document.querySelectorAll('nav button')[1])">
+🧠<h3>Prompt Engine</h3><p>Prompt estructurado y configurable por estilo.</p>
 </div>
-<div class="card" style="cursor:pointer" onclick="show('memory', document.querySelectorAll('nav button')[3])">
-🧠<h3>Memoria</h3><p>Reglas de continuidad y persistencia creativa.</p>
+<div class="card" style="cursor:pointer" onclick="show('references', document.querySelectorAll('nav button')[2])">
+🎭<h3>Character Reference</h3><p>Referencia textual estricta de continuidad.</p>
 </div>
-<div class="card" style="cursor:pointer" onclick="show('projects', document.querySelectorAll('nav button')[4])">
-📁<h3>Proyectos</h3><p>Asociación directa a universos y secuencias.</p>
+<div class="card" style="cursor:pointer" onclick="show('history', document.querySelectorAll('nav button')[3])">
+🕒<h3>History</h3><p>Registro local de generaciones preparadas.</p>
 </div>
 </div>
 </section>
 
-<section id="create" style="display:none">
+<section id="generate" style="display:none">
 <div class="card" style="max-width:750px">
-<h2>✨ Character Builder</h2>
+<h2>✨ Generation Setup</h2>
+<textarea id="promptInput" placeholder="Describe la imagen que quieres crear..."></textarea>
 <div class="row">
 <div>
-<input id="charName" placeholder="Nombre del personaje">
-<input id="charAge" placeholder="Edad aparente">
-<input id="charRole" placeholder="Rol / profesión">
+<label style="font-size:13px;color:var(--muted)">Estilo Visual</label>
+<select id="style">
+<option>Fotorrealista</option>
+<option>Cinematográfico</option>
+<option>Ilustración digital</option>
+<option>3D Render</option>
+<option>Anime</option>
+</select>
 </div>
 <div>
-<input id="charAppearance" placeholder="Apariencia y rasgos físicos">
-<input id="charStyle" placeholder="Estilo visual">
-<input id="charWorld" placeholder="Mundo / universo">
+<label style="font-size:13px;color:var(--muted)">Relación de Aspecto</label>
+<select id="ratio">
+<option>1:1</option>
+<option>16:9</option>
+<option>9:16</option>
+<option>4:5</option>
+</select>
 </div>
 </div>
-<textarea id="charPersonality" placeholder="Personalidad y rasgos principales"></textarea>
-<textarea id="charStory" placeholder="Historia y contexto del personaje"></textarea>
-<textarea id="charRules" placeholder="Reglas de continuidad (qué debe mantenerse constante al generar imágenes)"></textarea>
-<button class="primary" onclick="createCharacter()" style="margin-top:10px">💾 Guardar personaje</button>
+<div class="row" style="margin-top:10px">
+<div>
+<label style="font-size:13px;color:var(--muted)">Calidad</label>
+<select id="quality">
+<option>Alta calidad (8k)</option>
+<option>Ultra detallado</option>
+<option>Borrador rápido</option>
+</select>
+</div>
+<div>
+<label style="font-size:13px;color:var(--muted)">Variaciones</label>
+<select id="variations">
+<option>1 variación</option>
+<option>2 variaciones</option>
+<option>4 variaciones</option>
+</select>
+</div>
+</div>
+<input id="reference" placeholder="Referencia de personaje (opcional)" style="margin-top:15px">
+<button class="primary" onclick="prepare()" style="margin-top:10px">🚀 Preparar configuración de generación</button>
+<h3 style="margin-top:20px">Configuración final</h3>
+<div id="result" class="preview">Aquí aparecerá la configuración lista para la API.</div>
 </div>
 </section>
 
-<section id="gallery" style="display:none">
-<div class="card">
-<h2>🖼️ Galería de personajes</h2>
-<div id="galleryList"></div>
+<section id="references" style="display:none">
+<div class="card" style="max-width:750px">
+<h2>🎭 Character References</h2>
+<p>Selecciona o escribe una referencia textual para mantener la coherencia del personaje al conectar el motor real.</p>
+<input id="charName" placeholder="Nombre del personaje">
+<textarea id="charDesc" placeholder="Descripción visual detallada y reglas de continuidad..."></textarea>
+<button class="primary" onclick="saveReference()" style="margin-top:10px">💾 Guardar referencia</button>
+<div id="refs" style="margin-top:20px"></div>
 </div>
 </section>
 
-<section id="memory" style="display:none">
+<section id="history" style="display:none">
 <div class="card">
-<h2>🧠 Character Memory</h2>
-<p>Información persistente y nivel de consistencia para mantener coherencia entre proyectos.</p>
-<div id="memoryList"></div>
-</div>
-</section>
-
-<section id="projects" style="display:none">
-<div class="card">
-<h2>📁 Proyectos asociados</h2>
-<p>Los personajes de este motor pueden reutilizarse en múltiples proyectos de AvatarVerse.</p>
-<div id="projectList"></div>
+<h2>🕒 Generation History</h2>
+<p>Historial local de configuraciones preparadas para la API de imágenes.</p>
+<div id="historyList" style="margin-top:15px"></div>
 </div>
 </section>
 
@@ -117,10 +139,10 @@ small{color:var(--muted)}
 <div class="toast" id="toastMsg">¡Acción ejecutada con éxito!</div>
 
 <script>
-const KEY = "avatarverse34_characters";
+const H = "avatarverse35_history", R = "avatarverse35_refs";
 
-function get(){ return JSON.parse(localStorage.getItem(KEY) || "[]"); }
-function save(x){ localStorage.setItem(KEY, JSON.stringify(x)); }
+function arr(k){ return JSON.parse(localStorage.getItem(k) || "[]"); }
+function put(k, v){ localStorage.setItem(k, JSON.stringify(v)); }
 
 function show(id, btn){
   document.querySelectorAll("main section").forEach(s => s.style.display = "none");
@@ -143,94 +165,111 @@ function esc(s){
   return String(s || "").replace(/[&<>"']/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[m]));
 }
 
-function createCharacter(){
-  const name = document.getElementById('charName').value.trim();
-  const appearance = document.getElementById('charAppearance').value.trim();
+function prepare(){
+  const p = document.getElementById("promptInput").value.trim() || "Sin prompt especificado";
+  const st = document.getElementById("style").value;
+  const rt = document.getElementById("ratio").value;
+  const qu = document.getElementById("quality").value;
+  const va = document.getElementById("variations").value;
+  const rf = document.getElementById("reference").value.trim();
 
-  if(!name || !appearance){
-    showToast("⚠️ Por favor ingresa al menos el nombre y la apariencia.");
-    return;
-  }
-
-  const c = {
-    name,
-    age: document.getElementById('charAge').value,
-    role: document.getElementById('charRole').value,
-    appearance,
-    style: document.getElementById('charStyle').value,
-    world: document.getElementById('charWorld').value,
-    personality: document.getElementById('charPersonality').value,
-    story: document.getElementById('charStory').value,
-    rules: document.getElementById('charRules').value,
+  const config = {
+    prompt: p,
+    style: st,
+    ratio: rt,
+    quality: qu,
+    variations: va,
+    reference: rf || "Ninguna",
     date: new Date().toLocaleString("es-ES")
   };
 
-  let x = get();
-  x.unshift(c);
-  save(x);
+  document.getElementById("result").innerHTML = `
+    <b style="color:var(--c)">✨ Generación preparada con éxito</b>
+    <p style="margin:8px 0">${esc(p)}</p>
+    <div>
+      <span class='tag'>${esc(st)}</span>
+      <span class='tag'>${esc(rt)}</span>
+      <span class='tag'>${esc(qu)}</span>
+      <span class='tag'>${esc(va)}</span>
+    </div>
+    <p style="margin-top:10px"><small style="color:var(--muted)">Referencia: ${esc(config.reference)}<br>La ejecución real requiere conectar un backend o API de renderizado.</small></p>
+  `;
 
-  // Limpiar campos
-  document.getElementById('charName').value = "";
-  document.getElementById('charAge').value = "";
-  document.getElementById('charRole').value = "";
-  document.getElementById('charAppearance').value = "";
-  document.getElementById('charStyle').value = "";
-  document.getElementById('charWorld').value = "";
-  document.getElementById('charPersonality').value = "";
-  document.getElementById('charStory').value = "";
-  document.getElementById('charRules').value = "";
-
+  let h = arr(H);
+  h.unshift(config);
+  put(H, h.slice(0, 30));
   render();
-  showToast("✨ ¡Personaje guardado con éxito!");
-  show('gallery', document.querySelectorAll('nav button')[2]);
+  showToast("🚀 Configuración de imagen preparada.");
 }
 
-function removeCharacter(i){
-  let x = get();
-  x.splice(i, 1);
-  save(x);
+function saveReference(){
+  const name = document.getElementById("charName").value.trim();
+  const desc = document.getElementById("charDesc").value.trim();
+
+  if(!name || !desc){
+    showToast("⚠️ Ingresa el nombre y la descripción de la referencia.");
+    return;
+  }
+
+  let r = arr(R);
+  r.unshift({
+    name,
+    desc,
+    date: new Date().toLocaleString("es-ES")
+  });
+  put(R, r);
+
+  document.getElementById("charName").value = "";
+  document.getElementById("charDesc").value = "";
+
   render();
-  showToast("🗑️ Personaje eliminado.");
+  showToast("🎭 Referencia de personaje guardada.");
 }
 
 function render(){
-  const x = get();
-  
-  const galleryList = document.getElementById('galleryList');
-  const memoryList = document.getElementById('memoryList');
-  const projectList = document.getElementById('projectList');
+  const refsBox = document.getElementById("refs");
+  const histBox = document.getElementById("historyList");
 
-  if(galleryList){
-    galleryList.innerHTML = x.length ? x.map((c, i) => `
-      <div class="avatar">
-        <h3>🎭 ${esc(c.name)}</h3>
-        <span class="tag">${esc(c.role) || "Personaje"}</span>
-        <span class="tag" style="color:var(--c)">${esc(c.world) || "Universo"}</span>
-        <p style="margin:10px 0"><b>Apariencia:</b> ${esc(c.appearance) || "—"}<br><b>Estilo:</b> ${esc(c.style) || "—"}<br><b>Personalidad:</b> ${esc(c.personality) || "—"}</p>
-        <small>Creado: ${esc(c.date)}</small><br>
-        <button class="primary" onclick="removeCharacter(${i})" style="margin-top:12px;width:auto;padding:6px 14px;background:#29375b;font-size:12px">Eliminar</button>
+  if(refsBox){
+    let r = arr(R);
+    refsBox.innerHTML = r.length ? r.map((x, i) => `
+      <div class="item">
+        <b>🎭 ${esc(x.name)}</b>
+        <p style="margin:8px 0;color:var(--muted)">${esc(x.desc)}</p>
+        <small>Registrado: ${esc(x.date)}</small><br>
+        <button class="primary" onclick="removeRef(${i})" style="margin-top:10px;width:auto;padding:6px 14px;background:#29375b;font-size:12px">Eliminar</button>
       </div>
-    `).join("") : "<p style='color:var(--muted)'>No hay personajes guardados aún.</p>";
+    `).join("") : "<p style='color:var(--muted)'>No hay referencias guardadas todavía.</p>";
   }
 
-  if(memoryList){
-    memoryList.innerHTML = x.length ? x.map(c => `
-      <div class="avatar">
-        <b>🧠 ${esc(c.name)}</b>
-        <p style="margin:8px 0"><b>Continuidad:</b> ${esc(c.rules) || "No definida"}<br><b>Historia:</b> ${esc(c.story) || "No definida"}</p>
-        <div class="meter"><i style="width:${Math.min(100, 40 + (c.rules?25:0) + (c.story?25:0) + (c.appearance?10:0))}%"></i></div>
+  if(histBox){
+    let h = arr(H);
+    histBox.innerHTML = h.length ? h.map((x, i) => `
+      <div class="item">
+        <b>🖼️ ${esc(x.style)} · ${esc(x.ratio)}</b>
+        <p style="margin:8px 0;color:var(--muted)">${esc(x.prompt)}</p>
+        <div><span class='tag'>${esc(x.quality)}</span><span class='tag'>${esc(x.variations)}</span></div>
+        <small style="display:block;margin-top:6px">Preparado: ${esc(x.date)}</small><br>
+        <button class="primary" onclick="removeHist(${i})" style="margin-top:10px;width:auto;padding:6px 14px;background:#29375b;font-size:12px">Eliminar</button>
       </div>
-    `).join("") : "<p style='color:var(--muted)'>No hay memoria de personajes disponible.</p>";
+    `).join("") : "<p style='color:var(--muted)'>No hay generaciones preparadas todavía.</p>";
   }
+}
 
-  if(projectList){
-    projectList.innerHTML = x.length ? x.map(c => `
-      <div class="avatar">
-        📁 <b>${esc(c.name)}</b>
-        <p style="margin:5px 0 0 0;color:var(--muted)">Listo para asociarse a futuros proyectos, escenas, prompts e imágenes en AvatarVerse.</p>
-      </div>
-    `).join("") : "<p style='color:var(--muted)'>No hay personajes para asociar todavía.</p>";
-  }
+function removeRef(i){
+  let r = arr(R);
+  r.splice(i, 1);
+  put(R, r);
+  render();
+  showToast("🗑️ Referencia eliminada.");
+}
+
+function removeHist(i){
+  let h = arr(H);
+  h.splice(i, 1);
+  put(H, h);
+  render();
+  showToast("🗑️ Registro de historial eliminado.");
 }
 
 render();
