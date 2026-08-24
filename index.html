@@ -3,26 +3,33 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>AvatarVerse 3.1 — Real Product Prototype</title>
+<title>AvatarVerse 3.2 — Advanced Creator Platform</title>
 <style>
 :root{--bg:#050816;--panel:#10172b;--line:#29375b;--p:#8b5cf6;--c:#22d3ee;--muted:#9aa7c5}
 *{box-sizing:border-box}
-body{margin:0;background:radial-gradient(circle at top,#172554,#050816 60%);color:white;font-family:Arial,sans-serif;scroll-behavior:smooth}
-.app{display:grid;grid-template-columns:260px 1fr;min-height:100vh}
-aside{background:#0b1020;padding:25px;border-right:1px solid var(--line);position:sticky;top:0;height:100vh;overflow-y:auto}
-.logo{font-size:30px;font-weight:900}.logo span{color:var(--c)}
-aside button{width:100%;padding:14px;margin:7px 0;border-radius:14px;background:#151d35;color:white;border:1px solid var(--line);text-align:left;cursor:pointer;transition:.2s}
+body{margin:0;background:radial-gradient(circle at top,#172554,#050816 60%);font-family:Arial,sans-serif;color:#fff;scroll-behavior:smooth}
+.app{display:grid;grid-template-columns:250px 1fr;min-height:100vh}
+aside{background:#080d1c;padding:24px;border-right:1px solid var(--line);position:sticky;top:0;height:100vh;overflow-y:auto}
+.logo{font-size:30px;font-weight:900;margin-bottom:20px}.logo span{color:var(--c)}
+aside button{display:block;width:100%;margin:6px 0;padding:13px;border-radius:14px;background:#111a33;color:#fff;border:1px solid var(--line);text-align:left;cursor:pointer;transition:.2s}
 aside button:hover, aside button.active{background:var(--p);border-color:var(--c)}
-main{padding:30px;max-width:1100px}
-.card{background:rgba(16,23,43,.92);border:1px solid var(--line);border-radius:22px;padding:24px;margin:15px 0}
-.primary{background:linear-gradient(90deg,var(--p),var(--c));border:0;font-weight:bold;cursor:pointer;transition:.2s}
+main{padding:30px;max-width:1250px;width:100%;margin:auto}
+h1{font-size:46px;margin:10px 0}p{color:var(--muted);line-height:1.5}
+.hero,.card{background:rgba(16,23,43,.94);border:1px solid var(--line);border-radius:24px;padding:22px;margin-bottom:20px}
+.hero{background:linear-gradient(135deg,#111a33,#151d35)}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:15px}
+.icon{font-size:38px}
+.primary{background:linear-gradient(90deg,var(--p),var(--c));border:0;color:#fff;font-weight:bold;padding:13px 18px;border-radius:14px;cursor:pointer;transition:.2s}
 .primary:hover{opacity:.9}
-button{padding:14px;margin:6px 0;border-radius:14px;background:#151d35;color:white;border:1px solid var(--line);cursor:pointer;width:100%}
-input,select,textarea{width:100%;padding:14px;margin:8px 0;background:#070b16;color:white;border:1px solid var(--line);border-radius:12px;font-family:inherit}
-textarea{height:100px;resize:vertical}
+input,select,textarea{width:100%;padding:12px;margin:7px 0;background:#070b16;color:#fff;border:1px solid var(--line);border-radius:10px;font-family:inherit}
+textarea{height:90px;resize:vertical}
+.tag{display:inline-block;padding:7px 10px;background:#151d35;border-radius:9px;margin:4px;border:1px solid var(--line)}
+.project{background:#151d35;border:1px solid var(--line);border-radius:15px;padding:16px;margin:12px 0}
+.project small{color:var(--muted)}
+.empty{color:var(--muted);padding:20px 0}
 .toast{position:fixed;right:20px;bottom:20px;background:#111a33;border:1px solid var(--c);padding:14px 20px;border-radius:14px;display:none;z-index:100}
 .toast.show{display:block}
-@media(max-width:800px){.app{grid-template-columns:1fr}aside{display:none}}
+@media(max-width:850px){.app{grid-template-columns:1fr}aside{display:none}.grid{grid-template-columns:1fr}main{padding:18px}}
 </style>
 </head>
 <body>
@@ -30,66 +37,131 @@ textarea{height:100px;resize:vertical}
 <aside>
 <div class="logo">Avatar<span>Verse</span></div>
 <div style="margin-top:20px">
-<button class="active" onclick="show('home', this)">🏠 Inicio</button>
-<button onclick="show('create', this)">🚀 Crear</button>
-<button onclick="show('projects', this)">📚 Proyectos</button>
-<button onclick="show('profile', this)">👤 Perfil</button>
+<button class="active" onclick="show('dashboard', this)">🚀 Creator Platform</button>
+<button onclick="show('projects', this)">📁 Projects</button>
+<button onclick="show('editor', this)">🎨 Editor Pro</button>
+<button onclick="show('workflow', this)">🤖 AI Workflow</button>
+<button onclick="show('analytics', this)">📊 Analytics</button>
+<button onclick="show('portfolio', this)">🌐 Portfolio</button>
 </div>
 </aside>
 <main>
-<section id="home">
-<div class="card">
-<h1>AvatarVerse 3.1</h1>
-<p style="color:var(--muted)">Prototipo interactivo avanzado del ecosistema creativo impulsado por IA.</p>
-<button class="primary" onclick="show('create', document.querySelectorAll('aside button')[1])" style="width:auto;padding:14px 28px;margin-top:10px">Crear proyecto</button>
-</div>
-</section>
 
-<section id="create" style="display:none">
-<div class="card" style="max-width:700px">
-<h2>Nuevo proyecto</h2>
-<label>Nombre del proyecto</label>
-<input id="projName" placeholder="Ej.: Universo Cibernético 3.1">
-<label>Tipo de Contenido</label>
-<select id="projType">
-<option value="Avatar">🎭 Avatar</option>
-<option value="Imagen">🖼️ Imagen</option>
-<option value="Video">🎬 Video</option>
-</select>
-<label>Descripción y Parámetros</label>
-<textarea id="projDesc" placeholder="Describe los detalles creativos, iluminación y estilo..."></textarea>
-<button class="primary" onclick="saveProject()">Guardar en el Ecosistema</button>
+<section id="dashboard">
+<div class="hero">
+<h1>AvatarVerse 3.2</h1>
+<p>Advanced Creator Platform para organizar, crear y preparar contenido digital con inteligencia artificial.</p>
+<button class="primary" onclick="show('projects', document.querySelectorAll('aside button')[1])">＋ Crear proyecto</button>
+</div>
+<div class="grid">
+<div class="card" style="cursor:pointer" onclick="show('projects', document.querySelectorAll('aside button')[1])">
+📁<h3>Project System</h3>
+<p>Organiza proyectos, estados y flujos creativos.</p>
+</div>
+<div class="card" style="cursor:pointer" onclick="show('editor', document.querySelectorAll('aside button')[2])">
+🎨<h3>Creator Editor Pro</h3>
+<p>Espacio central de producción y recursos.</p>
+</div>
+<div class="card" style="cursor:pointer" onclick="show('analytics', document.querySelectorAll('aside button')[4])">
+📊<h3>Creator Analytics</h3>
+<p>Consulta actividad, métricas y progreso.</p>
+</div>
 </div>
 </section>
 
 <section id="projects" style="display:none">
 <div class="card">
+<h2>📁 Advanced Project System</h2>
+<label>Nombre del proyecto</label>
+<input id="projectName" placeholder="Ej.: Colección Cibernética">
+<label>Tipo de Contenido</label>
+<select id="projectType">
+<option value="Avatar">🎭 Avatar</option>
+<option value="Imagen">🖼️ Imagen</option>
+<option value="Video">🎬 Video</option>
+<option value="Universo">🌌 Universo</option>
+</select>
+<label>Estado del Proyecto</label>
+<select id="projectStatus">
+<option value="Idea">💡 Idea</option>
+<option value="En creación">⚡ En creación</option>
+<option value="Revisión">🔍 Revisión</option>
+<option value="Publicado">🚀 Publicado</option>
+</select>
+<label>Descripción detallada</label>
+<textarea id="projectDesc" placeholder="Describe los parámetros e iluminación del proyecto..."></textarea>
+<button class="primary" onclick="createProject()" style="margin-top:10px">Guardar proyecto</button>
+</div>
+<div class="card">
 <h2>Mis proyectos</h2>
-<div id="list" style="margin-top:15px"></div>
+<div id="projectList"></div>
 </div>
 </section>
 
-<section id="profile" style="display:none">
-<div class="card" style="max-width:550px">
-<h2>Perfil Creator</h2>
-<p style="color:var(--muted)">Usuario: <b>AvatarVerse Creator Pro</b><br>Plan: <b>Pro Enterprise</b><br>Créditos de IA: <b>100 / 100</b></p>
-<button class="primary" style="margin-top:15px;width:auto;padding:10px 20px" onclick="showToast('Sincronización de perfil completada')">Actualizar Estado</button>
+<section id="editor" style="display:none">
+<div class="card">
+<h2>🎨 Creator Editor Pro</h2>
+<p>Área preparada para herramientas de imagen, video, recursos y control de versiones.</p>
+<div class="grid">
+<div class="card">🖼️ Canvas<br><small>Área principal de creación</small></div>
+<div class="card">🧰 Herramientas<br><small>Recursos y controles avanzados</small></div>
+<div class="card">🕒 Versiones<br><small>Historial de cambios</small></div>
+</div>
 </div>
 </section>
+
+<section id="workflow" style="display:none">
+<div class="card">
+<h2>🤖 AI Workflow Manager</h2>
+<p>Idea → Prompt → Imagen → Video → Publicación</p>
+<div class="grid">
+<div class="card">💡 <b>1. Idea</b><br><small>Conceptualización</small></div>
+<div class="card">✍️ <b>2. Prompting</b><br><small>Estructuración JSON</small></div>
+<div class="card">🖼️ <b>3. Imagen</b><br><small>Generación visual</small></div>
+<div class="card">🎬 <b>4. Video</b><br><small>Cinemática animada</small></div>
+<div class="card">🌐 <b>5. Publicación</b><br><small>Ecosistema abierto</small></div>
+</div>
+</div>
+</section>
+
+<section id="analytics" style="display:none">
+<div class="card">
+<h2>📊 Creator Analytics</h2>
+<div class="grid">
+<div class="card"><b id="count" style="font-size:32px;color:var(--c)">0</b><p>Proyectos Registrados</p></div>
+<div class="card"><b style="font-size:32px;color:var(--c)">4</b><p>Tipos Creativos Activos</p></div>
+<div class="card"><b style="font-size:32px;color:var(--c)">Pro</b><p>Plan Enterprise Actual</p></div>
+</div>
+</div>
+</section>
+
+<section id="portfolio" style="display:none">
+<div class="card">
+<h2>🌐 Portfolio Profesional</h2>
+<p>Espacio público para mostrar trabajos y colecciones destacadas.</p>
+<div id="portfolioList" style="margin-top:15px"></div>
+</div>
+</section>
+
 </main>
 </div>
 
 <div class="toast" id="toastMsg">¡Acción ejecutada con éxito!</div>
 
 <script>
+const key = "avatarverse32_projects";
+
+function get(){ return JSON.parse(localStorage.getItem(key) || "[]"); }
+function save(p){ localStorage.setItem(key, JSON.stringify(p)); }
+
 function show(id, btn){
-  document.querySelectorAll('main section').forEach(s => s.style.display = 'none');
-  document.getElementById(id).style.display = 'block';
+  document.querySelectorAll("main section").forEach(s => s.style.display = "none");
+  document.getElementById(id).style.display = "block";
   if(btn){
-    document.querySelectorAll('aside button').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll("aside button").forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
   }
-  if(id === 'projects') load();
+  render();
 }
 
 function showToast(msg){
@@ -99,57 +171,75 @@ function showToast(msg){
   setTimeout(() => t.classList.remove('show'), 2200);
 }
 
-function saveProject(){
-  const name = document.getElementById('projName').value.trim();
-  const type = document.getElementById('projType').value;
-  const desc = document.getElementById('projDesc').value.trim();
-
-  if(!name || !desc){
-    showToast('⚠️ Por favor completa todos los campos.');
-    return;
-  }
-
-  let projects = JSON.parse(localStorage.getItem('avatarverse_31_projects') || '[]');
-  projects.unshift({name, type, desc, date: new Date().toLocaleDateString()});
-  localStorage.setItem('avatarverse_31_projects', JSON.stringify(projects));
-  
-  document.getElementById('projName').value = '';
-  document.getElementById('projDesc').value = '';
-  
-  showToast('✨ ¡Proyecto guardado con éxito!');
-  show('projects', document.querySelectorAll('aside button')[2]);
+function esc(s){
+  return String(s).replace(/[&<>"']/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[m]));
 }
 
-function load(){
-  let projects = JSON.parse(localStorage.getItem('avatarverse_31_projects') || '[]');
-  const list = document.getElementById('list');
-  
-  if(!projects.length){
-    list.innerHTML = '<p style="color:var(--muted)">No hay proyectos registrados aún.</p>';
-    return;
-  }
-  
-  list.innerHTML = projects.map((x, idx) => `
-    <div class="card" style="background:#070b16;margin-bottom:15px;position:relative">
-      <h3 style="margin:0 0 8px 0">🎨 ${x.name} <span style="font-size:12px;color:var(--c);font-weight:normal">(${x.type})</span></h3>
-      <p style="color:var(--muted);margin:5px 0 10px 0">${x.desc}</p>
-      <div style="display:flex;justify-content:space-between;align-items:center">
-        <span style="font-size:11px;color:var(--muted)">Creado: ${x.date}</span>
-        <button onclick="deleteProject(${idx})" style="width:auto;padding:6px 12px;background:#29375b;font-size:12px">Eliminar</button>
+function createProject(){
+  let p = get();
+  const name = document.getElementById('projectName').value.trim() || "Proyecto sin nombre";
+  const type = document.getElementById('projectType').value;
+  const status = document.getElementById('projectStatus').value;
+  const desc = document.getElementById('projectDesc').value.trim();
+
+  p.unshift({
+    name,
+    type,
+    status,
+    desc,
+    date: new Date().toLocaleDateString("es-ES")
+  });
+
+  save(p);
+  document.getElementById('projectName').value = "";
+  document.getElementById('projectDesc').value = "";
+  render();
+  showToast("✨ ¡Proyecto guardado en el ecosistema!");
+  show('projects', document.querySelectorAll('aside button')[1]);
+}
+
+function del(i){
+  let p = get();
+  p.splice(i, 1);
+  save(p);
+  render();
+  showToast("🗑️ Proyecto eliminado.");
+}
+
+function render(){
+  let p = get();
+  const projList = document.getElementById('projectList');
+  const portList = document.getElementById('portfolioList');
+  const countElem = document.getElementById('count');
+
+  if(projList){
+    projList.innerHTML = p.length ? p.map((x, i) => `
+      <div class="project" style="position:relative">
+        <b style="font-size:16px">${esc(x.name)}</b><br>
+        <small style="color:var(--c)">${esc(x.type)} · Estado: <b>${esc(x.status)}</b> · ${x.date}</small>
+        <p style="margin:8px 0 12px 0">${esc(x.desc || "Sin descripción")}</p>
+        <button class="primary" onclick="del(${i})" style="width:auto;padding:6px 14px;background:#29375b;font-size:12px">Eliminar</button>
       </div>
-    </div>
-  `).join('');
+    `).join("") : "<div class='empty'>Todavía no tienes proyectos registrados.</div>";
+  }
+
+  if(portList){
+    portList.innerHTML = p.length ? p.map(x => `
+      <div class="project">
+        <b style="font-size:16px">${esc(x.name)}</b><br style="margin-bottom:6px">
+        <span class="tag">${esc(x.type)}</span>
+        <span class="tag" style="color:var(--c)">${esc(x.status)}</span>
+        <p style="margin:8px 0 0 0">${esc(x.desc || "")}</p>
+      </div>
+    `).join("") : "<div class='empty'>Crea y publica proyectos para llenar tu portafolio.</div>";
+  }
+
+  if(countElem){
+    countElem.textContent = p.length;
+  }
 }
 
-function deleteProject(idx){
-  let projects = JSON.parse(localStorage.getItem('avatarverse_31_projects') || '[]');
-  projects.splice(idx, 1);
-  localStorage.setItem('avatarverse_31_projects', JSON.stringify(projects));
-  load();
-  showToast('🗑️ Proyecto eliminado.');
-}
-
-load();
+render();
 </script>
 </body>
 </html>
