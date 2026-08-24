@@ -3,122 +3,170 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>AvatarVerse 2.7 — Mobile App Experience</title>
+<title>AvatarVerse 2.8 — AI Assistant & Smart Creator</title>
 <style>
 :root{--bg:#050816;--panel:#10172b;--line:#29375b;--p:#8b5cf6;--c:#22d3ee;--muted:#9aa7c5}
-*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at top,#172554,#050816 60%);font-family:Arial,sans-serif;color:white;display:grid;place-items:center;min-height:100vh}
-.phone{width:100%;max-width:400px;background:#080d1c;border:1px solid var(--line);border-radius:35px;overflow:hidden;height:820px;display:flex;flex-direction:column;box-shadow:0 20px 40px rgba(0,0,0,0.6)}
-header{padding:20px 25px;background:#10172b;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
-.logo{font-size:24px;font-weight:900}.logo span{color:var(--c)}
-main{padding:20px;flex:1;overflow-y:auto}
-.hero{background:linear-gradient(135deg,#111a33,#151d35);padding:18px;border-radius:22px;border:1px solid var(--line)}
-.btn{width:100%;padding:13px;margin:8px 0;border:0;border-radius:14px;background:linear-gradient(90deg,var(--p),var(--c));color:white;font-weight:bold;cursor:pointer;transition:.2s}
-.btn:hover{opacity:.9}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px}
-.card{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:15px;cursor:pointer;transition:.2s}
-.card:hover{border-color:var(--c)}
-.icon{font-size:30px}
-input,textarea,select{width:100%;background:#070b16;color:white;border:1px solid var(--line);border-radius:12px;padding:10px;margin:6px 0;font-family:inherit}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at top,#172554,#050816 60%);font-family:Arial,sans-serif;color:white;scroll-behavior:smooth}
+.app{display:grid;grid-template-columns:260px 1fr;min-height:100vh}
+aside{background:#080d1c;padding:25px;border-right:1px solid var(--line);position:sticky;top:0;height:100vh;overflow-y:auto}
+.logo{font-size:30px;font-weight:900}.logo span{color:var(--c)}
+aside button{width:100%;padding:14px;margin:7px 0;border-radius:14px;background:#111a33;color:white;border:1px solid var(--line);text-align:left;cursor:pointer;transition:.2s}
+aside button:hover,aside button.active{background:var(--p);border-color:var(--c)}
+main{padding:30px;max-width:1200px}
+h1{font-size:42px;margin:10px 0}p{color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:20px}
+.card{background:rgba(16,23,43,.92);border:1px solid var(--line);border-radius:24px;padding:22px;margin-bottom:20px}
+.icon{font-size:38px}
+.chat-box{min-height:180px;max-height:250px;overflow-y:auto;background:#070b16;border:1px solid var(--line);border-radius:14px;padding:15px;margin:10px 0}
+.msg{margin-bottom:10px;padding:10px 14px;border-radius:12px;font-size:14px}
+.msg.user{background:#151d35;text-align:right;border:1px solid var(--line)}
+.msg.ai{background:#111a33;border:1px solid var(--c);color:#e2e8f0}
+input,textarea,select{width:100%;background:#070b16;color:white;border:1px solid var(--line);border-radius:12px;padding:12px;margin:8px 0;font-family:inherit}
 textarea{height:90px;resize:vertical}
-nav{background:#10172b;padding:12px;display:flex;justify-content:space-around;border-top:1px solid var(--line)}
-nav button{background:0;border:0;color:var(--muted);font-size:11px;cursor:pointer;transition:.2s}
-nav button.active{color:var(--c);font-weight:bold}
-nav button span{font-size:18px;display:block;margin-bottom:2px}
-.toast{position:absolute;top:20px;left:50%;transform:translateX(-50%);background:#111a33;border:1px solid var(--c);padding:10px 16px;border-radius:12px;font-size:13px;display:none;z-index:100}
+.btn{padding:12px 20px;border-radius:14px;background:linear-gradient(90deg,var(--p),var(--c));border:0;color:white;font-weight:bold;cursor:pointer;transition:.2s}
+.btn:hover{opacity:.9}
+.tag{display:inline-block;background:#151d35;padding:8px 12px;border-radius:10px;margin:5px;border:1px solid var(--line);cursor:pointer;transition:.2s}
+.tag:hover{border-color:var(--c);background:#1a2342}
+.tag.active{background:var(--p);border-color:var(--c)}
+.toast{position:fixed;right:20px;bottom:20px;background:#111a33;border:1px solid var(--c);padding:14px 20px;border-radius:14px;display:none;z-index:100}
 .toast.show{display:block}
+@media(max-width:850px){.app{grid-template-columns:1fr}aside{display:none}.grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
-<div class="phone" id="phoneApp">
-<div class="toast" id="toastMsg">¡Acción ejecutada!</div>
-
-<header>
+<div class="app">
+<aside>
 <div class="logo">Avatar<span>Verse</span></div>
-<span style="font-size:12px;color:var(--c)">📱 App v2.7</span>
-</header>
-
-<main id="appContent">
-<!-- VISTA INICIO -->
-<div id="screen-home">
-<div class="hero">
-<h3 style="margin:0 0 5px">Tu universo creativo</h3>
-<p style="font-size:13px;color:var(--muted);margin:0 0 12px">Crea avatares, imágenes y videos desde tu móvil.</p>
-<button class="btn" onclick="switchScreen('create', document.querySelectorAll('nav button')[1])">🚀 Crear ahora</button>
+<div style="margin-top:20px">
+<button class="active" onclick="switchSection('assistant', this)">🤖 AI Assistant</button>
+<button onclick="switchSection('builder', this)">✍️ Prompt Builder</button>
+<button onclick="switchSection('character', this)">🎭 Character AI</button>
+<button onclick="switchSection('content', this)">🎬 Content Creator</button>
+<button onclick="switchSection('projects', this)">📚 Projects</button>
 </div>
+</aside>
 
-<h4 style="margin:20px 0 10px">Accesos rápidos</h4>
+<main id="mainContent">
+
+<!-- SECCIÓN ASISTENTE -->
+<div id="sec-assistant">
+<h1>AI Assistant & Smart Creator</h1>
+<p>El asistente creativo interno de AvatarVerse para ayudar a transformar ideas en proyectos.</p>
+
 <div class="grid">
-<div class="card" onclick="switchScreen('create', document.querySelectorAll('nav button')[1])"><div class="icon">🎭</div><h4 style="margin:5px 0">Avatar</h4><p style="font-size:11px;color:var(--muted);margin:0">Diseña personajes.</p></div>
-<div class="card" onclick="switchScreen('create', document.querySelectorAll('nav button')[1])"><div class="icon">🖼️</div><h4 style="margin:5px 0">Imagen</h4><p style="font-size:11px;color:var(--muted);margin:0">Crea arte IA.</p></div>
-<div class="card" onclick="switchScreen('create', document.querySelectorAll('nav button')[1])"><div class="icon">🎬</div><h4 style="margin:5px 0">Video</h4><p style="font-size:11px;color:var(--muted);margin:0">Anima ideas.</p></div>
-<div class="card" onclick="switchScreen('gallery', document.querySelectorAll('nav button')[2])"><div class="icon">📚</div><h4 style="margin:5px 0">Proyectos</h4><p style="font-size:11px;color:var(--muted);margin:0">Tu biblioteca.</p></div>
+<div class="card">
+<div class="icon">🤖</div>
+<h2>AvatarVerse AI</h2>
+<p>Genera ideas, recomendaciones y ayuda durante el proceso creativo.</p>
+<input id="quickInput" placeholder="Escribe tu idea rápida..." onkeypress="if(event.key==='Enter') quickSend()">
 </div>
 
-<h4 style="margin:20px 0 10px">Perfil Móvil</h4>
-<div class="card" onclick="switchScreen('profile', document.querySelectorAll('nav button')[3])">
-<p style="margin:0;font-weight:bold">Héctor (Creator)</p>
-<p style="margin:5px 0 0;font-size:12px;color:var(--c)">⭐ Plan Pro · <span id="mobileCredits">500</span> Créditos</p>
-</div>
-</div>
-
-<!-- VISTA CREAR -->
-<div id="screen-create" style="display:none">
-<h3>Studio Móvil IA</h3>
-<p style="font-size:13px;color:var(--muted)">Genera contenido al instante desde tu teléfono.</p>
-<label style="font-size:12px">Prompt o Idea</label>
-<textarea id="mobilePrompt" placeholder="Describe tu avatar o imagen..."></textarea>
-<label style="font-size:12px">Estilo</label>
-<select id="mobileStyle">
-<option>Cinemático</option>
-<option>Realista</option>
-<option>Anime</option>
-<option>Cyberpunk</option>
-</select>
-<button class="btn" style="margin-top:15px" onclick="runMobileCreation()">Generar Creación</button>
+<div class="card" style="cursor:pointer" onclick="switchSection('builder', document.querySelectorAll('aside button')[1])">
+<div class="icon">✍️</div>
+<h2>Prompt Builder</h2>
+<p>Convierte conceptos simples en instrucciones creativas avanzadas.</p>
+<div><span class="tag">Estilo</span><span class="tag">Cámara</span><span class="tag">Luz</span></div>
 </div>
 
-<!-- VISTA GALERÍA -->
-<div id="screen-gallery" style="display:none">
-<h3>Biblioteca Móvil</h3>
-<p style="font-size:13px;color:var(--muted)">Tus creaciones guardadas en la app:</p>
-<div id="mobileLibrary" style="margin-top:15px">
-<div class="card"><p style="font-size:12px;color:var(--muted);margin:0">No hay creaciones recientes.</p></div>
+<div class="card" style="cursor:pointer" onclick="switchSection('character', document.querySelectorAll('aside button')[2])">
+<div class="icon">🎭</div>
+<h2>Character Assistant</h2>
+<p>Crea nombres, historias, personalidad y evolución de personajes.</p>
 </div>
 </div>
 
-<!-- VISTA PERFIL -->
-<div id="screen-profile" style="display:none">
-<h3>Perfil del Creador</h3>
-<div class="card" style="margin-top:15px">
-<p style="margin:0 0 5px"><b>Nombre:</b> Héctor</p>
-<p style="margin:0 0 5px"><b>Suscripción:</b> Pro Active</p>
-<p style="margin:0"><b>Créditos:</b> <span id="profileCreditsVal">500</span></p>
-<button class="btn" style="margin-top:15px;background:#29375b" onclick="showToast('Sincronización móvil exitosa.')">Sincronizar Cloud</button>
+<h2>💬 Smart Creator Chat</h2>
+<div class="card">
+<div class="chat-box" id="chatContainer">
+<div class="msg ai">Hola, soy el asistente inteligente de AvatarVerse. ¿Qué gran universo o personaje quieres crear hoy?</div>
 </div>
+<div style="display:flex;gap:10px">
+<input id="chatInput" placeholder="Describe tu próxima creación..." onkeypress="if(event.key==='Enter') sendChatMessage()">
+<button class="btn" onclick="sendChatMessage()">Enviar</button>
+</div>
+</div>
+
+<h2>🎬 Content Creator</h2>
+<div class="card">
+<p>Preparado para ideas de videos, títulos, descripciones y conceptos para redes sociales.</p>
+<button class="btn" style="margin-top:10px" onclick="generateContentIdeas()">✨ Generar Ideas de Contenido</button>
+</div>
+</div>
+
+<!-- SECCIÓN PROMPT BUILDER -->
+<div id="sec-builder" style="display:none">
+<h1>Prompt Builder Pro</h1>
+<p>Construye prompts estructurados con precisión milimétrica.</p>
+<div class="card" style="max-width:700px;margin-top:20px">
+<label>Concepto Base</label>
+<input id="pbBase" placeholder="Ej.: Retrato cibernético de un guerrero estelar">
+<label>Estilo Visual</label>
+<div>
+<span class="tag" onclick="toggleTag(this)">Fotorrealista</span>
+<span class="tag" onclick="toggleTag(this)">Cyberpunk</span>
+<span class="tag" onclick="toggleTag(this)">Cinemático 8K</span>
+<span class="tag" onclick="toggleTag(this)">Anime Pro</span>
+</div>
+<label style="margin-top:10px">Iluminación y Cámara</label>
+<div>
+<span class="tag" onclick="toggleTag(this)">Chiaroscuro</span>
+<span class="tag" onclick="toggleTag(this)">Luz de Neón</span>
+<span class="tag" onclick="toggleTag(this)">Macro 50mm</span>
+<span class="tag" onclick="toggleTag(this)">Golden Hour</span>
+</div>
+<button class="btn" style="margin-top:15px" onclick="compilePrompt()">Compilar Prompt Avanzado</button>
+<div id="compiledResult" style="margin-top:15px;background:#070b16;padding:12px;border-radius:10px;font-family:monospace;color:var(--c);display:none"></div>
+</div>
+</div>
+
+<!-- SECCIÓN CHARACTER AI -->
+<div id="sec-character" style="display:none">
+<h1>Character Assistant</h1>
+<p>Genera perfiles detallados, rasgos y consistencia para tus avatares.</p>
+<div class="card" style="max-width:600px;margin-top:20px">
+<label>Nombre del Personaje</label>
+<input id="charName" placeholder="Ej.: Kaelen Vex">
+<label>Arquetipo</label>
+<select id="charRole"><option>Guerrero Cyberpunk</option><option>Mago Estelar</option><option>Explorador Fotorrealista</option></select>
+<button class="btn" style="margin-top:15px" onclick="generateCharacterProfile()">Generar Historia y Rasgos</button>
+<div id="charOutput" style="margin-top:15px"></div>
+</div>
+</div>
+
+<!-- SECCIÓN CONTENT CREATOR -->
+<div id="sec-content" style="display:none">
+<h1>Content Creator Studio</h1>
+<p>Estrategias de contenido y copys para redes sociales de tus creaciones.</p>
+<div class="card" style="margin-top:20px">
+<h3>Generador de Títulos y Descripciones</h3>
+<textarea id="contentIdea" placeholder="Escribe de qué trata tu proyecto..."></textarea>
+<button class="btn" style="margin-top:10px" onclick="runContentAI()">Crear Pack para Redes</button>
+<div id="contentOutput" style="margin-top:15px"></div>
+</div>
+</div>
+
+<!-- SECCIÓN PROJECTS -->
+<div id="sec-projects" style="display:none">
+<h1>Asistente — Biblioteca de Proyectos</h1>
+<p>Tus conversaciones y prompts guardados con ayuda de IA.</p>
+<div class="card"><p class="muted">No hay elementos guardados en esta sesión.</p></div>
 </div>
 
 </main>
-
-<nav>
-<button class="active" onclick="switchScreen('home', this)"><span>🏠</span>Inicio</button>
-<button onclick="switchScreen('create', this)"><span>🎨</span>Crear</button>
-<button onclick="switchScreen('gallery', this)"><span>📚</span>Galería</button>
-<button onclick="switchScreen('profile', this)"><span>👤</span>Perfil</button>
-</nav>
 </div>
 
-<script>
-let mobileProjects = JSON.parse(localStorage.getItem('avatarverse_27_mobile') || '[]');
-let credits = 500;
+<div class="toast" id="toastMsg">¡Acción ejecutada con éxito!</div>
 
-function switchScreen(screenName, btn){
-  document.querySelectorAll('[id^="screen-"]').forEach(s => s.style.display = 'none');
-  document.getElementById('screen-' + screenName).style.display = 'block';
+<script>
+let chatHistory = JSON.parse(localStorage.getItem('avatarverse_28_chat') || '[]');
+
+function switchSection(secName, btn){
+  document.querySelectorAll('[id^="sec-"]').forEach(s => s.style.display = 'none');
+  document.getElementById('sec-' + secName).style.display = 'block';
   if(btn){
-    document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('aside button').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
   }
-  if(screenName === 'gallery') renderMobileGallery();
 }
 
 function showToast(msg){
@@ -128,32 +176,96 @@ function showToast(msg){
   setTimeout(() => t.classList.remove('show'), 2200);
 }
 
-function runMobileCreation(){
-  const prompt = document.getElementById('mobilePrompt').value.trim();
-  const style = document.getElementById('mobileStyle').value;
-  if(!prompt){ showToast('Escribe un prompt para crear.'); return; }
+function sendChatMessage(){
+  const input = document.getElementById('chatInput');
+  const text = input.value.trim();
+  if(!text) return;
 
-  mobileProjects.unshift({prompt, style, date: new Date().toLocaleDateString()});
-  localStorage.setItem('avatarverse_27_mobile', JSON.stringify(mobileProjects));
-  
-  showToast('✨ ¡Creado y guardado con éxito!');
-  document.getElementById('mobilePrompt').value = '';
-  switchScreen('gallery', document.querySelectorAll('nav button')[2]);
+  appendMessage(text, 'user');
+  input.value = '';
+
+  setTimeout(() => {
+    let reply = "¡Excelente idea! Analizando los parámetros de diseño, te sugiero combinar una iluminación dramática con texturas detalladas para maximizar el realismo.";
+    if(text.toLowerCase().includes('avatar')) {
+      reply = "Para tu avatar, te recomiendo mantener los rasgos faciales clave y usar un estilo cinemático con fondo de neón.";
+    } else if(text.toLowerCase().includes('video')) {
+      reply = "El motor de video está listo para animar esta escena fotograma a fotograma con fluidez óptima.";
+    }
+    appendMessage(reply, 'ai');
+    showToast('💡 Asistente respondió');
+  }, 1000);
 }
 
-function renderMobileGallery(){
-  const lib = document.getElementById('mobileLibrary');
-  if(!mobileProjects.length){
-    lib.innerHTML = '<div class="card"><p style="font-size:12px;color:var(--muted);margin:0">No hay creaciones recientes.</p></div>';
-    return;
-  }
-  lib.innerHTML = mobileProjects.map(p => `
-    <div class="card" style="margin-bottom:10px">
-      <p style="margin:0;font-weight:bold;font-size:13px">${p.style}</p>
-      <p style="margin:4px 0;font-size:12px;color:var(--muted)">${p.prompt}</p>
-      <span style="font-size:10px;color:var(--c)">${p.date}</span>
+function quickSend(){
+  const text = document.getElementById('quickInput').value.trim();
+  if(!text) return;
+  switchSection('assistant', document.querySelectorAll('aside button')[0]);
+  document.getElementById('chatInput').value = text;
+  document.getElementById('quickInput').value = '';
+  sendChatMessage();
+}
+
+function appendMessage(text, sender){
+  const box = document.getElementById('chatContainer');
+  const div = document.createElement('div');
+  div.className = 'msg ' + sender;
+  div.textContent = text;
+  box.appendChild(div);
+  box.scrollTop = box.scrollHeight;
+}
+
+function toggleTag(tag){
+  tag.classList.toggle('active');
+}
+
+function compilePrompt(){
+  const base = document.getElementById('pbBase').value.trim() || 'Retreto creativo';
+  const activeTags = Array.from(document.querySelectorAll('.tag.active')).map(t => t.textContent);
+  const compiled = `${base}, ${activeTags.join(', ')}, ultra-detailed, 8k resolution, professional lighting, perfect composition --ar 16:9`;
+  
+  const res = document.getElementById('compiledResult');
+  res.style.display = 'block';
+  res.textContent = compiled;
+  showToast('¡Prompt compilado con éxito!');
+}
+
+function generateCharacterProfile(){
+  const name = document.getElementById('charName').value.trim() || 'Héroe Anónimo';
+  const role = document.getElementById('charRole').value;
+  const out = document.getElementById('charOutput');
+  
+  out.innerHTML = `
+    <div class="card" style="background:#070b16;margin-top:10px">
+      <h4>🎭 Perfil de: ${name} (${role})</h4>
+      <p style="font-size:13px;color:var(--muted)"><b>Personalidad:</b> Visionario, decidido y enfocado en la excelencia creativa.</p>
+      <p style="font-size:13px;color:var(--muted)"><b>Rasgos visuales:</b> Cabello definido, mirada expresiva, indumentaria con detalles tecnológicos.</p>
     </div>
-  `).join('');
+  `;
+  showToast('¡Perfil de personaje generado!');
+}
+
+function generateContentIdeas(){
+  showToast('🎬 Generando ideas virales para redes sociales...');
+  setTimeout(() => {
+    switchSection('content', document.querySelectorAll('aside button')[3]);
+    document.getElementById('contentIdea').value = "Creación de un universo digital con avatares fotorrealistas y consistencia de personajes.";
+    runContentAI();
+  }, 800);
+}
+
+function runContentAI(){
+  const idea = document.getElementById('contentIdea').value.trim();
+  if(!idea){ showToast('Escribe una idea de proyecto.'); return; }
+  
+  const out = document.getElementById('contentOutput');
+  out.innerHTML = `
+    <div class="card" style="background:#070b16;margin-top:10px">
+      <h4>🚀 Pack de Contenido Generado</h4>
+      <p style="font-size:13px"><b>Título sugerido:</b> Creando mundos con IA y AvatarVerse 2.8</p>
+      <p style="font-size:13px"><b>Copy para Redes:</b> Explora el futuro del diseño digital y la consistencia de personajes. ¡El límite es tu imaginación! ✨ #AvatarVerse #AIArt #DigitalCreation</p>
+    </div>
+  `;
+  showToast('¡Pack de contenido creado!');
 }
 </script>
 </body>
