@@ -3,141 +3,154 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>AvatarVerse 2.1 — Creator Dashboard</title>
+<title>AvatarVerse 2.2 — Creative Workspace</title>
 <style>
-:root{--bg:#050816;--panel:#10172b;--line:#263354;--text:#fff;--muted:#9ba7c2;--p:#8b5cf6;--c:#22d3ee}
-*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at top,#18234a,#050816 45%);color:var(--text);font-family:Arial,sans-serif;scroll-behavior:smooth}
+:root{--bg:#050816;--panel:#10172b;--line:#29375b;--text:#fff;--muted:#9aa7c5;--p:#8b5cf6;--c:#22d3ee}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at top,#172554,#050816 50%);font-family:Arial,sans-serif;color:var(--text);scroll-behavior:smooth}
 .app{display:grid;grid-template-columns:260px 1fr;min-height:100vh}
-.side{background:#080d1c;border-right:1px solid var(--line);padding:25px;position:sticky;top:0;height:100vh;overflow-y:auto}
-.logo{font-size:30px;font-weight:900;margin-bottom:35px}.logo span{color:var(--c)}
-.menu button{width:100%;padding:14px;margin:6px 0;background:#111a33;color:white;border:1px solid var(--line);border-radius:14px;text-align:left;cursor:pointer;transition:.2s}
+aside{background:#080d1b;border-right:1px solid var(--line);padding:25px;position:sticky;top:0;height:100vh;overflow-y:auto}
+.logo{font-size:30px;font-weight:900}.logo span{color:var(--c)}
+.menu button{display:block;width:100%;margin:10px 0;padding:14px;border-radius:14px;background:#111a33;color:white;border:1px solid var(--line);text-align:left;cursor:pointer;transition:.2s}
 .menu button:hover,.menu button.active{background:var(--p);border-color:var(--c)}
-.main{padding:30px;max-width:1200px}.top{display:flex;justify-content:space-between;align-items:center}
-h1{font-size:40px;margin:20px 0}p{color:var(--muted);line-height:1.5}
-.btn{padding:13px 20px;border:0;border-radius:14px;background:linear-gradient(90deg,var(--p),var(--c));color:white;font-weight:bold;cursor:pointer;transition:.2s}
+main{padding:30px;max-width:1200px}
+.hero{display:flex;justify-content:space-between;align-items:center;gap:20px}
+h1{font-size:42px;margin:10px 0}p{color:var(--muted)}
+.btn{background:linear-gradient(90deg,var(--p),var(--c));border:0;color:white;padding:13px 20px;border-radius:14px;font-weight:bold;cursor:pointer;transition:.2s}
 .btn:hover{opacity:.9}
-.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin:25px 0}
-.card{background:rgba(16,23,43,.9);border:1px solid var(--line);border-radius:22px;padding:22px}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:15px;margin:25px 0}
+.card{background:rgba(16,23,43,.9);border:1px solid var(--line);border-radius:22px;padding:20px}
 .card-interactive{cursor:pointer;transition:.2s}
 .card-interactive:hover{border-color:var(--p);transform:translateY(-3px)}
-.icon{font-size:35px}
+.icon{font-size:32px}
 .workspace{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:30px}
-input,textarea,select{width:100%;background:#070b16;color:white;border:1px solid var(--line);padding:13px;border-radius:12px;margin:8px 0;font-family:inherit}
-.preview{height:340px;background:radial-gradient(circle,#8b5cf6,transparent 40%),#10172b;border-radius:25px;display:grid;place-items:center;font-size:60px;text-align:center;padding:20px;border:1px solid var(--line)}
+input,textarea,select{width:100%;background:#070b16;color:white;border:1px solid var(--line);border-radius:12px;padding:12px;margin:7px 0;font-family:inherit}
+textarea{height:100px;resize:vertical}
+.preview{height:350px;border-radius:25px;background:radial-gradient(circle,#8b5cf6,transparent 35%),#11172b;display:grid;place-items:center;font-size:70px;text-align:center;padding:20px;border:1px solid var(--line)}
 .toast{position:fixed;right:20px;bottom:20px;background:#111a33;border:1px solid var(--c);padding:14px 20px;border-radius:14px;display:none;z-index:100}
 .toast.show{display:block}
-@media(max-width:850px){.app{grid-template-columns:1fr}.side{display:none}.cards,.workspace{grid-template-columns:1fr}}
+@media(max-width:900px){.app{grid-template-columns:1fr}aside{display:none}.grid,.workspace{grid-template-columns:1fr 1fr}}@media(max-width:600px){.grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 <div class="app">
-<aside class="side">
+<aside>
 <div class="logo">Avatar<span>Verse</span></div>
 <div class="menu">
-<button class="active" onclick="switchTab('inicio', this)">🏠 Inicio</button>
-<button onclick="switchTab('avatar', this)">🎭 Avatar Creator</button>
+<button class="active" onclick="switchTab('dashboard', this)">🏠 Dashboard</button>
+<button onclick="switchTab('avatar', this)">🎭 Avatar Studio</button>
 <button onclick="switchTab('image', this)">🖼️ Image Lab</button>
 <button onclick="switchTab('video', this)">🎬 Video Lab</button>
 <button onclick="switchTab('universe', this)">📚 My Universe</button>
-<button onclick="switchTab('config', this)">⚙️ Configuración</button>
+<button onclick="switchTab('settings', this)">⚙️ Settings</button>
 </div>
 </aside>
+<main id="mainContent">
 
-<main class="main" id="mainContent">
-<!-- SECCIÓN INICIO -->
-<div id="sec-inicio">
-<div class="top">
-<h2>AvatarVerse Studio</h2>
-<button class="btn" onclick="switchTab('avatar')">🚀 Crear nuevo</button>
+<!-- DASHBOARD -->
+<div id="sec-dashboard">
+<div class="hero">
+<div>
+<h1>Creative Workspace</h1>
+<p>Tu centro de creación para construir avatares, imágenes y mundos digitales.</p>
 </div>
-<h1>Tu universo creativo con IA</h1>
-<p>Crea personajes, imágenes y proyectos digitales desde un espacio organizado para crecer hacia una plataforma completa.</p>
-
-<div class="cards">
-<div class="card card-interactive" onclick="switchTab('avatar')"><div class="icon">🎭</div><h3>Avatar Creator</h3><p>Diseña personajes con identidad visual propia.</p></div>
-<div class="card card-interactive" onclick="switchTab('image')"><div class="icon">🖼️</div><h3>Image Lab</h3><p>Crea y transforma imágenes con estilos diferentes.</p></div>
-<div class="card card-interactive" onclick="switchTab('video')"><div class="icon">🎬</div><h3>Video Lab</h3><p>Prepara animaciones y contenido audiovisual.</p></div>
+<button class="btn" onclick="switchTab('avatar', document.querySelectorAll('.menu button')[1])">🚀 Nuevo proyecto</button>
 </div>
 
-<h2>🎭 Avatar Creator Rápido</h2>
+<div class="grid">
+<div class="card card-interactive" onclick="switchTab('universe', document.querySelectorAll('.menu button')[4])"><div class="icon">🕒</div><h3>Recientes</h3><p id="countRecents">0 proyectos</p></div>
+<div class="card"><div class="icon">⭐</div><h3>Favoritos</h3><p>0 destacados</p></div>
+<div class="card card-interactive" onclick="switchTab('universe', document.querySelectorAll('.menu button')[4])"><div class="icon">🎭</div><h3>Avatares</h3><p id="countAvatars">0 guardados</p></div>
+<div class="card"><div class="icon">🎬</div><h3>Videos</h3><p>0 creados</p></div>
+</div>
+
+<h2>🎭 Avatar Creator Pro</h2>
 <div class="workspace">
 <div class="card">
-<label>Nombre del avatar</label>
-<input id="avName" placeholder="Ejemplo: Nova">
-<label>Descripción</label>
-<textarea id="avDesc" placeholder="Describe tu personaje..."></textarea>
+<label>Nombre del personaje</label>
+<input id="proName" placeholder="Nombre">
+<label>Historia y personalidad</label>
+<textarea id="proDesc" placeholder="Describe tu avatar"></textarea>
 <label>Estilo</label>
-<select id="avStyle"><option>Realista</option><option>Cinemático</option><option>Anime</option><option>Futurista</option><option>Fantasía</option></select>
-<button class="btn" onclick="createAvatar()">Crear avatar</button>
+<select id="proStyle"><option>Realista</option><option>Cinemático</option><option>Anime</option><option>Futurista</option></select>
+<label>Escenario</label>
+<input id="proScene" placeholder="Ciudad, planeta, fantasía...">
+<button class="btn" onclick="createProAvatar()">Crear proyecto</button>
 </div>
-<div class="preview" id="previewBox">🌌<br><span style="font-size:16px;color:var(--muted)">Vista previa interactiva</span></div>
+<div class="preview" id="proPreview">🌌<br><span style="font-size:16px;color:var(--muted)">Vista previa interactiva</span></div>
+</div>
+
+<h2>📚 My Universe (Resumen)</h2>
+<div class="card">
+<p>Biblioteca preparada:</p>
+<p>📁 Avatares · 📁 Imágenes · 📁 Videos · 📁 Proyectos</p>
+<button class="btn" style="margin-top:12px;background:#111a33;border:1px solid var(--line)" onclick="switchTab('universe', document.querySelectorAll('.menu button')[4])">Ver universo completo</button>
 </div>
 </div>
 
-<!-- SECCIÓN AVATAR CREATOR -->
+<!-- AVATAR STUDIO -->
 <div id="sec-avatar" style="display:none">
-<h2>🎭 Avatar Creator Studio</h2>
-<p>Diseña y guarda múltiples identidades para tu universo.</p>
+<h2>🎭 Avatar Studio Pro</h2>
+<p>Diseño avanzado de personajes con integración en mundos digitales.</p>
 <div class="workspace">
 <div class="card">
-<label>Nombre del avatar</label>
-<input id="avNameFull" placeholder="Ejemplo: Lyra V">
-<label>Rasgos físicos / Detalles</label>
-<textarea id="avDescFull" placeholder="Cabello, ojos, ropa, expresiones..."></textarea>
+<label>Nombre del personaje</label>
+<input id="studioName" placeholder="Ej.: Lyra V">
+<label>Personalidad</label>
+<textarea id="studioDesc" placeholder="Detalles de comportamiento..."></textarea>
 <label>Estilo visual</label>
-<select id="avStyleFull"><option>Fotorrealista</option><option>Cyberpunk</option><option>Anime 3D</option></select>
-<button class="btn" onclick="createAvatarFull()">Guardar en My Universe</button>
+<select id="studioStyle"><option>Cyberpunk</option><option>Fantasía Épica</option><option>Sci-Fi Realista</option></select>
+<label>Mundo / Escenario</label>
+<input id="studioScene" placeholder="Nébula 9, Neo Tokio...">
+<button class="btn" onclick="createStudioAvatar()">Guardar en Universo</button>
 </div>
-<div class="preview" id="previewFull">✨<br><span style="font-size:16px">Listo para renderizar</span></div>
+<div class="preview">✨<br><span style="font-size:16px">Motor IA listo</span></div>
 </div>
 </div>
 
-<!-- SECCIÓN IMAGE LAB -->
+<!-- IMAGE LAB -->
 <div id="sec-image" style="display:none">
 <h2>🖼️ Image Lab Studio</h2>
-<p>Laboratorio para la creación y mejora de imágenes con IA.</p>
+<p>Laboratorio visual para generación de entornos e imágenes de alta definición.</p>
 <div class="workspace">
 <div class="card">
-<label>Prompt creativo</label>
-<textarea id="imgPrompt" placeholder="Describe el paisaje o escena..."></textarea>
-<label>Relación</label>
-<select><option>1:1 (Cuadrado)</option><option>16:9 (Paisaje)</option><option>9:16 (Story)</option></select>
-<button class="btn" onclick="runImageLab()">Generar Imagen</button>
+<label>Prompt de entorno o personaje</label>
+<textarea placeholder="Describe el paisaje con detalle..."></textarea>
+<button class="btn" onclick="simulateAction('Imagen generada con éxito')">Generar Imagen Pro</button>
 </div>
-<div class="preview" id="imgPreview">🖼️<br><span style="font-size:16px">Lienzo de imagen</span></div>
+<div class="preview">🖼️<br><span style="font-size:16px">Lienzo creativo</span></div>
 </div>
 </div>
 
-<!-- SECCIÓN VIDEO LAB -->
+<!-- VIDEO LAB -->
 <div id="sec-video" style="display:none">
 <h2>🎬 Video Lab Studio</h2>
-<p>Anima tus creaciones visuales.</p>
+<p>Animación y cinemáticas para tus proyectos.</p>
 <div class="workspace">
 <div class="card">
-<label>Acción o movimiento</label>
-<textarea id="vidPrompt" placeholder="Describe la animación..."></textarea>
-<button class="btn" onclick="runVideoLab()">Procesar Video</button>
+<label>Movimiento de cámara</label>
+<textarea placeholder="Zoom lento, paneo cyberpunk..."></textarea>
+<button class="btn" onclick="simulateAction('Video procesado con éxito')">Renderizar Video</button>
 </div>
-<div class="preview" id="vidPreview">🎞️<br><span style="font-size:16px">Reproductor de video</span></div>
+<div class="preview">🎞️<br><span style="font-size:16px">Reproductor de cinemáticas</span></div>
 </div>
 </div>
 
-<!-- SECCIÓN MY UNIVERSE -->
+<!-- MY UNIVERSE -->
 <div id="sec-universe" style="display:none">
-<h2>📚 My Universe (Biblioteca Local)</h2>
-<p>Tus avatares y creaciones guardadas en la sesión actual:</p>
-<div id="universeList" class="cards" style="grid-template-columns:1fr">
-<div class="card"><p class="muted">Aún no hay avatares guardados. ¡Crea uno en el estudio!</p></div>
+<h2>📚 My Universe — Biblioteca Completa</h2>
+<p>Tus avatares, proyectos y mundos almacenados en la sesión:</p>
+<div id="universeContainer" class="grid" style="grid-template-columns:1fr;margin-top:20px">
+<div class="card"><p class="muted">Aún no hay proyectos creados en tu espacio de trabajo.</p></div>
 </div>
 </div>
 
-<!-- SECCIÓN CONFIGURACIÓN -->
-<div id="sec-config" style="display:none">
-<h2>⚙️ Configuración del Sistema</h2>
+<!-- SETTINGS -->
+<div id="sec-settings" style="display:none">
+<h2>⚙️ Settings & API Configuration</h2>
 <div class="card">
-<p><b>Endpoints de API:</b> Conectados localmente</p>
-<p><b>Almacenamiento:</b> LocalStorage activo</p>
-<button class="btn" onclick="clearUniverse()">Limpiar datos guardados</button>
+<p><b>Estado del sistema:</b> Conectado localmente</p>
+<p><b>Almacenamiento:</b> Activo (LocalStorage)</p>
+<button class="btn" style="background:#dc2626;margin-top:10px" onclick="clearUniverseData()">Borrar todo el universo</button>
 </div>
 </div>
 
@@ -147,7 +160,7 @@ input,textarea,select{width:100%;background:#070b16;color:white;border:1px solid
 <div class="toast" id="toastMsg">¡Acción ejecutada con éxito!</div>
 
 <script>
-let universeData = JSON.parse(localStorage.getItem('avatarverse_universe') || '[]');
+let universeProjects = JSON.parse(localStorage.getItem('avatarverse_22_projects') || '[]');
 
 function switchTab(tab, btn){
   document.querySelectorAll('[id^="sec-"]').forEach(s => s.style.display = 'none');
@@ -156,7 +169,8 @@ function switchTab(tab, btn){
     document.querySelectorAll('.menu button').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
   }
-  if(tab === 'universe') renderUniverse();
+  if(tab === 'universe') renderUniverseLibrary();
+  updateCounters();
 }
 
 function showToast(msg){
@@ -166,84 +180,87 @@ function showToast(msg){
   setTimeout(() => t.classList.remove('show'), 2500);
 }
 
-function createAvatar(){
-  const name = document.getElementById('avName').value.trim();
-  const desc = document.getElementById('avDesc').value.trim();
-  const style = document.getElementById('avStyle').value;
-  if(!name){ showToast('Por favor escribe un nombre para el avatar.'); return; }
+function updateCounters(){
+  const count = universeProjects.length;
+  document.getElementById('countRecents').textContent = count + ' proyectos';
+  document.getElementById('countAvatars').textContent = count + ' guardados';
+}
 
-  const box = document.getElementById('previewBox');
-  box.innerHTML = '⏳ Generando avatar...';
+function createProAvatar(){
+  const name = document.getElementById('proName').value.trim();
+  const desc = document.getElementById('proDesc').value.trim();
+  const style = document.getElementById('proStyle').value;
+  const scene = document.getElementById('proScene').value.trim();
   
+  if(!name){ showToast('Por favor introduce el nombre del personaje.'); return; }
+
+  const preview = document.getElementById('proPreview');
+  preview.innerHTML = '⏳ Renderizando...';
+
   setTimeout(() => {
-    universeData.unshift({type: 'Avatar', name, desc, style, date: new Date().toLocaleDateString()});
-    localStorage.setItem('avatarverse_universe', JSON.stringify(universeData));
-    box.innerHTML = '✨ ¡Avatar ' + name + ' creado!';
-    showToast('¡Avatar guardado en My Universe!');
-  }, 1000);
+    universeProjects.unshift({name, desc, style, scene, date: new Date().toLocaleDateString()});
+    localStorage.setItem('avatarverse_22_projects', JSON.stringify(universeProjects));
+    preview.innerHTML = '✨ ¡Proyecto ' + name + ' creado!';
+    showToast('¡Proyecto guardado en My Universe!');
+    updateCounters();
+  }, 1100);
 }
 
-function createAvatarFull(){
-  const name = document.getElementById('avNameFull').value.trim();
-  const desc = document.getElementById('avDescFull').value.trim();
-  const style = document.getElementById('avStyleFull').value;
-  if(!name){ showToast('Por favor escribe un nombre.'); return; }
+function createStudioAvatar(){
+  const name = document.getElementById('studioName').value.trim();
+  const desc = document.getElementById('studioDesc').value.trim();
+  const style = document.getElementById('studioStyle').value;
+  const scene = document.getElementById('studioScene').value.trim();
+  
+  if(!name){ showToast('Por favor introduce el nombre.'); return; }
 
-  universeData.unshift({type: 'Avatar Full', name, desc, style, date: new Date().toLocaleDateString()});
-  localStorage.setItem('avatarverse_universe', JSON.stringify(universeData));
-  showToast('¡Avatar completo guardado!');
-  switchTab('universe');
+  universeProjects.unshift({name, desc, style, scene, date: new Date().toLocaleDateString()});
+  localStorage.setItem('avatarverse_22_projects', JSON.stringify(universeProjects));
+  showToast('¡Avatar de estudio guardado con éxito!');
+  switchTab('universe', document.querySelectorAll('.menu button')[4]);
 }
 
-function runImageLab(){
-  const box = document.getElementById('imgPreview');
-  box.innerHTML = '⏳ Renderizando imagen...';
-  setTimeout(() => {
-    box.innerHTML = '🖼️ ¡Imagen generada con éxito!';
-    showToast('Imagen procesada correctamente.');
-  }, 1200);
-}
-
-function runVideoLab(){
-  const box = document.getElementById('vidPreview');
-  box.innerHTML = '⏳ Renderizando animación...';
-  setTimeout(() => {
-    box.innerHTML = '🎬 ¡Video generado con éxito!';
-    showToast('Video procesado correctamente.');
-  }, 1200);
-}
-
-function renderUniverse(){
-  const list = document.getElementById('universeList');
-  if(!universeData.length){
-    list.innerHTML = '<div class="card"><p class="muted">Aún no hay avatares guardados. ¡Crea uno en el estudio!</p></div>';
+function renderUniverseLibrary(){
+  const container = document.getElementById('universeContainer');
+  if(!universeProjects.length){
+    container.innerHTML = '<div class="card"><p class="muted">Aún no hay proyectos creados en tu espacio de trabajo.</p></div>';
     return;
   }
-  list.innerHTML = universeData.map((item, idx) => `
+  container.innerHTML = universeProjects.map((p, idx) => `
     <div class="card" style="display:flex;justify-content:space-between;align-items:center">
       <div>
-        <h3>🎭 ${item.name} <span style="font-size:12px;color:var(--c)">(${item.style})</span></h3>
-        <p>${item.desc || 'Sin descripción'}</p>
-        <small class="muted">Creado el ${item.date}</small>
+        <h3>🎭 ${p.name} <span style="font-size:13px;color:var(--c)">(${p.style})</span></h3>
+        <p><b>Mundo/Escenario:</b> ${p.scene || 'No especificado'}</p>
+        <p>${p.desc || 'Sin descripción detallada'}</p>
+        <small class="muted">Creado el ${p.date}</small>
       </div>
-      <button class="btn" style="background:#263354;padding:8px 14px;font-size:13px" onclick="deleteItem(${idx})">Eliminar</button>
+      <button class="btn" style="background:#29375b;padding:8px 14px;font-size:13px" onclick="deleteProject(${idx})">Eliminar</button>
     </div>
   `).join('');
 }
 
-function deleteItem(idx){
-  universeData.splice(idx, 1);
-  localStorage.setItem('avatarverse_universe', JSON.stringify(universeData));
-  renderUniverse();
-  showToast('Elemento eliminado del universo.');
+function deleteProject(idx){
+  universeProjects.splice(idx, 1);
+  localStorage.setItem('avatarverse_22_projects', JSON.stringify(universeProjects));
+  renderUniverseLibrary();
+  updateCounters();
+  showToast('Proyecto eliminado del universo.');
 }
 
-function clearUniverse(){
-  universeData = [];
-  localStorage.removeItem('avatarverse_universe');
-  renderUniverse();
-  showToast('Se ha reiniciado el universo.');
+function clearUniverseData(){
+  universeProjects = [];
+  localStorage.removeItem('avatarverse_22_projects');
+  renderUniverseLibrary();
+  updateCounters();
+  showToast('Se ha reiniciado el universo por completo.');
 }
+
+function simulateAction(msg){
+  showToast('⏳ Procesando...');
+  setTimeout(() => { showToast('✨ ' + msg); }, 1200);
+}
+
+updateCounters();
 </script>
 </body>
 </html>
